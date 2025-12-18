@@ -1,0 +1,91 @@
+@startuml Activity Diagram - Mahasiswa
+
+title Activity Diagram: Alur Sistem Mahasiswa
+
+start
+
+:Mahasiswa membuka aplikasi;
+
+:Login dengan NIM & Password;
+
+if (Login berhasil?) then (ya)
+  :Tampilkan Beranda;
+  
+  repeat
+    :Pilih Menu;
+    
+    switch (Menu yang dipilih?)
+    case (Jadwal)
+      :Lihat jadwal kuliah;
+      :Pilih hari;
+      if (Jadwal hari ini?) then (ya)
+        :Tap jadwal untuk absensi;
+        if (WiFi terhubung?) then (ya)
+          :Absensi berhasil;
+        else (tidak)
+          :Ajukan izin;
+        endif
+      endif
+      
+    case (Akademik)
+      :Pilih tab KRS/KHS;
+      if (Tab KRS?) then (ya)
+        if (Status Draft?) then (ya)
+          :Pilih mata kuliah;
+          :Submit KRS;
+          :Tunggu persetujuan Dosen;
+        else (tidak)
+          :Lihat status KRS;
+        endif
+      else (Tab KHS)
+        :Lihat nilai per semester;
+      endif
+      
+    case (Keuangan)
+      :Lihat tagihan;
+      if (Ada tagihan?) then (ya)
+        :Pilih tagihan;
+        :Pilih metode bayar;
+        :Upload bukti;
+        :Tunggu verifikasi Admin;
+      endif
+      
+    case (Profil)
+      :Lihat profil mahasiswa;
+      :Pilih aksi;
+      
+      switch (Aksi yang dipilih?)
+      case (Edit Profil)
+        :Edit data profil;
+        :Simpan perubahan;
+      case (Sertifikat)
+        :Lihat daftar sertifikat;
+        if (Tambah sertifikat?) then (ya)
+          :Upload sertifikat baru;
+          :Isi detail sertifikat;
+          :Simpan;
+        else (tidak)
+          :Lihat/download sertifikat;
+        endif
+      case (Ubah Password)
+        :Input password lama & baru;
+        :Simpan password;
+      case (Kembali)
+        :Kembali ke menu utama;
+      endswitch
+      
+    case (Logout)
+      :Keluar dari aplikasi;
+      stop
+    endswitch
+    
+  repeat while (Lanjut menggunakan?) is (ya)
+  
+else (tidak)
+  :Tampilkan error;
+  stop
+endif
+
+stop
+
+@enduml

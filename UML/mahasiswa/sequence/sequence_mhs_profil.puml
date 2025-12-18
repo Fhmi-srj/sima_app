@@ -1,0 +1,106 @@
+@startuml Sequence Diagram - Kelola Profil Mahasiswa
+
+title Sequence Diagram: Kelola Profil Mahasiswa
+
+actor Mahasiswa as mhs
+participant "Halaman Profil" as page
+participant "Profile Controller" as ctrl
+participant "File Service" as file
+database "Database" as db
+
+mhs -> page : Tap ikon profil
+activate page
+
+page -> ctrl : getProfile(nim)
+activate ctrl
+ctrl -> db : SELECT profile WHERE nim = ?
+activate db
+db --> ctrl : Profile data
+deactivate db
+ctrl --> page : Profile info
+deactivate ctrl
+
+page --> mhs : Tampilkan profil\n(Foto, Nama, NIM, Prodi, Email, Telp)
+
+alt Edit Profil
+    mhs -> page : Tap "Edit Profil"
+    page --> mhs : Tampilkan form edit
+    
+    opt Ubah Foto
+        mhs -> page : Tap foto profil
+        page -> file : selectImage()
+        activate file
+        file --> page : Selected image
+        deactivate file
+        page --> mhs : Tampilkan preview foto baru
+    end
+    
+    mhs -> page : Ubah data (Email, Telp, Alamat)
+    mhs -> page : Tap Simpan
+    
+    page -> ctrl : updateProfile(data)
+    activate ctrl
+    
+    alt Data Valid
+        ctrl -> file : uploadPhoto(photo)
+        activate file
+        file --> ctrl : Photo URL
+        deactivate file
+        
+        ctrl -> db : UPDATE profile SET ...
+        activate db
+        db --> ctrl : Success
+        deactivate db
+        
+        ctrl --> page : Profile updated
+        page --> mhs : Tampilkan pesan sukses
+    else Data Invalid
+        ctrl --> page : Validation error
+        page --> mhs : Tampilkan error
+    end
+    deactivate ctrl
+    
+else Ubah Password
+    mhs -> page : Tap "Ubah Password"
+    page --> mhs : Tampilkan form ubah password
+    
+    mhs -> page : Isi password lama & baru
+    mhs -> page : Tap Simpan
+    
+    page -> ctrl : changePassword(old, new)
+    activate ctrl
+    
+    alt Password Lama Benar
+        alt Konfirmasi Cocok
+            ctrl -> db : UPDATE password
+            activate db
+            db --> ctrl : Success
+            deactivate db
+            ctrl --> page : Password changed
+            page --> mhs : Tampilkan sukses
+        else Konfirmasi Tidak Cocok
+            ctrl --> page : Error: Konfirmasi tidak cocok
+            page --> mhs : Tampilkan error
+        end
+    else Password Lama Salah
+        ctrl --> page : Error: Password salah
+        page --> mhs : Tampilkan error
+    end
+    deactivate ctrl
+    
+else Logout
+    mhs -> page : Tap Logout
+    page -> ctrl : logout()
+    activate ctrl
+    ctrl -> db : DELETE session
+    activate db
+    db --> ctrl : Success
+    deactivate db
+    ctrl --> page : Logged out
+    deactivate ctrl
+    page --> mhs : Redirect ke halaman login
+end
+
+deactivate page
+
+@enduml

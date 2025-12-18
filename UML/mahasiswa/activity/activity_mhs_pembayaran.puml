@@ -1,0 +1,71 @@
+@startuml Activity Diagram - Melakukan Pembayaran
+
+title Activity Diagram: Melakukan Pembayaran Mahasiswa
+
+start
+
+:Mahasiswa membuka detail tagihan;
+
+:Mahasiswa tap tombol "Bayar Sekarang";
+
+:Sistem menampilkan halaman pembayaran;
+
+:Menampilkan detail tagihan:
+- Jenis tagihan
+- Nominal
+- Nomor Virtual Account;
+
+:Mahasiswa memilih metode pembayaran;
+
+note right
+  Metode Pembayaran:
+  - Transfer Bank
+  - Virtual Account
+  - E-Wallet
+end note
+
+if (Metode = Transfer Bank?) then (ya)
+  :Menampilkan nomor rekening tujuan;
+  :Menampilkan instruksi transfer;
+  
+else if (Metode = Virtual Account?) then (ya)
+  :Memilih bank VA;
+  :Sistem generate nomor VA;
+  :Menampilkan nomor VA;
+  :Menampilkan batas waktu pembayaran;
+  
+else (E-Wallet)
+  :Memilih provider e-wallet;
+  :Sistem redirect ke aplikasi e-wallet;
+endif
+
+:Mahasiswa melakukan pembayaran;
+
+:Mahasiswa kembali ke aplikasi;
+
+:Mahasiswa tap "Konfirmasi Pembayaran";
+
+:Mahasiswa mengunggah bukti transfer;
+
+if (Bukti valid?) then (ya)
+  :Sistem menyimpan bukti pembayaran;
+  :Status berubah: Menunggu Verifikasi;
+  :Menampilkan pesan sukses;
+  
+  :Admin akan memverifikasi pembayaran;
+  
+  if (Pembayaran diverifikasi?) then (ya)
+    :Status berubah: Lunas;
+    :Mahasiswa menerima notifikasi;
+  else (tidak)
+    :Status: Ditolak;
+    :Mahasiswa menerima notifikasi alasan;
+  endif
+  
+else (tidak)
+  :Menampilkan error format tidak valid;
+endif
+
+stop
+
+@enduml

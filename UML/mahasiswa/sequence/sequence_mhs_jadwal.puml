@@ -1,0 +1,37 @@
+@startuml Sequence Diagram - Melihat Jadwal Mahasiswa
+
+title Sequence Diagram: Melihat Jadwal Mahasiswa
+
+actor Mahasiswa as mhs
+participant "Halaman Jadwal" as page
+participant "Schedule Controller" as ctrl
+database "Database" as db
+
+mhs -> page : Pilih menu Jadwal
+activate page
+
+page -> ctrl : getWeeklySchedule(nim)
+activate ctrl
+
+ctrl -> db : SELECT schedule WHERE student_nim = ?
+activate db
+db --> ctrl : Weekly schedule data
+deactivate db
+
+ctrl --> page : Schedule list
+deactivate ctrl
+
+page --> mhs : Tampilkan jadwal dengan tab hari
+
+mhs -> page : Pilih tab hari tertentu
+page --> mhs : Tampilkan jadwal hari tersebut
+
+mhs -> page : Tap kartu jadwal
+page --> mhs : Tampilkan modal detail jadwal\n(Matkul, Dosen, Waktu, Ruangan)
+
+opt Jadwal hari ini & waktu sesuai
+    mhs -> page : Tap tombol Absensi
+    page --> mhs : Buka modal absensi
+end
+
+@enduml

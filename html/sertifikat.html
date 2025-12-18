@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMA - Sertifikat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        /* Hide scrollbar */
+        body::-webkit-scrollbar,
+        .modal-scroll::-webkit-scrollbar,
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        body,
+        .modal-scroll,
+        * {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Modal sticky header */
+        .modal-container {
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .modal-header-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            flex-shrink: 0;
+        }
+
+        .modal-scroll {
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slide-up 0.3s ease-out;
+        }
+
+        /* Swipe animations */
+        @keyframes slide-left {
+            from {
+                opacity: 0;
+                transform: translateX(100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slide-right {
+            from {
+                opacity: 0;
+                transform: translateX(-100%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .slide-left {
+            animation: slide-left 0.3s ease-out;
+        }
+
+        .slide-right {
+            animation: slide-right 0.3s ease-out;
+        }
+
+        .certificate-card {
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Header Section with Title -->
+    <div class="bg-gradient-to-r from-blue-500 to-blue-600 px-6 pb-8 pt-6">
+        <h2 class="text-4xl font-bold text-white text-center mb-2">Sertifikat Saya</h2>
+    </div>
+
+    <!-- Content Container with rounded top -->
+    <div class="bg-white rounded-t-[32px] -mt-4 px-4 py-6 pb-8 min-h-screen">
+        <!-- Filter Tabs (Finance Page Style) -->
+        <div class="mx-4 mb-6">
+            <div class="bg-white rounded-[25px] p-1.5 shadow-md flex gap-1.5">
+                <button onclick="filterCertificates('semua')" id="tab-semua"
+                    class="flex-1 px-6 py-2.5 bg-blue-600 text-white rounded-[20px] text-sm font-semibold whitespace-nowrap shadow-lg shadow-blue-600/30">
+                    Semua
+                </button>
+                <button onclick="filterCertificates('aktif')" id="tab-aktif"
+                    class="flex-1 px-6 py-2.5 bg-transparent text-blue-500 rounded-[20px] text-sm font-semibold whitespace-nowrap">
+                    Aktif
+                </button>
+                <button onclick="filterCertificates('kadaluarsa')" id="tab-kadaluarsa"
+                    class="flex-1 px-6 py-2.5 bg-transparent text-blue-500 rounded-[20px] text-sm font-semibold whitespace-nowrap">
+                    Kadaluarsa
+                </button>
+            </div>
+        </div>
+
+        <!-- Certificate Cards -->
+        <div id="certificateCardsContainer" class="space-y-4">
+            <!-- Certificate 1 -->
+            <div class="certificate-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100"
+                data-status="aktif" data-title="Sertifikat Kompetensi" data-subtitle="Web Development"
+                data-cert-id="CERT-2024-001" data-issue-date="15 Januari 2024" data-expiry-date="15 Januari 2027"
+                data-issuer="Kampus IT" data-color="blue">
+                <div class="bg-gradient-to-br from-blue-500 to-blue-600 p-4 relative">
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-green-400 text-green-900 text-xs font-bold px-3 py-1 rounded-full">
+                            Aktif
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div class="text-white flex-1">
+                            <h3 class="font-bold text-lg">Sertifikat Kompetensi</h3>
+                            <p class="text-blue-100 text-sm">Web Development</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">No. Sertifikat</p>
+                            <p class="font-semibold text-sm">CERT-2024-001</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Tanggal Terbit</p>
+                            <p class="font-semibold text-sm">15 Jan 2024</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Berlaku Hingga</p>
+                            <p class="font-semibold text-sm">15 Jan 2027</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Penerbit</p>
+                            <p class="font-semibold text-sm">Kampus IT</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openCertificateModal(this.closest('.certificate-card'))"
+                            class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            Lihat Detail
+                        </button>
+                        <button class="px-4 bg-gray-100 text-gray-600 py-2.5 rounded-xl font-medium text-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate 2 -->
+            <div class="certificate-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100"
+                data-status="aktif" data-title="Lomba UI/UX Desain" data-subtitle="Juara 1 Tingkat Nasional"
+                data-cert-id="LOMBA-2025-045" data-issue-date="05 Februari 2025" data-expiry-date="Selamanya"
+                data-issuer="Dikti" data-color="purple">
+                <div class="bg-gradient-to-br from-purple-500 to-purple-600 p-4 relative">
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-green-400 text-green-900 text-xs font-bold px-3 py-1 rounded-full">
+                            Aktif
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                            </svg>
+                        </div>
+                        <div class="text-white flex-1">
+                            <h3 class="font-bold text-lg">Lomba UI/UX Desain</h3>
+                            <p class="text-purple-100 text-sm">Juara 1 Tingkat Nasional</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">No. Sertifikat</p>
+                            <p class="font-semibold text-sm">LOMBA-2025-045</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Tanggal Terbit</p>
+                            <p class="font-semibold text-sm">05 Feb 2025</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Berlaku Hingga</p>
+                            <p class="font-semibold text-sm">Selamanya</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Penerbit</p>
+                            <p class="font-semibold text-sm">Dikti</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openCertificateModal(this.closest('.certificate-card'))"
+                            class="flex-1 bg-purple-600 text-white py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            Lihat Detail
+                        </button>
+                        <button class="px-4 bg-gray-100 text-gray-600 py-2.5 rounded-xl font-medium text-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Certificate 3 - Expired -->
+            <div class="certificate-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100 opacity-75"
+                data-status="kadaluarsa" data-title="Pelatihan Database" data-subtitle="SQL & NoSQL"
+                data-cert-id="TRAIN-2022-089" data-issue-date="20 Maret 2022" data-expiry-date="20 Maret 2024"
+                data-issuer="Tech Academy" data-color="gray">
+                <div class="bg-gradient-to-br from-gray-400 to-gray-500 p-4 relative">
+                    <div class="absolute top-4 right-4">
+                        <span class="bg-gray-300 text-gray-700 text-xs font-bold px-3 py-1 rounded-full">
+                            Kadaluarsa
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                        </div>
+                        <div class="text-white flex-1">
+                            <h3 class="font-bold text-lg">Pelatihan Database</h3>
+                            <p class="text-gray-200 text-sm">SQL & NoSQL</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">No. Sertifikat</p>
+                            <p class="font-semibold text-sm">TRAIN-2022-089</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Tanggal Terbit</p>
+                            <p class="font-semibold text-sm">20 Mar 2022</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Berlaku Hingga</p>
+                            <p class="font-semibold text-sm text-red-600">20 Mar 2024</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs mb-1">Penerbit</p>
+                            <p class="font-semibold text-sm">Tech Academy</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="openCertificateModal(this.closest('.certificate-card'))"
+                            class="flex-1 bg-gray-400 text-white py-2.5 rounded-xl font-medium text-sm flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                            </svg>
+                            Lihat Detail
+                        </button>
+                        <button class="px-4 bg-gray-100 text-gray-600 py-2.5 rounded-xl font-medium text-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Overlay (Hidden by default) -->
+    <div id="modalOverlay" onclick="closeModal()"
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40 hidden"></div>
+
+    <!-- Modal Container (Hidden by default) -->
+    <div id="certificateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <!-- Modal Content with Sticky Header -->
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden animate-slide-up w-full max-w-md modal-container">
+
+            <!-- Header with Gradient - STICKY -->
+            <div id="modalHeader"
+                class="modal-header-sticky bg-gradient-to-br from-blue-500 to-blue-600 p-6 relative rounded-t-3xl">
+                <button onclick="closeModal()"
+                    class="absolute top-4 right-4 text-white bg-white/20 backdrop-blur-sm rounded-full p-2 hover:bg-white/30 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
+                        <svg id="modalIcon" class="w-10 h-10 text-white" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="text-white flex-1">
+                        <div class="flex items-center gap-2 mb-1">
+                            <h2 id="modalTitle" class="font-bold text-xl">Sertifikat Kompetensi</h2>
+                        </div>
+                        <p id="modalSubtitle" class="text-blue-100 text-sm">Web Development</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <span id="modalStatus"
+                        class="bg-green-400 text-green-900 text-xs font-bold px-4 py-1.5 rounded-full">
+                        ✓ Aktif
+                    </span>
+                    <span id="modalCertId" class="text-white text-sm font-medium">ID: CERT-2024-001</span>
+                </div>
+            </div>
+
+            <!-- Content - SCROLLABLE -->
+            <div class="modal-scroll">
+                <div class="p-6">
+                    <!-- Certificate Preview -->
+                    <div class="mb-6">
+                        <div
+                            class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-6 border-2 border-blue-200 relative overflow-hidden">
+                            <!-- Decorative corners -->
+                            <div
+                                class="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-blue-400 rounded-tl-2xl">
+                            </div>
+                            <div
+                                class="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-blue-400 rounded-tr-2xl">
+                            </div>
+                            <div
+                                class="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-blue-400 rounded-bl-2xl">
+                            </div>
+                            <div
+                                class="absolute bottom-0 right-0 w-16 h-16 border-b-4 border-r-4 border-blue-400 rounded-br-2xl">
+                            </div>
+
+                            <div class="text-center relative z-10">
+                                <div class="text-blue-900 text-xs font-semibold mb-2">CERTIFICATE OF ACHIEVEMENT</div>
+                                <div class="text-2xl font-bold text-blue-600 mb-2">Ahmad Rizky</div>
+                                <div class="text-sm text-blue-800 mb-3">NIM: 102230039</div>
+                                <div class="text-xs text-blue-700">Has successfully completed</div>
+                                <div id="modalCertTitle" class="text-lg font-bold text-blue-900 my-2">Web Development
+                                </div>
+                                <div class="text-xs text-blue-600">Informatika - Kampus IT</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details Grid -->
+                    <div class="space-y-4 mb-6">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-blue-100 p-2 rounded-lg">
+                                <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-500 text-xs mb-1">Nomor Sertifikat</p>
+                                <p id="modalCertNumber" class="font-semibold text-gray-900">CERT-2024-001</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="bg-green-100 p-2 rounded-lg">
+                                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-500 text-xs mb-1">Tanggal Terbit</p>
+                                <p id="modalIssueDate" class="font-semibold text-gray-900">15 Januari 2024</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="bg-orange-100 p-2 rounded-lg">
+                                <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-500 text-xs mb-1">Berlaku Hingga</p>
+                                <p id="modalExpiryDate" class="font-semibold text-gray-900">15 Januari 2027</p>
+                                <p id="modalExpiryInfo" class="text-xs text-green-600 mt-1">⏰ Berlaku 2 tahun 1 bulan
+                                    lagi</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="bg-purple-100 p-2 rounded-lg">
+                                <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-500 text-xs mb-1">Penerbit</p>
+                                <p id="modalIssuer" class="font-semibold text-gray-900">Kampus IT</p>
+                                <p class="text-xs text-gray-500 mt-1">Jakarta, Indonesia</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start gap-3">
+                            <div class="bg-indigo-100 p-2 rounded-lg">
+                                <svg class="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor"
+                                    viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-gray-500 text-xs mb-1">Deskripsi</p>
+                                <p id="modalDescription" class="text-sm text-gray-700 leading-relaxed">Sertifikat ini
+                                    diberikan kepada mahasiswa yang telah menyelesaikan program pembelajaran dengan baik
+                                    dan memenuhi standar kompetensi yang ditetapkan.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="space-y-3">
+                        <button onclick="downloadCertificate()"
+                            class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 transition shadow-lg shadow-blue-600/30">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Download Sertifikat
+                        </button>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <button onclick="shareCertificate()"
+                                class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                                </svg>
+                                Bagikan
+                            </button>
+
+                            <button onclick="verifyCertificate()"
+                                class="bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                Verifikasi
+                            </button>
+                        </div>
+
+                        <!-- Edit and Delete Buttons -->
+                        <div class="grid grid-cols-2 gap-3 mt-3">
+                            <button onclick="editCertificate()"
+                                class="bg-amber-500 hover:bg-amber-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                                Edit
+                            </button>
+
+                            <button onclick="deleteCertificate()"
+                                class="bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                Hapus
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Verification Info -->
+                    <div id="modalVerificationInfo" class="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                        <div class="flex items-start gap-3">
+                            <div class="bg-green-500 rounded-full p-1 mt-0.5">
+                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-green-900 mb-1">Sertifikat Terverifikasi</p>
+                                <p class="text-xs text-green-700">Sertifikat ini telah diverifikasi oleh sistem dan sah
+                                    untuk digunakan sebagai bukti kompetensi.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Filter certificates by status
+        function filterCertificates(status, direction = null) {
+            const cards = document.querySelectorAll('.certificate-card');
+            const tabs = document.querySelectorAll('[id^="tab-"]');
+
+            // Update tab styling
+            tabs.forEach(tab => {
+                if (tab.id === `tab-${status}`) {
+                    tab.className = 'flex-1 px-6 py-2.5 bg-blue-600 text-white rounded-[20px] text-sm font-semibold whitespace-nowrap shadow-lg shadow-blue-600/30';
+                } else {
+                    tab.className = 'flex-1 px-6 py-2.5 bg-transparent text-blue-500 rounded-[20px] text-sm font-semibold whitespace-nowrap';
+                }
+            });
+
+            // Animate cards
+            cards.forEach((card, index) => {
+                const shouldShow = status === 'semua' || card.getAttribute('data-status') === status;
+
+                if (shouldShow) {
+                    // Remove old animation classes
+                    card.classList.remove('slide-left', 'slide-right');
+
+                    // Set initial state
+                    card.style.display = 'block';
+
+                    // Add animation with slight delay for stagger effect
+                    if (direction) {
+                        setTimeout(() => {
+                            card.classList.add(direction === 'left' ? 'slide-left' : 'slide-right');
+                        }, index * 50);
+
+                        // Remove animation class after animation completes
+                        setTimeout(() => {
+                            card.classList.remove('slide-left', 'slide-right');
+                        }, 300 + (index * 50));
+                    }
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Open certificate detail modal
+        function openCertificateModal(cardElement) {
+            const title = cardElement.getAttribute('data-title');
+            const subtitle = cardElement.getAttribute('data-subtitle');
+            const certId = cardElement.getAttribute('data-cert-id');
+            const issueDate = cardElement.getAttribute('data-issue-date');
+            const expiryDate = cardElement.getAttribute('data-expiry-date');
+            const issuer = cardElement.getAttribute('data-issuer');
+            const status = cardElement.getAttribute('data-status');
+            const color = cardElement.getAttribute('data-color');
+
+            // Update modal content
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalSubtitle').textContent = subtitle;
+            document.getElementById('modalCertId').textContent = 'ID: ' + certId;
+            document.getElementById('modalCertNumber').textContent = certId;
+            document.getElementById('modalIssueDate').textContent = issueDate;
+            document.getElementById('modalExpiryDate').textContent = expiryDate;
+            document.getElementById('modalIssuer').textContent = issuer;
+            document.getElementById('modalCertTitle').textContent = subtitle;
+
+            // Update status badge
+            if (status === 'aktif') {
+                document.getElementById('modalStatus').className = 'bg-green-400 text-green-900 text-xs font-bold px-4 py-1.5 rounded-full';
+                document.getElementById('modalStatus').textContent = '✓ Aktif';
+                document.getElementById('modalExpiryInfo').textContent = '⏰ Berlaku 2 tahun 1 bulan lagi';
+                document.getElementById('modalVerificationInfo').style.display = 'block';
+            } else {
+                document.getElementById('modalStatus').className = 'bg-gray-300 text-gray-700 text-xs font-bold px-4 py-1.5 rounded-full';
+                document.getElementById('modalStatus').textContent = 'Kadaluarsa';
+                document.getElementById('modalExpiryInfo').textContent = '⚠️ Sertifikat sudah tidak berlaku';
+                document.getElementById('modalExpiryInfo').className = 'text-xs text-red-600 mt-1';
+                document.getElementById('modalVerificationInfo').style.display = 'none';
+            }
+
+            // Update header color based on certificate color
+            const headerColors = {
+                'blue': 'modal-header-sticky bg-gradient-to-br from-blue-500 to-blue-600 p-6 relative rounded-t-3xl',
+                'purple': 'modal-header-sticky bg-gradient-to-br from-purple-500 to-purple-600 p-6 relative rounded-t-3xl',
+                'gray': 'modal-header-sticky bg-gradient-to-br from-gray-400 to-gray-500 p-6 relative rounded-t-3xl'
+            };
+            document.getElementById('modalHeader').className = headerColors[color];
+
+            // Show modal
+            document.getElementById('modalOverlay').classList.remove('hidden');
+            document.getElementById('certificateModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.add('hidden');
+            document.getElementById('certificateModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Download certificate
+        function downloadCertificate() {
+            alert('Download sertifikat dimulai...');
+        }
+
+        // Share certificate
+        function shareCertificate() {
+            alert('Berbagi sertifikat...');
+        }
+
+        // Verify certificate
+        function verifyCertificate() {
+            alert('Memverifikasi sertifikat...');
+        }
+
+        // Edit certificate
+        function editCertificate() {
+            Swal.fire({
+                toast: true,
+                position: 'top-end',
+                icon: 'info',
+                title: 'Fitur Segera Datang',
+                text: 'Fitur edit sertifikat akan segera tersedia!',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                customClass: {
+                    popup: 'colored-toast'
+                }
+            });
+        }
+
+        // Delete certificate
+        function deleteCertificate() {
+            Swal.fire({
+                title: 'Hapus Sertifikat?',
+                text: "Sertifikat yang dihapus tidak dapat dikembalikan!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6b7280',
+                confirmButtonText: 'Ya, Hapus!',
+                cancelButtonText: 'Batal',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Simulasi proses hapus
+                    Swal.fire({
+                        toast: true,
+                        position: 'top-end',
+                        icon: 'success',
+                        title: 'Berhasil Dihapus!',
+                        text: 'Sertifikat telah dihapus dari sistem',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true
+                    });
+                    closeModal();
+                    // Di sini nanti bisa ditambahkan logika untuk menghapus dari database
+                }
+            });
+        }
+
+        // Close modal when pressing ESC key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        // Swipe gesture detection for tab navigation
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchCurrentX = 0;
+        const swipeThreshold = 50; // Minimum distance for swipe
+        const tabs = ['semua', 'aktif', 'kadaluarsa'];
+        let currentTabIndex = 0;
+        let isSwiping = false;
+
+        const container = document.getElementById('certificateCardsContainer');
+
+        container.addEventListener('touchstart', function (event) {
+            touchStartX = event.changedTouches[0].screenX;
+            touchCurrentX = touchStartX;
+            isSwiping = true;
+        }, false);
+
+        container.addEventListener('touchmove', function (event) {
+            if (!isSwiping) return;
+
+            touchCurrentX = event.changedTouches[0].screenX;
+            const diff = touchCurrentX - touchStartX;
+
+            // Apply transform to show drag effect
+            const cards = document.querySelectorAll('.certificate-card');
+            cards.forEach(card => {
+                if (card.style.display !== 'none') {
+                    const translateX = Math.max(-100, Math.min(100, diff / 3));
+                    const opacity = 1 - Math.abs(diff) / 500;
+                    card.style.transform = `translateX(${translateX}px)`;
+                    card.style.opacity = Math.max(0.5, opacity);
+                }
+            });
+        }, false);
+
+        container.addEventListener('touchend', function (event) {
+            touchEndX = event.changedTouches[0].screenX;
+            isSwiping = false;
+
+            // Reset transform
+            const cards = document.querySelectorAll('.certificate-card');
+            cards.forEach(card => {
+                card.style.transform = '';
+                card.style.opacity = '';
+            });
+
+            handleSwipe();
+        }, false);
+
+        function handleSwipe() {
+            const swipeDistance = touchEndX - touchStartX;
+
+            // Swipe left (next tab)
+            if (swipeDistance < -swipeThreshold) {
+                if (currentTabIndex < tabs.length - 1) {
+                    currentTabIndex++;
+                    filterCertificates(tabs[currentTabIndex], 'left');
+                }
+            }
+
+            // Swipe right (previous tab)
+            if (swipeDistance > swipeThreshold) {
+                if (currentTabIndex > 0) {
+                    currentTabIndex--;
+                    filterCertificates(tabs[currentTabIndex], 'right');
+                }
+            }
+        }
+
+        // Update currentTabIndex when tab is clicked
+        const originalFilterCertificates = filterCertificates;
+        filterCertificates = function (status) {
+            currentTabIndex = tabs.indexOf(status);
+            originalFilterCertificates(status);
+        };
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,66 @@
+@startuml Sequence Diagram - Mengisi KRS Mahasiswa
+
+title Sequence Diagram: Mengisi KRS Mahasiswa
+
+actor Mahasiswa as mhs
+participant "Halaman KRS" as page
+participant "KRS Controller" as ctrl
+participant "Dosen Wali" as dosen
+database "Database" as db
+
+mhs -> page : Pilih menu Akademik > KRS
+activate page
+
+page -> ctrl : getKRSData(nim, semester)
+activate ctrl
+ctrl -> db : SELECT krs_status, available_courses
+activate db
+db --> ctrl : KRS data & courses
+deactivate db
+ctrl --> page : KRS info
+deactivate ctrl
+
+alt Status = Draft
+    page --> mhs : Tampilkan form pilih matkul
+    
+    loop Pilih Mata Kuliah
+        mhs -> page : Pilih mata kuliah
+        page -> ctrl : addCourse(krs_id, course_id)
+        activate ctrl
+        
+        alt SKS Mencukupi
+            ctrl -> db : INSERT krs_detail
+            activate db
+            db --> ctrl : Success
+            deactivate db
+            ctrl --> page : Course added
+        else SKS Melebihi Batas
+            ctrl --> page : Error: SKS limit exceeded
+        end
+        deactivate ctrl
+        
+        page --> mhs : Update total SKS
+    end
+    
+    mhs -> page : Tap Submit KRS
+    page -> ctrl : submitKRS(krs_id)
+    activate ctrl
+    ctrl -> db : UPDATE krs SET status = 'pending'
+    activate db
+    db --> ctrl : Success
+    deactivate db
+    ctrl -> dosen : sendNotification(krs_submitted)
+    ctrl --> page : KRS submitted
+    deactivate ctrl
+    page --> mhs : Tampilkan "Menunggu Persetujuan"
+    
+else Status = Pending
+    page --> mhs : Tampilkan KRS (read-only)\nStatus: Menunggu Persetujuan
+    
+else Status = Approved
+    page --> mhs : Tampilkan KRS yang disetujui
+end
+
+deactivate page
+
+@enduml

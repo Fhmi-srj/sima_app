@@ -1,0 +1,74 @@
+@startuml Sequence Diagram - Pembayaran Mahasiswa
+
+title Sequence Diagram: Pembayaran Mahasiswa
+
+actor Mahasiswa as mhs
+participant "Halaman Pembayaran" as page
+participant "Payment Controller" as ctrl
+participant "Payment Gateway" as gateway
+participant "Admin" as admin
+database "Database" as db
+
+mhs -> page : Pilih tagihan untuk dibayar
+activate page
+
+page -> ctrl : getBillDetail(bill_id)
+activate ctrl
+ctrl --> page : Bill info & VA number
+deactivate ctrl
+
+page --> mhs : Tampilkan detail tagihan\n& metode pembayaran
+
+mhs -> page : Pilih metode pembayaran\n(Transfer/VA/E-Wallet)
+
+alt Transfer Bank
+    page --> mhs : Tampilkan rekening tujuan\n& instruksi transfer
+    
+else Virtual Account
+    mhs -> page : Pilih bank VA
+    page -> gateway : generateVA(bill_id, bank)
+    activate gateway
+    gateway --> page : VA number & expiry
+    deactivate gateway
+    page --> mhs : Tampilkan nomor VA\n& batas waktu
+    
+else E-Wallet
+    mhs -> page : Pilih provider
+    page -> gateway : createPaymentLink()
+    activate gateway
+    gateway --> page : Payment link
+    deactivate gateway
+    page --> mhs : Redirect ke app e-wallet
+end
+
+mhs -> page : Sudah melakukan pembayaran
+page --> mhs : Form konfirmasi pembayaran
+
+mhs -> page : Upload bukti transfer
+page -> ctrl : uploadProof(bill_id, file)
+activate ctrl
+
+ctrl -> db : INSERT payment_proof
+activate db
+db --> ctrl : Success
+deactivate db
+
+ctrl -> db : UPDATE bill SET status = 'pending_verification'
+activate db
+db --> ctrl : Success
+deactivate db
+
+ctrl -> admin : sendNotification(new_payment)
+ctrl --> page : Payment submitted
+deactivate ctrl
+
+page --> mhs : Status: Menunggu Verifikasi
+
+note over admin
+  Admin memverifikasi pembayaran
+  (sequence terpisah)
+end note
+
+deactivate page
+
+@enduml

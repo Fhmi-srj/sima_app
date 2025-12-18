@@ -1,0 +1,66 @@
+@startuml Sequence Diagram - Melihat Sertifikat Mahasiswa
+
+title Sequence Diagram: Melihat Sertifikat Mahasiswa
+
+actor Mahasiswa as mhs
+participant "Halaman Sertifikat" as page
+participant "Certificate Controller" as ctrl
+participant "File Service" as file
+database "Database" as db
+
+mhs -> page : Pilih menu Akademik > Sertifikat
+activate page
+
+page -> ctrl : getCertificates(nim)
+activate ctrl
+ctrl -> db : SELECT certificates WHERE nim = ?
+activate db
+db --> ctrl : Certificate list
+deactivate db
+ctrl --> page : Certificates data
+deactivate ctrl
+
+alt Ada Sertifikat
+    page --> mhs : Tampilkan daftar sertifikat
+    page --> mhs : Tampilkan filter kategori
+    
+    mhs -> page : Pilih filter\n(Akademik/Non-Akademik/Pelatihan)
+    page --> mhs : Tampilkan sertifikat terfilter
+    
+    mhs -> page : Tap kartu sertifikat
+    page -> ctrl : getCertificateDetail(cert_id)
+    activate ctrl
+    ctrl --> page : Certificate detail
+    deactivate ctrl
+    
+    page --> mhs : Tampilkan modal detail\n(Preview, Info, Status Verifikasi)
+    
+    opt Download
+        mhs -> page : Tap Download
+        page -> file : downloadFile(cert_url)
+        activate file
+        file --> page : File downloaded
+        deactivate file
+        page --> mhs : File tersimpan di perangkat
+    end
+    
+    opt Share
+        mhs -> page : Tap Share
+        page --> mhs : Buka dialog share
+    end
+    
+    mhs -> page : Tutup modal
+    
+else Belum Ada Sertifikat
+    page --> mhs : Tampilkan "Belum ada sertifikat"
+    page --> mhs : Tampilkan tombol "Tambah Sertifikat"
+    
+    opt Tambah Sertifikat
+        mhs -> page : Tap "Tambah Sertifikat"
+        page --> mhs : Buka form tambah sertifikat
+    end
+end
+
+deactivate page
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml Sequence Diagram - Mahasiswa
+
+title Sequence Diagram: Alur Utama Mahasiswa
+
+actor Mahasiswa as mhs
+participant "Aplikasi SIMA" as app
+participant "Controller" as ctrl
+database "Database" as db
+participant "Dosen" as dsn
+participant "Admin" as adm
+
+== Login ==
+mhs -> app : Login(NIM, Password)
+app -> ctrl : validateLogin()
+ctrl -> db : SELECT user
+db --> ctrl : User data
+ctrl --> app : Login success
+app --> mhs : Tampilkan Beranda
+
+== Lihat Jadwal & Absensi ==
+mhs -> app : Lihat Jadwal
+app -> db : getSchedule()
+db --> app : Schedule list
+app --> mhs : Tampilkan jadwal
+
+mhs -> app : Tap jadwal untuk absensi
+app -> ctrl : checkWiFi()
+alt WiFi Terhubung
+    ctrl -> db : INSERT attendance
+    db --> ctrl : Success
+    app --> mhs : Absensi berhasil
+else WiFi Tidak Terhubung
+    mhs -> app : Ajukan izin
+    app -> db : INSERT izin_request
+    app -> dsn : Notify new izin
+end
+
+== KRS ==
+mhs -> app : Pilih mata kuliah
+app -> db : INSERT krs_detail
+mhs -> app : Submit KRS
+app -> db : UPDATE krs status=pending
+app -> dsn : Notify KRS submitted
+
+== Pembayaran ==
+mhs -> app : Lihat tagihan
+app -> db : getBills()
+db --> app : Bills list
+mhs -> app : Bayar & upload bukti
+app -> db : INSERT payment
+app -> adm : Notify new payment
+
+== Kelola Sertifikat ==
+mhs -> app : Buka halaman Profil
+app -> db : getProfile()
+db --> app : Profile data
+mhs -> app : Pilih menu Sertifikat
+app -> db : getCertificates()
+db --> app : Certificate list
+app --> mhs : Tampilkan daftar sertifikat
+
+mhs -> app : Tambah sertifikat baru
+mhs -> app : Upload file & isi detail
+app -> db : INSERT certificate
+db --> app : Success
+app --> mhs : Sertifikat tersimpan
+
+@enduml

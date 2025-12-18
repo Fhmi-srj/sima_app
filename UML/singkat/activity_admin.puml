@@ -1,0 +1,76 @@
+@startuml Activity Diagram - Admin
+
+title Activity Diagram: Alur Sistem Admin
+
+start
+
+:Admin membuka panel admin;
+
+:Login dengan username & password;
+
+if (Login berhasil?) then (ya)
+  :Tampilkan Dashboard Admin;
+  
+  repeat
+    :Pilih Menu;
+    
+    switch (Menu yang dipilih?)
+    case (Dashboard)
+      :Lihat statistik sistem;
+      :Total mahasiswa, dosen, kelas;
+      
+    case (Pengguna)
+      :Pilih Mahasiswa/Dosen;
+      :CRUD data pengguna;
+      note right: Create, Read, Update, Delete
+      
+    case (Akademik)
+      :Pilih Matkul/Kelas/Nilai;
+      if (Mata Kuliah?) then (ya)
+        :CRUD mata kuliah;
+      else if (Kelas?) then (ya)
+        :CRUD kelas & paket KRS;
+      else (Nilai)
+        :Kalkulasi nilai mahasiswa;
+        :Konfigurasi bobot nilai;
+        if (Semua nilai lengkap?) then (ya)
+          :Publikasi KHS;
+          :Kirim notifikasi ke mahasiswa;
+        endif
+      endif
+      
+    case (Jadwal)
+      :CRUD jadwal kuliah;
+      :Assign dosen & ruangan;
+      
+    case (Keuangan)
+      :Pilih Tagihan/Pembayaran;
+      if (Tagihan?) then (ya)
+        :CRUD tagihan mahasiswa;
+      else (Pembayaran)
+        :Lihat daftar pembayaran pending;
+        if (Ada pembayaran pending?) then (ya)
+          :Review bukti pembayaran;
+          if (Valid?) then (ya)
+            :Verifikasi & approve;
+          else (tidak)
+            :Reject dengan alasan;
+          endif
+        endif
+      endif
+      
+    case (Logout)
+      :Keluar dari panel admin;
+      stop
+    endswitch
+    
+  repeat while (Lanjut mengelola?) is (ya)
+  
+else (tidak)
+  :Tampilkan error;
+  stop
+endif
+
+stop
+
+@enduml

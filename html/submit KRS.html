@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMA - Submit KRS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(100px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-slide-up {
+            animation: slide-up 0.3s ease-out;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .overflow-y-auto::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 min-h-screen flex items-center justify-center p-4">
+
+    <!-- Modal Overlay -->
+    <div class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-40"></div>
+
+    <!-- Modal Container -->
+    <div class="relative z-50 w-full max-w-md max-h-[90vh] overflow-y-auto">
+        <!-- Modal Content -->
+        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden animate-slide-up">
+
+            <!-- Header with Gradient -->
+            <div class="bg-gradient-to-br from-[#4A90E2] to-[#5BA3F5] p-6 relative">
+                <button onclick="closeModal()"
+                    class="absolute top-4 right-4 text-white bg-white/20 backdrop-blur-sm rounded-xl p-2 hover:bg-white/30 transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <div class="flex items-center gap-4">
+                    <div class="bg-white/20 backdrop-blur-sm p-3 rounded-2xl">
+                        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="text-white flex-1">
+                        <h2 class="font-bold text-xl">Konfirmasi Submit KRS</h2>
+                        <p class="text-blue-100 text-sm">Semester Ganjil 2024/2025</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Body Content -->
+            <div class="p-6 space-y-5">
+
+                <!-- Warning Alert -->
+                <div class="flex items-start gap-3 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <div class="bg-amber-100 p-2 rounded-lg">
+                        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <p class="text-amber-800 text-sm leading-relaxed">
+                        Setelah di-submit, KRS <span class="font-semibold">tidak dapat diubah</span> tanpa persetujuan
+                        dosen wali.
+                    </p>
+                </div>
+
+                <!-- Summary Card -->
+                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-5 border border-blue-100">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="bg-blue-100 p-1.5 rounded-lg">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-800">Ringkasan KRS Semester 5</h3>
+                    </div>
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                            <p class="text-gray-500 text-xs mb-1">Kelas</p>
+                            <p class="font-bold text-gray-800">IM23C</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                            <p class="text-gray-500 text-xs mb-1">Total SKS</p>
+                            <p class="font-bold text-blue-600">21 SKS</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                            <p class="text-gray-500 text-xs mb-1">Total Mata Kuliah</p>
+                            <p class="font-bold text-gray-800">8 MK</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 shadow-sm">
+                            <p class="text-gray-500 text-xs mb-1">Status</p>
+                            <p class="font-bold text-green-600 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                Valid
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mata Kuliah -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="bg-blue-100 p-1.5 rounded-lg">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-800">Mata Kuliah</h3>
+                        <span class="bg-blue-100 text-blue-700 text-xs font-semibold px-2 py-0.5 rounded-full">8</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-4 space-y-2">
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">•</span>
+                            <span class="text-gray-800"><span class="font-semibold">PM</span> - Pemrograman Mobile
+                                (3)</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">•</span>
+                            <span class="text-gray-800"><span class="font-semibold">BD</span> - Basis Data (3)</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">•</span>
+                            <span class="text-gray-800"><span class="font-semibold">JK</span> - Jaringan Komputer
+                                (3)</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">•</span>
+                            <span class="text-gray-800"><span class="font-semibold">ASD</span> - Algoritma & Strukt Data
+                                (3)</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">•</span>
+                            <span class="text-gray-800"><span class="font-semibold">SO</span> - Sistem Operasi
+                                (3)</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">•</span>
+                            <span class="text-gray-800"><span class="font-semibold">PKN</span> - Pancasila (2)</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">•</span>
+                            <span class="text-gray-800"><span class="font-semibold">ML</span> - Machine Learning
+                                (3)</span>
+                        </div>
+                        <div class="flex items-start gap-2 text-sm">
+                            <span class="text-gray-400 mt-0.5">•</span>
+                            <span class="text-gray-800"><span class="font-semibold">CC</span> - Cloud Computing
+                                (2)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Dosen Wali Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-4 shadow-sm">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="bg-green-100 p-1.5 rounded-lg">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                        </div>
+                        <h3 class="font-semibold text-gray-800">Dosen Wali</h3>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white text-xl font-bold">
+                            AH
+                        </div>
+                        <div class="flex-1">
+                            <p class="font-semibold text-gray-800">Dr. Ahmad Hidayat, M.Kom</p>
+                            <p class="text-xs text-gray-500">NIP: 198506152010121002</p>
+                            <p class="text-xs text-blue-600 mt-1">Prodi Informatika</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Deadline Info -->
+                <div class="flex items-center gap-3 bg-orange-50 border border-orange-200 rounded-xl p-4">
+                    <div class="bg-orange-100 p-2 rounded-lg">
+                        <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-orange-800 text-sm font-semibold">Deadline Pengisian KRS</p>
+                        <p class="text-orange-600 text-xs">15 Desember 2024, 23:59 WIB</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer Actions -->
+            <div class="flex gap-3 p-6 bg-gray-50 border-t">
+                <button onclick="closeModal()"
+                    class="flex-1 bg-gray-200 hover:bg-gray-300 text-gray-700 py-3.5 rounded-xl font-semibold transition">
+                    Batal
+                </button>
+                <button onclick="submitKRS()"
+                    class="flex-1 bg-[#4A90E2] hover:bg-[#3A80D2] text-white py-3.5 rounded-xl font-semibold transition shadow-lg shadow-blue-500/30 flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    Submit KRS
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal"
+        class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-3xl shadow-2xl max-w-md w-full animate-slide-up overflow-hidden">
+
+            <!-- Success Header -->
+            <div class="bg-gradient-to-br from-green-500 to-emerald-600 p-8 text-center">
+                <div
+                    class="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-bold text-white mb-2">KRS Berhasil Di-Submit!</h2>
+                <p class="text-green-100">Semester Ganjil 2024/2025</p>
+            </div>
+
+            <!-- Success Content -->
+            <div class="p-6 space-y-4">
+
+                <div class="bg-gray-50 rounded-xl p-4 space-y-3">
+                    <div class="flex items-start gap-3">
+                        <div class="bg-blue-100 p-1.5 rounded-lg">
+                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">No. Registrasi</p>
+                            <p class="text-gray-800 font-semibold text-sm">KRS/2024/1/IM23C/234567</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="bg-green-100 p-1.5 rounded-lg">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">Tanggal Submit</p>
+                            <p class="text-gray-800 font-semibold text-sm">08 Desember 2024, 14:30 WIB</p>
+                        </div>
+                    </div>
+
+                    <div class="flex items-start gap-3">
+                        <div class="bg-orange-100 p-1.5 rounded-lg">
+                            <svg class="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-xs">Status Persetujuan</p>
+                            <p class="text-orange-600 font-semibold text-sm flex items-center gap-1">
+                                <span class="w-2 h-2 bg-orange-500 rounded-full animate-pulse"></span>
+                                Menunggu Dosen Wali
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-gray-500 text-xs text-center">
+                    Anda akan mendapat notifikasi saat KRS disetujui oleh dosen wali
+                </p>
+
+                <button onclick="closeSuccessModal()"
+                    class="w-full bg-[#4A90E2] hover:bg-[#3A80D2] text-white py-3.5 rounded-xl font-semibold transition shadow-lg shadow-blue-500/30">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function closeModal() {
+            alert('Modal ditutup - kembali ke halaman KRS');
+        }
+
+        function submitKRS() {
+            document.getElementById('successModal').classList.remove('hidden');
+            document.getElementById('successModal').classList.add('flex');
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            document.getElementById('successModal').classList.remove('flex');
+            alert('Kembali ke halaman KRS');
+        }
+    </script>
+
+</body>
+
+</html>

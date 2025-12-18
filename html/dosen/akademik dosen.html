@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Akademik - SIMA Dosen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #4A90E2;
+            padding: 16px 20px;
+            padding-top: max(16px, env(safe-area-inset-top));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .top-bar-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-btn .material-icons-outlined {
+            color: #4A90E2;
+            font-size: 20px;
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            margin: 16px;
+            padding: 4px;
+            background: #f0f0f0;
+            border-radius: 30px;
+            display: flex;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #4A90E2;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: #4A90E2;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Content */
+        .content {
+            padding: 0 16px 100px;
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Nilai Card */
+        .nilai-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .nilai-card:active {
+            transform: scale(0.98);
+        }
+
+        .nilai-card .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            background: rgba(74, 144, 226, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nilai-card .icon-wrapper .material-icons-outlined {
+            color: #4A90E2;
+            font-size: 24px;
+        }
+
+        .nilai-card .info {
+            flex: 1;
+        }
+
+        .nilai-card .info h4 {
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .nilai-card .info p {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .nilai-card .chevron {
+            color: #ccc;
+        }
+
+        /* KRS Header */
+        .krs-header {
+            padding: 16px;
+            background: rgba(74, 144, 226, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .krs-header .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            background: rgba(74, 144, 226, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .krs-header .icon-wrapper .material-icons-outlined {
+            color: #4A90E2;
+            font-size: 24px;
+        }
+
+        .krs-header .info h4 {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4A90E2;
+        }
+
+        .krs-header .info p {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        /* KRS Card */
+        .krs-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
+
+        .krs-card.pending {
+            border: 1px solid rgba(74, 144, 226, 0.3);
+        }
+
+        .krs-card.approved {
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        .krs-card .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .krs-card.pending .avatar {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4A90E2;
+        }
+
+        .krs-card.approved .avatar {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        .krs-card .info {
+            flex: 1;
+        }
+
+        .krs-card .info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .krs-card .info p {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .krs-card .badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 8px;
+        }
+
+        .krs-card.pending .badge {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4A90E2;
+        }
+
+        .krs-card.approved .badge {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+        }
+
+        /* Spacer */
+        .spacer {
+            height: 20px;
+        }
+
+        /* Bottom Nav Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: #4A90E2;
+            border-radius: 30px 30px 0 0;
+            padding: 12px 24px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-item.active {
+            color: white;
+        }
+
+        .nav-item .material-icons-outlined {
+            font-size: 26px;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+        }
+
+        .nav-spacer {
+            width: 70px;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 100%);
+            border-radius: 50%;
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .fab .material-icons-outlined {
+            font-size: 32px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="logo">SIMA</div>
+        <div class="top-bar-icons">
+            <div class="icon-btn">
+                <span class="material-icons-outlined">settings</span>
+            </div>
+            <div class="icon-btn">
+                <span class="material-icons-outlined">person</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+        <div class="tab active" onclick="showTab('nilai')">Nilai</div>
+        <div class="tab" onclick="showTab('krs')">KRS</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+        <!-- Tab: Nilai -->
+        <div id="tab-nilai" class="tab-content active">
+            <div class="nilai-card">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">grade</span>
+                </div>
+                <div class="info">
+                    <h4>Matematika Diskrit</h4>
+                    <p>IM23C • 32 mahasiswa</p>
+                </div>
+                <span class="material-icons-outlined chevron">chevron_right</span>
+            </div>
+
+            <div class="nilai-card">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">grade</span>
+                </div>
+                <div class="info">
+                    <h4>Kalkulus Lanjutan</h4>
+                    <p>IM23A • 28 mahasiswa</p>
+                </div>
+                <span class="material-icons-outlined chevron">chevron_right</span>
+            </div>
+
+            <div class="nilai-card">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">grade</span>
+                </div>
+                <div class="info">
+                    <h4>Statistika Dasar</h4>
+                    <p>IM23B • 30 mahasiswa</p>
+                </div>
+                <span class="material-icons-outlined chevron">chevron_right</span>
+            </div>
+
+            <div class="nilai-card">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">grade</span>
+                </div>
+                <div class="info">
+                    <h4>Aljabar Linear</h4>
+                    <p>IM23D • 26 mahasiswa</p>
+                </div>
+                <span class="material-icons-outlined chevron">chevron_right</span>
+            </div>
+        </div>
+
+        <!-- Tab: KRS -->
+        <div id="tab-krs" class="tab-content">
+            <!-- KRS Header -->
+            <div class="krs-header">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">fact_check</span>
+                </div>
+                <div class="info">
+                    <h4>Persetujuan KRS</h4>
+                    <p>2 pending • 3 disetujui</p>
+                </div>
+            </div>
+
+            <!-- Menunggu Persetujuan -->
+            <div class="section-title">Menunggu Persetujuan</div>
+
+            <div class="krs-card pending">
+                <div class="avatar">A</div>
+                <div class="info">
+                    <h4>Ahmad Rizky</h4>
+                    <p>NIM: 102230039 • 24 SKS</p>
+                </div>
+                <div class="badge">Pending</div>
+            </div>
+
+            <div class="krs-card pending">
+                <div class="avatar">S</div>
+                <div class="info">
+                    <h4>Siti Nurhaliza</h4>
+                    <p>NIM: 102230040 • 22 SKS</p>
+                </div>
+                <div class="badge">Pending</div>
+            </div>
+
+            <div class="spacer"></div>
+
+            <!-- Sudah Disetujui -->
+            <div class="section-title">Sudah Disetujui</div>
+
+            <div class="krs-card approved">
+                <div class="avatar">B</div>
+                <div class="info">
+                    <h4>Budi Santoso</h4>
+                    <p>NIM: 102230041 • 24 SKS</p>
+                </div>
+                <div class="badge">Approved</div>
+            </div>
+
+            <div class="krs-card approved">
+                <div class="avatar">D</div>
+                <div class="info">
+                    <h4>Dewi Lestari</h4>
+                    <p>NIM: 102230042 • 21 SKS</p>
+                </div>
+                <div class="badge">Approved</div>
+            </div>
+
+            <div class="krs-card approved">
+                <div class="avatar">A</div>
+                <div class="info">
+                    <h4>Andi Pratama</h4>
+                    <p>NIM: 102230043 • 23 SKS</p>
+                </div>
+                <div class="badge">Approved</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item">
+            <span class="material-icons-outlined">home</span>
+            <span>Beranda</span>
+        </div>
+        <div class="nav-item active">
+            <span class="material-icons-outlined">school</span>
+            <span>Akademik</span>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="nav-item">
+            <span class="material-icons-outlined">event</span>
+            <span>Jadwal</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons-outlined">fact_check</span>
+            <span>Absensi</span>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <div class="fab">
+        <span class="material-icons-outlined">school</span>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+
+</body>
+
+</html>

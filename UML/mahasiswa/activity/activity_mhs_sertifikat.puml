@@ -1,0 +1,82 @@
+@startuml Activity Diagram - Melihat Sertifikat
+
+title Activity Diagram: Melihat Sertifikat Mahasiswa
+
+start
+
+:Mahasiswa memilih menu Akademik;
+
+:Mahasiswa memilih tab Sertifikat;
+
+:Sistem mengambil data sertifikat mahasiswa;
+
+if (Ada sertifikat?) then (ya)
+  :Menampilkan daftar sertifikat;
+  
+  :Menampilkan filter kategori;
+  
+  note right
+    Kategori:
+    - Semua
+    - Akademik
+    - Non-Akademik
+    - Pelatihan
+  end note
+  
+  :Mahasiswa memilih filter;
+  
+  :Sistem menampilkan sertifikat sesuai filter;
+  
+  repeat
+    :Menampilkan kartu sertifikat:
+    - Nama sertifikat
+    - Penerbit
+    - Tanggal
+    - Kategori;
+    
+    if (Mahasiswa tap kartu?) then (ya)
+      :Sistem membuka modal detail sertifikat;
+      
+      :Menampilkan preview sertifikat;
+      
+      :Menampilkan detail:
+      - Nomor sertifikat
+      - Nama kegiatan
+      - Penerbit
+      - Tanggal terbit
+      - Status verifikasi;
+      
+      fork
+        :Tombol Download;
+      fork again
+        :Tombol Share;
+      fork again
+        :Tombol Verifikasi;
+      end fork
+      
+      if (Mahasiswa tap Download?) then (ya)
+        :Sistem mengunduh file PDF;
+        :Menyimpan ke perangkat;
+      else (tidak)
+      endif
+      
+      if (Mahasiswa tap Share?) then (ya)
+        :Membuka dialog share;
+        :Mahasiswa memilih aplikasi tujuan;
+      else (tidak)
+      endif
+      
+      :Mahasiswa menutup modal;
+    else (tidak)
+    endif
+    
+  repeat while (Lanjut melihat sertifikat?) is (ya)
+  
+else (tidak)
+  :Menampilkan pesan "Belum ada sertifikat";
+  :Menampilkan tombol "Tambah Sertifikat";
+endif
+
+stop
+
+@enduml

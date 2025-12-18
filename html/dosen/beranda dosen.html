@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Beranda Dosen - SIMA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            background-color: #4A90E2;
+            padding: 16px 20px;
+            padding-top: max(16px, env(safe-area-inset-top));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .top-bar-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-btn .material-icons-outlined {
+            color: #4A90E2;
+            font-size: 20px;
+        }
+
+        /* Content */
+        .content {
+            padding-bottom: 100px;
+        }
+
+        /* Profile Card */
+        .profile-card {
+            margin: 16px;
+            padding: 20px;
+            background: linear-gradient(135deg, #4A90E2 0%, #5BA3F5 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-avatar .material-icons-outlined {
+            font-size: 40px;
+            color: white;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .profile-nip {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.9);
+            margin-top: 4px;
+        }
+
+        .profile-detail {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Section */
+        .section {
+            margin-top: 20px;
+        }
+
+        .section-header {
+            padding: 0 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .section-badge {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Schedule Cards - Horizontal Scroll */
+        .schedule-cards {
+            display: flex;
+            gap: 8px;
+            padding: 0 12px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .schedule-cards::-webkit-scrollbar {
+            display: none;
+        }
+
+        .schedule-card {
+            min-width: 200px;
+            flex-shrink: 0;
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid rgba(74, 144, 226, 0.2);
+            display: flex;
+            flex-direction: column;
+            height: 120px;
+            scroll-snap-align: start;
+        }
+
+        .schedule-subject {
+            font-size: 14px;
+            font-weight: bold;
+            color: #4A90E2;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .schedule-meta {
+            margin-top: auto;
+        }
+
+        .schedule-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 4px;
+        }
+
+        .schedule-meta-row .material-icons-outlined {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .schedule-meta-row span {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .schedule-kelas-badge {
+            display: inline-block;
+            background: rgba(74, 144, 226, 0.1);
+            color: #4A90E2;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            margin-top: 8px;
+        }
+
+        /* Empty State */
+        .empty-state {
+            margin: 0 16px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 16px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+        }
+
+        /* Task Cards */
+        .task-card {
+            margin: 4px 16px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            border-left: 4px solid #4A90E2;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .task-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .task-info p {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .task-deadline {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4A90E2;
+            font-size: 11px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        /* Quick Menu */
+        .quick-menu {
+            display: flex;
+            gap: 12px;
+            padding: 0 16px;
+        }
+
+        .quick-menu-item {
+            flex: 1;
+            background: rgba(74, 144, 226, 0.1);
+            border-radius: 16px;
+            padding: 16px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .quick-menu-item:active {
+            transform: scale(0.95);
+        }
+
+        .quick-menu-item .material-icons-outlined {
+            font-size: 28px;
+            color: #4A90E2;
+        }
+
+        .quick-menu-item span {
+            display: block;
+            font-size: 12px;
+            font-weight: 500;
+            color: #4A90E2;
+            margin-top: 8px;
+        }
+
+        /* Bottom Nav Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: #4A90E2;
+            border-radius: 30px 30px 0 0;
+            padding: 12px 24px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-item.active {
+            color: white;
+        }
+
+        .nav-item .material-icons-outlined {
+            font-size: 26px;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+        }
+
+        .nav-spacer {
+            width: 70px;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #6B4CE6 0%, #8B6CF6 100%);
+            border-radius: 50%;
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(107, 76, 230, 0.3);
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .fab .material-icons-outlined {
+            font-size: 32px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="logo">SIMA</div>
+        <div class="top-bar-icons">
+            <div class="icon-btn">
+                <span class="material-icons-outlined">settings</span>
+            </div>
+            <div class="icon-btn">
+                <span class="material-icons-outlined">person</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+        <!-- Profile Card -->
+        <div class="profile-card">
+            <div class="profile-avatar">
+                <span class="material-icons-outlined">person</span>
+            </div>
+            <div class="profile-info">
+                <div class="profile-name">Bu Mega Nindityawati</div>
+                <div class="profile-nip">NIP: 198712202015042001</div>
+                <div class="profile-detail">Dosen Tetap • Institut Teknologi Statistika</div>
+            </div>
+        </div>
+
+        <!-- Today's Schedule Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">Jadwal Mengajar Hari Ini</div>
+                <div class="section-badge">3 kelas</div>
+            </div>
+            <div class="schedule-cards">
+                <!-- Schedule Card 1 -->
+                <div class="schedule-card">
+                    <div class="schedule-subject">Matematika Diskrit</div>
+                    <div class="schedule-kelas-badge">IM23C</div>
+                    <div class="schedule-meta">
+                        <div class="schedule-meta-row">
+                            <span class="material-icons-outlined">schedule</span>
+                            <span>08:30 - 11:00</span>
+                        </div>
+                        <div class="schedule-meta-row">
+                            <span class="material-icons-outlined">location_on</span>
+                            <span>Ruang B3.2</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Schedule Card 2 -->
+                <div class="schedule-card">
+                    <div class="schedule-subject">Kalkulus Lanjutan</div>
+                    <div class="schedule-kelas-badge">IM23A</div>
+                    <div class="schedule-meta">
+                        <div class="schedule-meta-row">
+                            <span class="material-icons-outlined">schedule</span>
+                            <span>13:00 - 15:30</span>
+                        </div>
+                        <div class="schedule-meta-row">
+                            <span class="material-icons-outlined">location_on</span>
+                            <span>Ruang A2.1</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Schedule Card 3 -->
+                <div class="schedule-card">
+                    <div class="schedule-subject">Statistika Dasar</div>
+                    <div class="schedule-kelas-badge">IM23B</div>
+                    <div class="schedule-meta">
+                        <div class="schedule-meta-row">
+                            <span class="material-icons-outlined">schedule</span>
+                            <span>16:00 - 18:30</span>
+                        </div>
+                        <div class="schedule-meta-row">
+                            <span class="material-icons-outlined">location_on</span>
+                            <span>Ruang B3.1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pengingat Section -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">Pengingat</div>
+            </div>
+            <!-- Task Card 1 -->
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>3 Jadwal Hari Ini</h4>
+                    <p>Matematika Diskrit, Kalkulus Lanjutan, Statistika Dasar</p>
+                </div>
+            </div>
+            <!-- Task Card 2 -->
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>5 KRS Menunggu Persetujuan</h4>
+                    <p>Tap untuk melihat detail</p>
+                </div>
+            </div>
+            <!-- Task Card 3 -->
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>2 Izin Menunggu Persetujuan</h4>
+                    <p>Tap untuk melihat detail</p>
+                </div>
+            </div>
+            <!-- Task Card 4 -->
+            <div class="task-card">
+                <div class="task-info">
+                    <h4>Input Nilai Semester</h4>
+                    <p>Matematika Diskrit - IM23C</p>
+                </div>
+                <div class="task-deadline">20 Des 2024</div>
+            </div>
+        </div>
+
+        <!-- Quick Menu -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-title">Menu Cepat</div>
+            </div>
+            <div class="quick-menu">
+                <div class="quick-menu-item">
+                    <span class="material-icons-outlined">assignment</span>
+                    <span>Absensi</span>
+                </div>
+                <div class="quick-menu-item">
+                    <span class="material-icons-outlined">grade</span>
+                    <span>Nilai</span>
+                </div>
+                <div class="quick-menu-item">
+                    <span class="material-icons-outlined">calendar_today</span>
+                    <span>Jadwal</span>
+                </div>
+                <div class="quick-menu-item">
+                    <span class="material-icons-outlined">mail</span>
+                    <span>Izin</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <span class="material-icons-outlined">home</span>
+            <span>Beranda</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons-outlined">school</span>
+            <span>Akademik</span>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="nav-item">
+            <span class="material-icons-outlined">event</span>
+            <span>Jadwal</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons-outlined">fact_check</span>
+            <span>Absensi</span>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <div class="fab">
+        <span class="material-icons-outlined">search</span>
+    </div>
+
+</body>
+
+</html>

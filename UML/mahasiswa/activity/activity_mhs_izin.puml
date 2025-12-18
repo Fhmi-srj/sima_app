@@ -1,0 +1,64 @@
+@startuml Activity Diagram - Mengajukan Izin
+
+title Activity Diagram: Mengajukan Izin Mahasiswa
+
+start
+
+:Mahasiswa membuka halaman jadwal;
+
+:Mahasiswa tap pada jadwal kuliah;
+
+:Sistem membuka modal jadwal;
+
+:Mahasiswa tap tombol "Ajukan Izin";
+
+:Sistem menampilkan form izin;
+
+:Menampilkan informasi jadwal:
+- Mata kuliah
+- Tanggal
+- Waktu;
+
+:Mahasiswa memilih jenis izin;
+
+note right
+  Jenis Izin:
+  - Sakit
+  - Izin
+  - Cuti
+end note
+
+:Mahasiswa mengisi alasan izin;
+
+if (Perlu unggah bukti?) then (ya)
+  :Mahasiswa tap tombol unggah;
+  :Memilih file dari galeri/dokumen;
+  
+  if (File valid?) then (ya)
+    :Menampilkan preview file;
+  else (tidak)
+    :Menampilkan error format tidak didukung;
+    :Mahasiswa memilih file lain;
+  endif
+else (tidak)
+endif
+
+if (Form lengkap?) then (ya)
+  :Mahasiswa tap tombol Submit;
+  
+  :Sistem memvalidasi data;
+  :Sistem menyimpan permintaan izin;
+  :Sistem mengirim notifikasi ke Dosen;
+  
+  :Menampilkan pesan sukses;
+  :Status izin: Pending;
+  
+  :Mahasiswa dapat melihat status di riwayat;
+  
+else (tidak)
+  :Menampilkan pesan field wajib kosong;
+endif
+
+stop
+
+@enduml

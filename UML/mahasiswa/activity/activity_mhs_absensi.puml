@@ -1,0 +1,62 @@
+@startuml Activity Diagram - Melakukan Absensi
+
+title Activity Diagram: Melakukan Absensi Mahasiswa
+
+start
+
+:Mahasiswa membuka jadwal hari ini;
+
+:Mahasiswa tap pada jadwal kuliah aktif;
+
+:Sistem membuka modal absensi;
+
+:Menampilkan detail jadwal:
+- Mata kuliah
+- Dosen
+- Waktu
+- Ruangan;
+
+:Sistem memeriksa koneksi WiFi;
+
+if (Terhubung ke WiFi kampus?) then (ya)
+  :Menampilkan status WiFi: Terhubung;
+  :Menampilkan tombol "Hadir";
+  
+  :Mahasiswa tap tombol Hadir;
+  
+  :Sistem mencatat waktu absensi;
+  :Sistem menyimpan data absensi;
+  
+  :Menampilkan pesan sukses;
+  :Status kehadiran: Hadir;
+  
+else (tidak)
+  :Menampilkan status WiFi: Tidak Terhubung;
+  :Tombol Hadir dinonaktifkan;
+  
+  :Menampilkan opsi "Ajukan Izin";
+  
+  if (Mahasiswa ingin ajukan izin?) then (ya)
+    :Menampilkan form izin;
+    :Mahasiswa memilih jenis izin;
+    :Mahasiswa mengisi alasan;
+    
+    if (Unggah bukti?) then (ya)
+      :Mahasiswa memilih file bukti;
+      :Sistem mengunggah file;
+    else (tidak)
+    endif
+    
+    :Mahasiswa tap Submit;
+    :Sistem menyimpan permintaan izin;
+    :Menampilkan pesan "Izin terkirim";
+    :Status: Menunggu persetujuan dosen;
+    
+  else (tidak)
+    :Mahasiswa menutup modal;
+  endif
+endif
+
+stop
+
+@enduml

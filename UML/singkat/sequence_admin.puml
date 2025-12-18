@@ -1,0 +1,74 @@
+@startuml Sequence Diagram - Admin
+
+title Sequence Diagram: Alur Utama Admin
+
+actor Admin as adm
+participant "Panel Admin" as app
+participant "Controller" as ctrl
+database "Database" as db
+participant "Mahasiswa" as mhs
+participant "Dosen" as dsn
+
+== Login ==
+adm -> app : Login(username, password)
+app -> ctrl : validateAdminLogin()
+ctrl -> db : SELECT admin
+db --> ctrl : Admin data
+ctrl --> app : Login success
+app --> adm : Tampilkan Dashboard
+
+== CRUD Mahasiswa / Dosen ==
+adm -> app : Kelola Mahasiswa atau Dosen
+app -> db : getUsers()
+db --> app : User list
+adm -> app : Tambah/Edit/Hapus
+app -> db : INSERT/UPDATE/DELETE user
+db --> app : Success
+app --> adm : Data tersimpan
+
+== Tambah Paket KRS ==
+adm -> app : Kelola Kelas & Paket KRS
+app -> db : getClasses()
+db --> app : Class list
+adm -> app : Buat paket KRS baru
+app -> db : INSERT krs_package (kelas, matkul, semester)
+db --> app : Success
+app --> adm : Paket KRS tersimpan
+
+== Kelola Jadwal ==
+adm -> app : Kelola Jadwal Kuliah
+app -> db : getSchedules()
+db --> app : Schedule list
+adm -> app : Tambah jadwal (matkul, dosen, ruang, waktu)
+app -> db : INSERT schedule
+db --> app : Success
+app --> adm : Jadwal tersimpan
+
+== Tambah Tagihan ==
+adm -> app : Kelola Tagihan
+app -> db : getBills()
+db --> app : Bill list
+adm -> app : Buat tagihan baru (jenis, nominal, jatuh tempo)
+app -> db : INSERT bill
+db --> app : Success
+app -> mhs : Notify new bill
+app --> adm : Tagihan tersimpan
+
+== Verifikasi Pembayaran ==
+adm -> app : Lihat pembayaran pending
+app -> db : getPendingPayments()
+db --> app : Payment list
+adm -> app : Verifikasi pembayaran
+app -> db : UPDATE payment status=verified
+app -> mhs : Notify payment verified
+app --> adm : Pembayaran terverifikasi
+
+== Publikasi KHS ==
+adm -> app : Kalkulasi & Publikasi KHS
+app -> db : calculateGrades()
+app -> db : UPDATE khs status=published
+app -> mhs : Notify KHS published
+app -> dsn : Notify for incomplete grades
+app --> adm : KHS dipublikasi
+
+@enduml

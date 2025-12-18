@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pencarian - SIMA Dosen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            max-width: 430px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Header */
+        .header {
+            background-color: #4A90E2;
+            padding-bottom: 16px;
+        }
+
+        /* Top Bar */
+        .top-bar {
+            padding: 16px 20px;
+            padding-top: max(16px, env(safe-area-inset-top));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 1px;
+        }
+
+        .top-bar-icons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .icon-btn .material-icons-outlined {
+            color: #4A90E2;
+            font-size: 20px;
+        }
+
+        /* Search Bar */
+        .search-bar {
+            margin: 0 20px 16px;
+            height: 50px;
+            background: white;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .search-bar .material-icons-outlined {
+            color: #aaa;
+            font-size: 24px;
+        }
+
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 15px;
+            margin-left: 12px;
+            font-family: inherit;
+        }
+
+        .search-bar input::placeholder {
+            color: #aaa;
+        }
+
+        /* Filter Chips */
+        .filter-chips {
+            display: flex;
+            gap: 12px;
+            padding: 0 20px 16px;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .filter-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            flex-shrink: 0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .filter-chip.active {
+            background: white;
+            color: #4A90E2;
+            font-weight: 600;
+        }
+
+        /* Content */
+        .content {
+            padding: 16px;
+            padding-bottom: 100px;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card .icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 12px;
+        }
+
+        .stat-card .icon-wrapper.orange {
+            background: rgba(255, 152, 0, 0.1);
+        }
+
+        .stat-card .icon-wrapper.blue {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .stat-card .icon-wrapper .material-icons-outlined {
+            font-size: 24px;
+        }
+
+        .stat-card .icon-wrapper.orange .material-icons-outlined {
+            color: #FF9800;
+        }
+
+        .stat-card .icon-wrapper.blue .material-icons-outlined {
+            color: #4A90E2;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        /* Section Title */
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        /* Quick Menu */
+        .quick-menu-item {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .quick-menu-item:active {
+            transform: scale(0.98);
+        }
+
+        .quick-menu-item .icon-wrapper {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-menu-item .icon-wrapper.green {
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .quick-menu-item .icon-wrapper.green .material-icons-outlined {
+            color: #4CAF50;
+        }
+
+        .quick-menu-item .icon-wrapper.blue {
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .quick-menu-item .icon-wrapper.blue .material-icons-outlined {
+            color: #4A90E2;
+        }
+
+        .quick-menu-item .icon-wrapper.purple {
+            background: rgba(156, 39, 176, 0.1);
+        }
+
+        .quick-menu-item .icon-wrapper.purple .material-icons-outlined {
+            color: #9C27B0;
+        }
+
+        .quick-menu-item .icon-wrapper.teal {
+            background: rgba(0, 150, 136, 0.1);
+        }
+
+        .quick-menu-item .icon-wrapper.teal .material-icons-outlined {
+            color: #009688;
+        }
+
+        .quick-menu-item .text h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .quick-menu-item .text p {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .quick-menu-item .chevron {
+            margin-left: auto;
+            color: #ccc;
+        }
+
+        /* Mata Kuliah Section */
+        .matkul-section {
+            margin-top: 24px;
+        }
+
+        .matkul-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+
+        .matkul-card .icon-wrapper {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 152, 0, 0.1);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .matkul-card .icon-wrapper .material-icons-outlined {
+            color: #FF9800;
+            font-size: 22px;
+        }
+
+        .matkul-card .info {
+            flex: 1;
+        }
+
+        .matkul-card .info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .matkul-card .info p {
+            font-size: 12px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .matkul-card .badge {
+            background: rgba(74, 144, 226, 0.1);
+            color: #4A90E2;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        /* Bottom Nav Bar */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: #4A90E2;
+            border-radius: 30px 30px 0 0;
+            padding: 12px 24px;
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-item.active {
+            color: white;
+        }
+
+        .nav-item .material-icons-outlined {
+            font-size: 26px;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+        }
+
+        .nav-spacer {
+            width: 70px;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, #6B4CE6 0%, #8B6CF6 100%);
+            border-radius: 50%;
+            border: 4px solid white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(107, 76, 230, 0.3);
+            cursor: pointer;
+            z-index: 100;
+        }
+
+        .fab .material-icons-outlined {
+            font-size: 32px;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="header">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="logo">SIMA</div>
+            <div class="top-bar-icons">
+                <div class="icon-btn">
+                    <span class="material-icons-outlined">settings</span>
+                </div>
+                <div class="icon-btn">
+                    <span class="material-icons-outlined">person</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-bar">
+            <span class="material-icons-outlined">search</span>
+            <input type="text" placeholder="Cari mata kuliah, jadwal...">
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-chips">
+            <div class="filter-chip active">Semua</div>
+            <div class="filter-chip">Mata Kuliah</div>
+            <div class="filter-chip">Jadwal</div>
+            <div class="filter-chip">Nilai</div>
+            <div class="filter-chip">Absensi</div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="content">
+
+        <!-- Stats Row -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="icon-wrapper orange">
+                    <span class="material-icons-outlined">menu_book</span>
+                </div>
+                <div class="value">4</div>
+                <div class="label">Mata Kuliah</div>
+            </div>
+            <div class="stat-card">
+                <div class="icon-wrapper blue">
+                    <span class="material-icons-outlined">calendar_today</span>
+                </div>
+                <div class="value">12</div>
+                <div class="label">Jadwal</div>
+            </div>
+        </div>
+
+        <!-- Quick Menu -->
+        <div class="section-title">Menu Cepat</div>
+
+        <div class="quick-menu-item">
+            <div class="icon-wrapper green">
+                <span class="material-icons-outlined">grade</span>
+            </div>
+            <div class="text">
+                <h4>Input Nilai</h4>
+                <p>Kelola nilai mahasiswa</p>
+            </div>
+            <span class="material-icons-outlined chevron">chevron_right</span>
+        </div>
+
+        <div class="quick-menu-item">
+            <div class="icon-wrapper blue">
+                <span class="material-icons-outlined">calendar_today</span>
+            </div>
+            <div class="text">
+                <h4>Lihat Jadwal</h4>
+                <p>Jadwal mengajar hari ini</p>
+            </div>
+            <span class="material-icons-outlined chevron">chevron_right</span>
+        </div>
+
+        <div class="quick-menu-item">
+            <div class="icon-wrapper purple">
+                <span class="material-icons-outlined">history</span>
+            </div>
+            <div class="text">
+                <h4>Riwayat Absensi</h4>
+                <p>Lihat riwayat kehadiran</p>
+            </div>
+            <span class="material-icons-outlined chevron">chevron_right</span>
+        </div>
+
+        <div class="quick-menu-item">
+            <div class="icon-wrapper teal">
+                <span class="material-icons-outlined">fact_check</span>
+            </div>
+            <div class="text">
+                <h4>Persetujuan KRS</h4>
+                <p>Approve/reject KRS mahasiswa</p>
+            </div>
+            <span class="material-icons-outlined chevron">chevron_right</span>
+        </div>
+
+        <!-- Mata Kuliah Section -->
+        <div class="matkul-section">
+            <div class="section-title">Mata Kuliah Diampu</div>
+
+            <div class="matkul-card">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">menu_book</span>
+                </div>
+                <div class="info">
+                    <h4>Matematika Diskrit</h4>
+                    <p>IM23C • 32 mahasiswa</p>
+                </div>
+                <div class="badge">3 SKS</div>
+            </div>
+
+            <div class="matkul-card">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">menu_book</span>
+                </div>
+                <div class="info">
+                    <h4>Kalkulus Lanjutan</h4>
+                    <p>IM23A • 28 mahasiswa</p>
+                </div>
+                <div class="badge">3 SKS</div>
+            </div>
+
+            <div class="matkul-card">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">menu_book</span>
+                </div>
+                <div class="info">
+                    <h4>Statistika Dasar</h4>
+                    <p>IM23B • 30 mahasiswa</p>
+                </div>
+                <div class="badge">3 SKS</div>
+            </div>
+
+            <div class="matkul-card">
+                <div class="icon-wrapper">
+                    <span class="material-icons-outlined">menu_book</span>
+                </div>
+                <div class="info">
+                    <h4>Aljabar Linear</h4>
+                    <p>IM23D • 26 mahasiswa</p>
+                </div>
+                <div class="badge">2 SKS</div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <div class="nav-item">
+            <span class="material-icons-outlined">home</span>
+            <span>Beranda</span>
+        </div>
+        <div class="nav-item active">
+            <span class="material-icons-outlined">search</span>
+            <span>Cari</span>
+        </div>
+        <div class="nav-spacer"></div>
+        <div class="nav-item">
+            <span class="material-icons-outlined">event</span>
+            <span>Jadwal</span>
+        </div>
+        <div class="nav-item">
+            <span class="material-icons-outlined">fact_check</span>
+            <span>Absensi</span>
+        </div>
+    </div>
+
+    <!-- FAB -->
+    <div class="fab">
+        <span class="material-icons-outlined">search</span>
+    </div>
+
+</body>
+
+</html>
