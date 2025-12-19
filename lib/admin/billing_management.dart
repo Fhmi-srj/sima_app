@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import '../data/user_data.dart';
-import '../widgets/custom_toast.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/data/user_data.dart';
+import '../shared/widgets/custom_toast.dart';
 
 class BillingManagement extends StatefulWidget {
   const BillingManagement({super.key});
@@ -1565,3 +1565,5 @@ class _BillFormModalState extends State<_BillFormModal> {
     );
   }
 }
+
+

@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
-import '../data/class_data.dart';
-import '../data/user_data.dart';
-import '../widgets/custom_toast.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/data/class_data.dart';
+import '../shared/data/user_data.dart';
+import '../shared/widgets/custom_toast.dart';
 
 class CourseManagement extends StatefulWidget {
   const CourseManagement({super.key});
@@ -1071,3 +1071,5 @@ class _AssignCourseModalState extends State<_AssignCourseModal> {
     );
   }
 }
+
+

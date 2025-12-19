@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import '../data/krs_data.dart';
-import '../data/user_data.dart';
-import '../data/class_data.dart';
-import '../widgets/custom_toast.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/data/krs_data.dart';
+import '../shared/data/user_data.dart';
+import '../shared/data/class_data.dart';
+import '../shared/widgets/custom_toast.dart';
 
 class KrsManagement extends StatefulWidget {
   const KrsManagement({super.key});
@@ -1562,3 +1562,5 @@ class _StatusInfo {
     required this.gradientColors,
   });
 }
+
+

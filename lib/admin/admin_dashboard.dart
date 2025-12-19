@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import '../data/user_data.dart';
-import '../data/class_data.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/data/user_data.dart';
+import '../shared/data/class_data.dart';
 
 class AdminDashboard extends StatelessWidget {
   final Function(int) onNavigateToPage;
@@ -333,3 +333,5 @@ class AdminDashboard extends StatelessWidget {
     );
   }
 }
+
+

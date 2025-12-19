@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'main_container.dart';
+﻿import 'package:flutter/material.dart';
+import 'student/student_container.dart';
 import 'admin/admin_container.dart';
-import 'data/user_data.dart';
-import 'widgets/custom_toast.dart';
+import 'shared/data/user_data.dart';
+import 'shared/widgets/custom_toast.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => MainContainer(user: user)),
+          MaterialPageRoute(builder: (context) => StudentContainer(user: user)),
         );
       }
     } else {

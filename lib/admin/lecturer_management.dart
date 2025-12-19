@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import '../data/user_data.dart';
-import '../widgets/custom_toast.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/data/user_data.dart';
+import '../shared/widgets/custom_toast.dart';
 
 class LecturerManagement extends StatefulWidget {
   const LecturerManagement({super.key});
@@ -664,3 +664,5 @@ class _LecturerDetailModal extends StatelessWidget {
     );
   }
 }
+
+

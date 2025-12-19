@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import '../widgets/custom_toast.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/widgets/custom_toast.dart';
 
 class AdminSettings extends StatefulWidget {
   const AdminSettings({super.key});
@@ -691,3 +691,5 @@ class _AdminSettingsState extends State<AdminSettings> {
     );
   }
 }
+
+

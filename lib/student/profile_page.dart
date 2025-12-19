@@ -1,33 +1,68 @@
 ﻿import 'package:flutter/material.dart';
+import '../shared/widgets/custom_toast.dart';
 import '../shared/data/user_data.dart';
 import '../login_page.dart';
-import '../shared/widgets/custom_toast.dart';
 
-class AdminProfile extends StatefulWidget {
-  const AdminProfile({super.key});
+class ProfilePageContent extends StatefulWidget {
+  final VoidCallback? onNavigateToSettings;
+  final VoidCallback? onNavigateToCertificate;
+  final String userName;
+  final String userNim;
+  final String userProdi;
+  final String userInstitusi;
+  final String userAngkatan;
+  final String userFakultas;
+  final bool isLecturer;
+  final Function({
+    String? nama,
+    String? nim,
+    String? prodi,
+    String? institusi,
+    String? angkatan,
+    String? fakultas,
+  })?
+  onUpdateProfile;
+
+  const ProfilePageContent({
+    super.key,
+    this.onNavigateToSettings,
+    this.onNavigateToCertificate,
+    required this.userName,
+    required this.userNim,
+    required this.userProdi,
+    required this.userInstitusi,
+    required this.userAngkatan,
+    this.userFakultas = 'SAINTEK',
+    this.isLecturer = false,
+    this.onUpdateProfile,
+  });
 
   @override
-  State<AdminProfile> createState() => _AdminProfileState();
+  State<ProfilePageContent> createState() => _ProfilePageContentState();
 }
 
-class _AdminProfileState extends State<AdminProfile>
+class _ProfilePageContentState extends State<ProfilePageContent>
     with SingleTickerProviderStateMixin {
   static const Color primaryBlue = Color(0xFF4A90E2);
 
   late TabController _tabController;
 
   // Controllers for personal info
-  final _namaController = TextEditingController();
-  final _emailController = TextEditingController();
-  final _teleponController = TextEditingController();
-  final _jabatanController = TextEditingController();
-  final _departemenController = TextEditingController();
-  final _alamatController = TextEditingController();
+  late final TextEditingController _namaController;
+  late final TextEditingController _nimController;
+  late final TextEditingController _prodiController;
+  late final TextEditingController _institusiController;
+  late final TextEditingController _angkatanController;
+  late final TextEditingController _fakultasController;
+  final TextEditingController _teleponController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _alamatController = TextEditingController();
 
   // Controllers for password
-  final _oldPasswordController = TextEditingController();
-  final _newPasswordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final TextEditingController _oldPasswordController = TextEditingController();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   bool _obscureOldPassword = true;
   bool _obscureNewPassword = true;
@@ -39,17 +74,20 @@ class _AdminProfileState extends State<AdminProfile>
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
-    _loadUserData();
+    _namaController = TextEditingController(text: widget.userName);
+    _nimController = TextEditingController(text: widget.userNim);
+    _prodiController = TextEditingController(text: widget.userProdi);
+    _institusiController = TextEditingController(text: widget.userInstitusi);
+    _angkatanController = TextEditingController(text: widget.userAngkatan);
+    _fakultasController = TextEditingController(text: widget.userFakultas);
+    _loadDemoData();
   }
 
-  void _loadUserData() {
+  void _loadDemoData() {
     final user = UserData.currentUser;
     if (user != null) {
-      _namaController.text = user.name;
       _emailController.text = user.email;
-      _teleponController.text = '081234567890'; // Demo data
-      _jabatanController.text = 'System Administrator';
-      _departemenController.text = user.faculty ?? 'IT Department';
+      _teleponController.text = '081234567890';
       _alamatController.text = 'Jl. Patriot No. 123, Pekalongan';
     }
   }
@@ -58,10 +96,13 @@ class _AdminProfileState extends State<AdminProfile>
   void dispose() {
     _tabController.dispose();
     _namaController.dispose();
-    _emailController.dispose();
+    _nimController.dispose();
+    _prodiController.dispose();
+    _institusiController.dispose();
+    _angkatanController.dispose();
+    _fakultasController.dispose();
     _teleponController.dispose();
-    _jabatanController.dispose();
-    _departemenController.dispose();
+    _emailController.dispose();
     _alamatController.dispose();
     _oldPasswordController.dispose();
     _newPasswordController.dispose();
@@ -69,7 +110,7 @@ class _AdminProfileState extends State<AdminProfile>
     super.dispose();
   }
 
-  void _showLogoutDialog() {
+  void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -107,10 +148,11 @@ class _AdminProfileState extends State<AdminProfile>
     );
   }
 
+  String get _roleLabel => widget.isLecturer ? 'Dosen' : 'Mahasiswa';
+  IconData get _roleIcon => widget.isLecturer ? Icons.school : Icons.person;
+
   @override
   Widget build(BuildContext context) {
-    final user = UserData.currentUser;
-
     return Container(
       color: Colors.grey[50],
       child: Column(
@@ -125,94 +167,153 @@ class _AdminProfileState extends State<AdminProfile>
                 end: Alignment.bottomRight,
               ),
             ),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                // Profile Avatar
-                Stack(
-                  children: [
-                    Container(
-                      width: 120,
-                      height: 120,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.5),
-                          width: 3,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.admin_panel_settings,
-                        size: 60,
-                        color: Colors.white,
-                      ),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  // Top Bar with Settings
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 8,
                     ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'SIMA',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1,
+                          ),
                         ),
-                        child: const Icon(
-                          Icons.camera_alt,
-                          size: 18,
-                          color: primaryBlue,
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 16),
+                            GestureDetector(
+                              onTap: widget.onNavigateToSettings,
+                              child: const Icon(
+                                Icons.settings,
+                                color: Colors.white,
+                                size: 24,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                // Edit Foto Button
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
                   ),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
+                  const SizedBox(height: 16),
+                  // Profile Avatar
+                  Stack(
                     children: [
-                      Icon(Icons.edit, size: 14, color: Colors.white),
-                      SizedBox(width: 6),
-                      Text(
-                        'Edit Foto',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
+                            width: 3,
+                          ),
+                        ),
+                        child: Icon(_roleIcon, size: 60, color: Colors.white),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 18,
+                            color: primaryBlue,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 20),
-                // User Name and Email
-                Text(
-                  user?.name ?? 'Administrator',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                  const SizedBox(height: 16),
+                  // Edit Foto Button
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.edit, size: 14, color: Colors.white),
+                        SizedBox(width: 6),
+                        Text(
+                          'Edit Foto',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  user?.email ?? 'admin@sima.ac.id',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white.withOpacity(0.9),
+                  const SizedBox(height: 16),
+                  // User Name and ID
+                  Text(
+                    _namaController.text,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 24),
-              ],
+                  const SizedBox(height: 4),
+                  Text(
+                    _nimController.text,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Role Badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      _roleLabel.toUpperCase(),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
 
@@ -236,7 +337,7 @@ class _AdminProfileState extends State<AdminProfile>
                 ),
                 Tab(
                   icon: Icon(Icons.history_outlined, size: 20),
-                  text: 'Aktivitas',
+                  text: 'Riwayat',
                 ),
               ],
             ),
@@ -249,7 +350,7 @@ class _AdminProfileState extends State<AdminProfile>
               children: [
                 _buildIdentityTab(),
                 _buildSecurityTab(),
-                _buildActivityTab(),
+                _buildHistoryTab(),
               ],
             ),
           ),
@@ -264,6 +365,30 @@ class _AdminProfileState extends State<AdminProfile>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Sertifikat Button - Only for students
+          if (!widget.isLecturer) ...[
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: widget.onNavigateToCertificate,
+                icon: const Icon(Icons.verified, size: 20),
+                label: const Text(
+                  'Lihat Sertifikat',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryBlue,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+          ],
+
           // Informasi Pribadi Section
           _buildSectionHeader('Informasi Pribadi', Icons.person),
           const SizedBox(height: 16),
@@ -272,6 +397,14 @@ class _AdminProfileState extends State<AdminProfile>
             label: 'Nama Lengkap',
             controller: _namaController,
             icon: Icons.person_outline,
+            required: true,
+          ),
+          const SizedBox(height: 16),
+
+          _buildTextField(
+            label: widget.isLecturer ? 'NIP' : 'NIM',
+            controller: _nimController,
+            icon: widget.isLecturer ? Icons.work_outline : Icons.badge_outlined,
             required: true,
           ),
           const SizedBox(height: 16),
@@ -289,7 +422,6 @@ class _AdminProfileState extends State<AdminProfile>
             label: 'Nomor Telepon',
             controller: _teleponController,
             icon: Icons.phone_outlined,
-            required: true,
             keyboardType: TextInputType.phone,
           ),
           const SizedBox(height: 16),
@@ -313,28 +445,51 @@ class _AdminProfileState extends State<AdminProfile>
           ),
           const SizedBox(height: 24),
 
-          // Informasi Jabatan Section
-          _buildSectionHeader('Informasi Jabatan', Icons.work),
+          // Informasi Akademik Section
+          _buildSectionHeader(
+            widget.isLecturer ? 'Informasi Dosen' : 'Informasi Akademik',
+            Icons.school,
+          ),
           const SizedBox(height: 16),
 
           _buildTextField(
-            label: 'Jabatan',
-            controller: _jabatanController,
-            icon: Icons.badge_outlined,
+            label: widget.isLecturer ? 'Jabatan Fungsional' : 'Program Studi',
+            controller: _prodiController,
+            icon: widget.isLecturer
+                ? Icons.military_tech
+                : Icons.school_outlined,
+            required: true,
+          ),
+          const SizedBox(height: 16),
+
+          // Fakultas field - shown for students, different label for lecturers
+          _buildTextField(
+            label: 'Fakultas',
+            controller: _fakultasController,
+            icon: Icons.domain_outlined,
             required: true,
           ),
           const SizedBox(height: 16),
 
           _buildTextField(
-            label: 'Departemen',
-            controller: _departemenController,
+            label: widget.isLecturer ? 'Fakultas' : 'Institusi',
+            controller: _institusiController,
             icon: Icons.business_outlined,
             required: true,
           ),
           const SizedBox(height: 16),
 
           _buildTextField(
-            label: 'Alamat Kantor',
+            label: widget.isLecturer ? 'Bidang Keahlian' : 'Angkatan',
+            controller: _angkatanController,
+            icon: widget.isLecturer
+                ? Icons.psychology
+                : Icons.calendar_today_outlined,
+          ),
+          const SizedBox(height: 16),
+
+          _buildTextField(
+            label: 'Alamat',
             controller: _alamatController,
             icon: Icons.location_on_outlined,
             maxLines: 2,
@@ -346,7 +501,16 @@ class _AdminProfileState extends State<AdminProfile>
             width: double.infinity,
             child: ElevatedButton.icon(
               onPressed: () {
+                widget.onUpdateProfile?.call(
+                  nama: _namaController.text,
+                  nim: _nimController.text,
+                  prodi: _prodiController.text,
+                  institusi: _institusiController.text,
+                  angkatan: _angkatanController.text,
+                  fakultas: _fakultasController.text,
+                );
                 CustomToast.success(context, 'Data profil berhasil disimpan');
+                setState(() {});
               },
               icon: const Icon(Icons.save, size: 18),
               label: const Text(
@@ -419,6 +583,10 @@ class _AdminProfileState extends State<AdminProfile>
                   CustomToast.error(context, 'Password baru tidak cocok');
                   return;
                 }
+                if (_newPasswordController.text.isEmpty) {
+                  CustomToast.warning(context, 'Masukkan password baru');
+                  return;
+                }
                 CustomToast.success(context, 'Password berhasil diubah');
                 _oldPasswordController.clear();
                 _newPasswordController.clear();
@@ -454,9 +622,9 @@ class _AdminProfileState extends State<AdminProfile>
           const SizedBox(height: 12),
 
           _buildSecurityOption(
-            title: 'Sesi Aktif',
-            subtitle: 'Kelola perangkat yang sedang login',
-            icon: Icons.devices,
+            title: 'Notifikasi Login',
+            subtitle: 'Dapatkan pemberitahuan saat login baru',
+            icon: Icons.notifications_active,
             enabled: true,
           ),
           const SizedBox(height: 24),
@@ -465,7 +633,7 @@ class _AdminProfileState extends State<AdminProfile>
           SizedBox(
             width: double.infinity,
             child: OutlinedButton.icon(
-              onPressed: _showLogoutDialog,
+              onPressed: () => _showLogoutDialog(context),
               icon: const Icon(Icons.logout, size: 20),
               label: const Text(
                 'Keluar dari Akun',
@@ -486,7 +654,11 @@ class _AdminProfileState extends State<AdminProfile>
     );
   }
 
-  Widget _buildActivityTab() {
+  Widget _buildHistoryTab() {
+    final activities = widget.isLecturer
+        ? _getLecturerActivities()
+        : _getStudentActivities();
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -494,52 +666,104 @@ class _AdminProfileState extends State<AdminProfile>
         children: [
           _buildSectionHeader('Riwayat Aktivitas', Icons.history),
           const SizedBox(height: 16),
-
-          _buildActivityItem(
-            title: 'Login berhasil',
-            subtitle: 'Chrome di Windows',
-            time: 'Hari ini, 08:30',
-            icon: Icons.login,
-            color: Colors.green,
-          ),
-          _buildActivityItem(
-            title: 'Memperbarui data mahasiswa',
-            subtitle: 'NIM: 102230039',
-            time: 'Hari ini, 09:15',
-            icon: Icons.edit,
-            color: primaryBlue,
-          ),
-          _buildActivityItem(
-            title: 'Verifikasi pembayaran',
-            subtitle: '5 transaksi diverifikasi',
-            time: 'Kemarin, 14:22',
-            icon: Icons.verified,
-            color: Colors.green,
-          ),
-          _buildActivityItem(
-            title: 'Mengubah jadwal kuliah',
-            subtitle: 'Kelas IM23A - Pemrograman Web',
-            time: 'Kemarin, 10:45',
-            icon: Icons.calendar_today,
-            color: Colors.orange,
-          ),
-          _buildActivityItem(
-            title: 'Menambah dosen baru',
-            subtitle: 'Dr. Budi Santoso, M.Kom',
-            time: '15 Des 2024, 11:30',
-            icon: Icons.person_add,
-            color: primaryBlue,
-          ),
-          _buildActivityItem(
-            title: 'Password diubah',
-            subtitle: 'Password berhasil diperbarui',
-            time: '14 Des 2024, 09:00',
-            icon: Icons.lock,
-            color: Colors.amber,
-          ),
+          ...activities,
         ],
       ),
     );
+  }
+
+  List<Widget> _getStudentActivities() {
+    return [
+      _buildActivityItem(
+        title: 'Login berhasil',
+        subtitle: 'Chrome di Windows',
+        time: 'Hari ini, 08:30',
+        icon: Icons.login,
+        color: Colors.green,
+      ),
+      _buildActivityItem(
+        title: 'Mengisi KRS',
+        subtitle: 'Semester Ganjil 2024/2025',
+        time: 'Hari ini, 09:00',
+        icon: Icons.edit_document,
+        color: primaryBlue,
+      ),
+      _buildActivityItem(
+        title: 'Melihat KHS',
+        subtitle: 'Semester Genap 2023/2024',
+        time: 'Kemarin, 14:22',
+        icon: Icons.visibility,
+        color: Colors.orange,
+      ),
+      _buildActivityItem(
+        title: 'Mengunggah sertifikat',
+        subtitle: 'Sertifikat BNSP',
+        time: 'Kemarin, 10:45',
+        icon: Icons.upload_file,
+        color: Colors.green,
+      ),
+      _buildActivityItem(
+        title: 'Pembayaran SPP',
+        subtitle: 'Semester Ganjil 2024/2025',
+        time: '15 Des 2024, 11:30',
+        icon: Icons.payment,
+        color: primaryBlue,
+      ),
+      _buildActivityItem(
+        title: 'Memperbarui profil',
+        subtitle: 'Nomor telepon diubah',
+        time: '14 Des 2024, 09:00',
+        icon: Icons.person,
+        color: Colors.amber,
+      ),
+    ];
+  }
+
+  List<Widget> _getLecturerActivities() {
+    return [
+      _buildActivityItem(
+        title: 'Login berhasil',
+        subtitle: 'Chrome di Windows',
+        time: 'Hari ini, 08:30',
+        icon: Icons.login,
+        color: Colors.green,
+      ),
+      _buildActivityItem(
+        title: 'Menyetujui KRS',
+        subtitle: '15 mahasiswa - Kelas IM23C',
+        time: 'Hari ini, 09:15',
+        icon: Icons.check_circle,
+        color: Colors.green,
+      ),
+      _buildActivityItem(
+        title: 'Input nilai',
+        subtitle: 'Pemrograman Web - UTS',
+        time: 'Kemarin, 14:22',
+        icon: Icons.grading,
+        color: primaryBlue,
+      ),
+      _buildActivityItem(
+        title: 'Melihat jadwal',
+        subtitle: 'Jadwal mengajar semester ini',
+        time: 'Kemarin, 10:45',
+        icon: Icons.calendar_today,
+        color: Colors.orange,
+      ),
+      _buildActivityItem(
+        title: 'Konsultasi mahasiswa',
+        subtitle: 'Ahmad Rizky - IM23C',
+        time: '15 Des 2024, 11:30',
+        icon: Icons.chat,
+        color: primaryBlue,
+      ),
+      _buildActivityItem(
+        title: 'Memperbarui profil',
+        subtitle: 'Bidang keahlian diubah',
+        time: '14 Des 2024, 09:00',
+        icon: Icons.person,
+        color: Colors.amber,
+      ),
+    ];
   }
 
   Widget _buildSectionHeader(String title, IconData icon) {
@@ -831,5 +1055,7 @@ class _AdminProfileState extends State<AdminProfile>
     );
   }
 }
+
+
 
 

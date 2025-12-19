@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import '../data/payment_data.dart';
-import '../widgets/custom_toast.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/data/payment_data.dart';
+import '../shared/widgets/custom_toast.dart';
 
 class PaymentVerification extends StatefulWidget {
   const PaymentVerification({super.key});
@@ -1004,3 +1004,5 @@ class _PaymentDetailModalState extends State<_PaymentDetailModal> {
     );
   }
 }
+
+

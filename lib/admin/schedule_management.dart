@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import '../data/class_data.dart';
-import '../data/user_data.dart';
-import '../data/room_data.dart';
-import '../widgets/custom_toast.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/data/class_data.dart';
+import '../shared/data/user_data.dart';
+import '../shared/data/room_data.dart';
+import '../shared/widgets/custom_toast.dart';
 
 class ScheduleManagement extends StatefulWidget {
   const ScheduleManagement({super.key});
@@ -1235,3 +1235,5 @@ class _ScheduleFormModalState extends State<_ScheduleFormModal> {
     );
   }
 }
+
+

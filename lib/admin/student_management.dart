@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
-import '../data/user_data.dart';
-import '../widgets/custom_toast.dart';
+﻿import 'package:flutter/material.dart';
+import '../shared/data/user_data.dart';
+import '../shared/widgets/custom_toast.dart';
 
 class StudentManagement extends StatefulWidget {
   const StudentManagement({super.key});
@@ -722,3 +722,5 @@ class _StudentDetailModal extends StatelessWidget {
     );
   }
 }
+
+
