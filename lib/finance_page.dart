@@ -2,16 +2,18 @@ import 'package:flutter/material.dart';
 import 'widgets/custom_top_bar.dart';
 import 'widgets/payment_detail_modal.dart';
 import 'widgets/paid_payment_modal.dart';
-import 'data/finance_data.dart';
+import 'data/payment_data.dart';
 
 class FinancePageContent extends StatefulWidget {
   final VoidCallback? onNavigateToProfile;
   final VoidCallback? onNavigateToSettings;
+  final String? studentId;
 
   const FinancePageContent({
     super.key,
     this.onNavigateToProfile,
     this.onNavigateToSettings,
+    this.studentId,
   });
 
   @override
@@ -34,8 +36,144 @@ class _FinancePageContentState extends State<FinancePageContent>
     super.dispose();
   }
 
+  // Get bills for the current student
+  List<BillEntry> _getBills() {
+    if (widget.studentId == null) return [];
+    return PaymentData.getBillsByStudent(widget.studentId!);
+  }
+
+  // Get payment summary for the current student
+  Map<String, dynamic> _getPaymentSummary() {
+    if (widget.studentId == null) {
+      return {
+        'totalBills': 0,
+        'totalPaid': 0,
+        'totalUnpaid': 0,
+        'paymentProgress': 0.0,
+        'pendingCount': 0,
+        'overdueCount': 0,
+      };
+    }
+    return PaymentData.getPaymentSummary(widget.studentId!);
+  }
+
+  // Format currency
+  String _formatCurrency(int value) {
+    String valueStr = value.toString();
+    String result = '';
+    int count = 0;
+    for (int i = valueStr.length - 1; i >= 0; i--) {
+      count++;
+      result = valueStr[i] + result;
+      if (count % 3 == 0 && i != 0) {
+        result = '.$result';
+      }
+    }
+    return 'Rp $result';
+  }
+
+  // Generate notifications from bill statuses
+  List<Map<String, dynamic>> _getNotifications() {
+    final bills = _getBills();
+    final notifications = <Map<String, dynamic>>[];
+
+    for (final bill in bills) {
+      // Overdue warning
+      if (bill.isOverdue) {
+        final daysOverdue = DateTime.now().difference(bill.dueDate).inDays;
+        notifications.add({
+          'id': 'NOTIF-${bill.id}-overdue',
+          'type': 'warning',
+          'title': 'Tagihan Terlambat',
+          'subtitle': '${bill.title}\nTerlambat $daysOverdue hari',
+          'amount': bill.formattedAmount,
+          'billId': bill.id,
+        });
+      }
+      // Pending verification
+      else if (bill.status == PaymentStatus.pending) {
+        notifications.add({
+          'id': 'NOTIF-${bill.id}-pending',
+          'type': 'info',
+          'title': 'Menunggu Verifikasi',
+          'subtitle': '${bill.title}\nSedang diproses admin',
+          'amount': bill.formattedAmount,
+          'billId': bill.id,
+        });
+      }
+      // Rejected - needs resubmission
+      else if (bill.status == PaymentStatus.rejected) {
+        notifications.add({
+          'id': 'NOTIF-${bill.id}-rejected',
+          'type': 'warning',
+          'title': 'Pembayaran Ditolak',
+          'subtitle':
+              '${bill.title}\n${bill.rejectionReason ?? "Upload ulang bukti"}',
+          'amount': bill.formattedAmount,
+          'billId': bill.id,
+        });
+      }
+      // Verified - success notification
+      else if (bill.status == PaymentStatus.verified &&
+          bill.verifiedAt != null) {
+        final daysSinceVerified = DateTime.now()
+            .difference(bill.verifiedAt!)
+            .inDays;
+        if (daysSinceVerified <= 7) {
+          notifications.add({
+            'id': 'NOTIF-${bill.id}-verified',
+            'type': 'success',
+            'title': 'Pembayaran Terverifikasi',
+            'subtitle': '${bill.title}\n${_formatDate(bill.verifiedAt!)}',
+            'amount': null,
+            'billId': bill.id,
+          });
+        }
+      }
+      // Unpaid - upcoming due date warning
+      else if (bill.status == PaymentStatus.unpaid) {
+        final daysUntilDue = bill.dueDate.difference(DateTime.now()).inDays;
+        if (daysUntilDue <= 7 && daysUntilDue >= 0) {
+          notifications.add({
+            'id': 'NOTIF-${bill.id}-upcoming',
+            'type': 'warning',
+            'title': 'Tagihan Akan Jatuh Tempo',
+            'subtitle': '${bill.title}\nJatuh tempo dalam $daysUntilDue hari',
+            'amount': bill.formattedAmount,
+            'billId': bill.id,
+          });
+        }
+      }
+    }
+
+    return notifications;
+  }
+
+  String _formatDate(DateTime date) {
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'Mei',
+      'Jun',
+      'Jul',
+      'Ags',
+      'Sep',
+      'Okt',
+      'Nov',
+      'Des',
+    ];
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
+  }
+
   @override
   Widget build(BuildContext context) {
+    final summary = _getPaymentSummary();
+    final totalUnpaid = summary['totalUnpaid'] as int;
+    final paymentProgress = summary['paymentProgress'] as double;
+    final progressPercentage = (paymentProgress * 100).round();
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: Column(
@@ -89,7 +227,7 @@ class _FinancePageContentState extends State<FinancePageContent>
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          FinanceData.getSummary()['totalUnpaid'],
+                          _formatCurrency(totalUnpaid),
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -98,7 +236,7 @@ class _FinancePageContentState extends State<FinancePageContent>
                         ),
                         const SizedBox(height: 12),
                         Text(
-                          FinanceData.getSummary()['progressPercentage'],
+                          '$progressPercentage%',
                           style: const TextStyle(
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
@@ -110,7 +248,7 @@ class _FinancePageContentState extends State<FinancePageContent>
                         ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: LinearProgressIndicator(
-                            value: FinanceData.getSummary()['paymentProgress'],
+                            value: paymentProgress,
                             minHeight: 8,
                             backgroundColor: Colors.grey[300],
                             valueColor: const AlwaysStoppedAnimation<Color>(
@@ -221,7 +359,24 @@ class _FinancePageContentState extends State<FinancePageContent>
   }
 
   Widget _buildNotifikasiTab() {
-    final notifications = FinanceData.getNotifications();
+    final notifications = _getNotifications();
+
+    if (notifications.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.notifications_none, size: 64, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              'Tidak ada notifikasi',
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       itemCount: notifications.length,
@@ -282,149 +437,154 @@ class _FinancePageContentState extends State<FinancePageContent>
 
   void _handleNotificationTap(Map<String, dynamic> notif) {
     if (notif['billId'] != null) {
-      // Show unpaid payment modal
-      final bill = FinanceData.getBillById(notif['billId']);
-      if (bill != null && bill.isNotEmpty) {
-        PaymentDetailModal.show(
-          context,
-          title: 'Detail Pembayaran',
-          subtitle: bill['title'],
-          billType: bill['type'],
-          semester: bill['semester'],
-          dueDate: bill['dueDate'],
-          totalAmount: bill['amount'],
-          vaNumber: bill['vaNumber'] ?? '',
-        );
-      }
-    } else if (notif['paymentId'] != null) {
-      // Show paid payment modal
-      final payment = FinanceData.getPaymentById(notif['paymentId']);
-      if (payment != null && payment.isNotEmpty) {
-        PaidPaymentModal.show(
-          context,
-          title: payment['subtitle'],
-          subtitle: 'Tahun Akademik 2024/2025',
-          billType: payment['billType'],
-          semester: payment['semester'],
-          dueDate: payment['dueDate'],
-          totalAmount: payment['amount'],
-          paymentMethod: payment['paymentMethod'] ?? '',
-          paymentDate: payment['paymentDate'] ?? '',
-          referenceNumber: payment['referenceNumber'] ?? '',
-          proofFileName: payment['proofFileName'] ?? '',
-          proofUploadDate: payment['proofUploadDate'] ?? '',
-        );
+      final bill = PaymentData.getBillById(notif['billId']);
+      if (bill != null) {
+        _showBillDetail(bill);
       }
     }
   }
 
+  void _showBillDetail(BillEntry bill) {
+    if (bill.status == PaymentStatus.verified) {
+      PaidPaymentModal.show(
+        context,
+        title: bill.title,
+        subtitle: 'Tahun Akademik ${bill.academicYear}',
+        billType: bill.title,
+        semester: 'Semester ${bill.semester}',
+        dueDate: _formatDate(bill.dueDate),
+        totalAmount: bill.formattedAmount,
+        paymentMethod: bill.paymentMethod ?? '',
+        paymentDate: bill.paidAt != null ? _formatDate(bill.paidAt!) : '',
+        referenceNumber: 'TRX-${bill.id}',
+        proofFileName: bill.proofFileName ?? '',
+        proofUploadDate: bill.paidAt != null ? _formatDate(bill.paidAt!) : '',
+      );
+    } else {
+      PaymentDetailModal.show(
+        context,
+        title: 'Detail Pembayaran',
+        subtitle: bill.title,
+        billType: bill.type,
+        semester: 'Semester ${bill.semester}',
+        dueDate: _formatDate(bill.dueDate),
+        totalAmount: bill.formattedAmount,
+        vaNumber: bill.vaNumber ?? '',
+        status: bill.status,
+        rejectionReason: bill.rejectionReason,
+        billId: bill.id,
+        onPaymentSubmitted: () {
+          setState(() {}); // Refresh the page
+        },
+      );
+    }
+  }
+
   Widget _buildTagihanTab() {
-    final bills = FinanceData.getBills();
+    final bills = _getBills();
+
+    if (bills.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.receipt_long, size: 64, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              'Tidak ada tagihan',
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       itemCount: bills.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         final bill = bills[index];
-        final isLunas = bill['status'] == 'lunas';
         return _buildTagihanCard(
           icon: Icons.description,
-          iconColor: const Color(0xFF4A90E2),
-          iconBgColor: const Color(0xFFE3F2FD),
-          title: bill['title'],
-          status: 'Status : ${bill['statusText']}',
-          statusColor: isLunas ? const Color(0xFF66BB6A) : Colors.red,
-          amount: bill['amount'],
-          onTap: () => _handleBillTap(bill),
+          iconColor: _getStatusColor(bill.status),
+          iconBgColor: _getStatusBgColor(bill.status),
+          title: bill.title,
+          status: 'Status : ${bill.statusText}',
+          statusColor: _getStatusColor(bill.status),
+          amount: bill.formattedAmount,
+          onTap: () => _showBillDetail(bill),
         );
       },
     );
   }
 
-  void _handleBillTap(Map<String, dynamic> bill) {
-    if (bill['status'] == 'lunas') {
-      PaidPaymentModal.show(
-        context,
-        title: bill['title'],
-        subtitle: 'Tahun Akademik 2024/2025',
-        billType: bill['title'],
-        semester: bill['semester'],
-        dueDate: bill['dueDate'],
-        totalAmount: bill['amount'],
-        paymentMethod: bill['paymentMethod'] ?? '',
-        paymentDate: bill['paymentDate'] ?? '',
-        referenceNumber: bill['referenceNumber'] ?? '',
-        proofFileName: bill['proofFileName'] ?? '',
-        proofUploadDate: bill['proofUploadDate'] ?? '',
-      );
-    } else {
-      PaymentDetailModal.show(
-        context,
-        title: 'Detail Pembayaran',
-        subtitle: bill['title'],
-        billType: bill['type'],
-        semester: bill['semester'],
-        dueDate: bill['dueDate'],
-        totalAmount: bill['amount'],
-        vaNumber: bill['vaNumber'] ?? '',
-      );
+  Color _getStatusColor(PaymentStatus status) {
+    switch (status) {
+      case PaymentStatus.verified:
+        return const Color(0xFF66BB6A);
+      case PaymentStatus.pending:
+        return const Color(0xFF42A5F5);
+      case PaymentStatus.rejected:
+        return const Color(0xFFE57373);
+      case PaymentStatus.unpaid:
+        return const Color(0xFFFFA726);
+    }
+  }
+
+  Color _getStatusBgColor(PaymentStatus status) {
+    switch (status) {
+      case PaymentStatus.verified:
+        return const Color(0xFFE8F5E9);
+      case PaymentStatus.pending:
+        return const Color(0xFFE3F2FD);
+      case PaymentStatus.rejected:
+        return const Color(0xFFFFEBEE);
+      case PaymentStatus.unpaid:
+        return const Color(0xFFFFF3E0);
     }
   }
 
   Widget _buildRiwayatTab() {
-    final history = FinanceData.getPaymentHistory();
+    final bills = _getBills();
+    // Only show verified payments in history
+    final history = bills
+        .where((b) => b.status == PaymentStatus.verified)
+        .toList();
+
+    if (history.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.history, size: 64, color: Colors.grey[400]),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada riwayat pembayaran',
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       itemCount: history.length,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
-        final payment = history[index];
-        final isSuccess = payment['status'] == 'success';
+        final bill = history[index];
         return _buildRiwayatCard(
-          icon: isSuccess ? Icons.check_circle : Icons.access_time,
-          iconColor: isSuccess
-              ? const Color(0xFF66BB6A)
-              : const Color(0xFF42A5F5),
-          iconBgColor: isSuccess
-              ? const Color(0xFFE8F5E9)
-              : const Color(0xFFE3F2FD),
-          title: payment['title'],
-          subtitle: payment['subtitle'],
-          amount: payment['amount'],
-          onTap: () => _handlePaymentHistoryTap(payment),
+          icon: Icons.check_circle,
+          iconColor: const Color(0xFF66BB6A),
+          iconBgColor: const Color(0xFFE8F5E9),
+          title: 'Pembayaran Berhasil',
+          subtitle: bill.title,
+          amount: bill.formattedAmount,
+          onTap: () => _showBillDetail(bill),
         );
       },
     );
-  }
-
-  void _handlePaymentHistoryTap(Map<String, dynamic> payment) {
-    if (payment['status'] == 'success') {
-      PaidPaymentModal.show(
-        context,
-        title: payment['subtitle'],
-        subtitle: 'Tahun Akademik 2024/2025',
-        billType: payment['billType'],
-        semester: payment['semester'],
-        dueDate: payment['dueDate'],
-        totalAmount: payment['amount'],
-        paymentMethod: payment['paymentMethod'] ?? '',
-        paymentDate: payment['paymentDate'] ?? '',
-        referenceNumber: payment['referenceNumber'] ?? '',
-        proofFileName: payment['proofFileName'] ?? '',
-        proofUploadDate: payment['proofUploadDate'] ?? '',
-      );
-    } else {
-      PaymentDetailModal.show(
-        context,
-        title: 'Detail Pembayaran',
-        subtitle: payment['subtitle'],
-        billType: payment['billType'],
-        semester: payment['semester'],
-        dueDate: payment['dueDate'],
-        totalAmount: payment['amount'],
-        vaNumber: payment['vaNumber'] ?? '',
-      );
-    }
   }
 
   Widget _buildNotificationCard({

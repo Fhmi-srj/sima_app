@@ -1,5 +1,6 @@
 // Centralized schedule data for the app
 import 'class_data.dart';
+import 'krs_data.dart';
 
 class ScheduleData {
   // Get schedule for a specific day based on student's kelas
@@ -26,6 +27,46 @@ class ScheduleData {
 
     // Default: return IM23C schedule (for backward compatibility)
     return getScheduleForDay(day, kelasCode: 'IM23C');
+  }
+
+  // Get schedule filtered by APPROVED KRS for a student
+  // Returns empty list if student has no approved KRS
+  static List<Map<String, String>> getScheduleForDayByKrs(
+    String day, {
+    required String studentId,
+    String? kelasCode,
+  }) {
+    // Check if student has approved KRS
+    final approvedKrs = KrsData.getApprovedKrsForStudent(studentId);
+    if (approvedKrs == null) {
+      return []; // No approved KRS - return empty schedule
+    }
+
+    // Get approved course codes
+    final approvedCourseCodes = approvedKrs.courseCodes;
+
+    // Get kelas from student or use provided kelas
+    final effectiveKelas = kelasCode ?? approvedKrs.student?.kelas ?? 'IM23C';
+
+    // Get all courses for that day and filter by approved course codes
+    final allCourses = ClassData.getCoursesByKelasAndDay(effectiveKelas, day);
+    final filteredCourses = allCourses
+        .where((c) => approvedCourseCodes.contains(c.courseCode))
+        .toList();
+
+    return filteredCourses
+        .map(
+          (c) => {
+            'subject': c.courseName,
+            'lecturer': c.lecturerName,
+            'time': c.time,
+            'room': c.room,
+            'session': _getSession(c.time),
+            'kelas': c.kelasCode,
+            'courseCode': c.courseCode,
+          },
+        )
+        .toList();
   }
 
   static String _getSession(String time) {
@@ -72,6 +113,24 @@ class ScheduleData {
   // Get today's schedule for a specific kelas
   static List<Map<String, String>> getTodaySchedule({String? kelasCode}) {
     return getScheduleForDay(getCurrentDay(), kelasCode: kelasCode);
+  }
+
+  // Get today's schedule filtered by APPROVED KRS for a student
+  // Returns empty list if student has no approved KRS
+  static List<Map<String, String>> getTodayScheduleByKrs({
+    required String studentId,
+    String? kelasCode,
+  }) {
+    return getScheduleForDayByKrs(
+      getCurrentDay(),
+      studentId: studentId,
+      kelasCode: kelasCode,
+    );
+  }
+
+  // Check if student has approved KRS
+  static bool hasApprovedKrs(String studentId) {
+    return KrsData.getApprovedKrsForStudent(studentId) != null;
   }
 
   // Get full week schedule for a kelas

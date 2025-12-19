@@ -113,150 +113,147 @@ class _AdminProfileState extends State<AdminProfile>
 
     return Container(
       color: Colors.grey[50],
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Header with Profile Photo
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [primaryBlue, Color(0xFF5BA3F5)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+      child: Column(
+        children: [
+          // Sticky Header with Profile Photo
+          Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryBlue, Color(0xFF5BA3F5)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 20),
-                  // Profile Avatar
-                  Stack(
-                    children: [
-                      Container(
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: Colors.white.withOpacity(0.5),
-                            width: 3,
-                          ),
-                        ),
-                        child: const Icon(
-                          Icons.admin_panel_settings,
-                          size: 60,
-                          color: Colors.white,
+            ),
+            child: Column(
+              children: [
+                const SizedBox(height: 20),
+                // Profile Avatar
+                Stack(
+                  children: [
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.5),
+                          width: 3,
                         ),
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.camera_alt,
-                            size: 18,
-                            color: primaryBlue,
-                          ),
+                      child: const Icon(
+                        Icons.admin_panel_settings,
+                        size: 60,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.camera_alt,
+                          size: 18,
+                          color: primaryBlue,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                // Edit Foto Button
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.edit, size: 14, color: Colors.white),
+                      SizedBox(width: 6),
+                      Text(
+                        'Edit Foto',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
-                  // Edit Foto Button
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(Icons.edit, size: 14, color: Colors.white),
-                        SizedBox(width: 6),
-                        Text(
-                          'Edit Foto',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ],
-                    ),
+                ),
+                const SizedBox(height: 20),
+                // User Name and Email
+                Text(
+                  user?.name ?? 'Administrator',
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                  const SizedBox(height: 20),
-                  // User Name and Email
-                  Text(
-                    user?.name ?? 'Administrator',
-                    style: const TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  user?.email ?? 'admin@sima.ac.id',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.white.withOpacity(0.9),
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    user?.email ?? 'admin@sima.ac.id',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.9),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                ],
-              ),
+                ),
+                const SizedBox(height: 24),
+              ],
             ),
+          ),
 
-            // Tab Bar
-            Container(
-              color: Colors.white,
-              child: TabBar(
-                controller: _tabController,
-                labelColor: primaryBlue,
-                unselectedLabelColor: Colors.grey[600],
-                indicatorColor: primaryBlue,
-                indicatorWeight: 3,
-                tabs: const [
-                  Tab(
-                    icon: Icon(Icons.person_outline, size: 20),
-                    text: 'Identitas',
-                  ),
-                  Tab(
-                    icon: Icon(Icons.security_outlined, size: 20),
-                    text: 'Keamanan',
-                  ),
-                  Tab(
-                    icon: Icon(Icons.history_outlined, size: 20),
-                    text: 'Aktivitas',
-                  ),
-                ],
-              ),
+          // Sticky Tab Bar
+          Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: primaryBlue,
+              unselectedLabelColor: Colors.grey[600],
+              indicatorColor: primaryBlue,
+              indicatorWeight: 3,
+              tabs: const [
+                Tab(
+                  icon: Icon(Icons.person_outline, size: 20),
+                  text: 'Identitas',
+                ),
+                Tab(
+                  icon: Icon(Icons.security_outlined, size: 20),
+                  text: 'Keamanan',
+                ),
+                Tab(
+                  icon: Icon(Icons.history_outlined, size: 20),
+                  text: 'Aktivitas',
+                ),
+              ],
             ),
+          ),
 
-            // Tab Content
-            SizedBox(
-              height: 800, // Fixed height for tab content
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildIdentityTab(),
-                  _buildSecurityTab(),
-                  _buildActivityTab(),
-                ],
-              ),
+          // Scrollable Tab Content
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildIdentityTab(),
+                _buildSecurityTab(),
+                _buildActivityTab(),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

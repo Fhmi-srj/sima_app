@@ -155,209 +155,206 @@ class _ProfilePageContentState extends State<ProfilePageContent>
   Widget build(BuildContext context) {
     return Container(
       color: Colors.grey[50],
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            // Header with Profile Photo
-            Container(
-              width: double.infinity,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [primaryBlue, Color(0xFF5BA3F5)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+      child: Column(
+        children: [
+          // Sticky Header with Profile Photo
+          Container(
+            width: double.infinity,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [primaryBlue, Color(0xFF5BA3F5)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-              child: SafeArea(
-                bottom: false,
-                child: Column(
-                  children: [
-                    // Top Bar with Settings
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20,
-                        vertical: 8,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'SIMA',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              letterSpacing: 1,
-                            ),
+            ),
+            child: SafeArea(
+              bottom: false,
+              child: Column(
+                children: [
+                  // Top Bar with Settings
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 8,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text(
+                          'SIMA',
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 1,
                           ),
-                          Row(
-                            children: [
-                              const Icon(
-                                Icons.notifications,
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.notifications,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                            const SizedBox(width: 16),
+                            GestureDetector(
+                              onTap: widget.onNavigateToSettings,
+                              child: const Icon(
+                                Icons.settings,
                                 color: Colors.white,
                                 size: 24,
                               ),
-                              const SizedBox(width: 16),
-                              GestureDetector(
-                                onTap: widget.onNavigateToSettings,
-                                child: const Icon(
-                                  Icons.settings,
-                                  color: Colors.white,
-                                  size: 24,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    // Profile Avatar
-                    Stack(
-                      children: [
-                        Container(
-                          width: 120,
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.5),
-                              width: 3,
                             ),
-                          ),
-                          child: Icon(_roleIcon, size: 60, color: Colors.white),
+                          ],
                         ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              size: 18,
-                              color: primaryBlue,
-                            ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  // Profile Avatar
+                  Stack(
+                    children: [
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white.withOpacity(0.5),
+                            width: 3,
+                          ),
+                        ),
+                        child: Icon(_roleIcon, size: 60, color: Colors.white),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.camera_alt,
+                            size: 18,
+                            color: primaryBlue,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Edit Foto Button
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.edit, size: 14, color: Colors.white),
+                        SizedBox(width: 6),
+                        Text(
+                          'Edit Foto',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    // Edit Foto Button
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.edit, size: 14, color: Colors.white),
-                          SizedBox(width: 6),
-                          Text(
-                            'Edit Foto',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  const SizedBox(height: 16),
+                  // User Name and ID
+                  Text(
+                    _namaController.text,
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
                     ),
-                    const SizedBox(height: 16),
-                    // User Name and ID
-                    Text(
-                      _namaController.text,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    _nimController.text,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Role Badge
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Text(
+                      _roleLabel.toUpperCase(),
                       style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
                         color: Colors.white,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
                       ),
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      _nimController.text,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    // Role Badge
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Text(
-                        _roleLabel.toUpperCase(),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+
+          // Sticky Tab Bar
+          Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              labelColor: primaryBlue,
+              unselectedLabelColor: Colors.grey[600],
+              indicatorColor: primaryBlue,
+              indicatorWeight: 3,
+              tabs: const [
+                Tab(
+                  icon: Icon(Icons.person_outline, size: 20),
+                  text: 'Identitas',
                 ),
-              ),
+                Tab(
+                  icon: Icon(Icons.security_outlined, size: 20),
+                  text: 'Keamanan',
+                ),
+                Tab(
+                  icon: Icon(Icons.history_outlined, size: 20),
+                  text: 'Riwayat',
+                ),
+              ],
             ),
+          ),
 
-            // Tab Bar
-            Container(
-              color: Colors.white,
-              child: TabBar(
-                controller: _tabController,
-                labelColor: primaryBlue,
-                unselectedLabelColor: Colors.grey[600],
-                indicatorColor: primaryBlue,
-                indicatorWeight: 3,
-                tabs: const [
-                  Tab(
-                    icon: Icon(Icons.person_outline, size: 20),
-                    text: 'Identitas',
-                  ),
-                  Tab(
-                    icon: Icon(Icons.security_outlined, size: 20),
-                    text: 'Keamanan',
-                  ),
-                  Tab(
-                    icon: Icon(Icons.history_outlined, size: 20),
-                    text: 'Riwayat',
-                  ),
-                ],
-              ),
+          // Scrollable Tab Content
+          Expanded(
+            child: TabBarView(
+              controller: _tabController,
+              children: [
+                _buildIdentityTab(),
+                _buildSecurityTab(),
+                _buildHistoryTab(),
+              ],
             ),
-
-            // Tab Content
-            SizedBox(
-              height: 850,
-              child: TabBarView(
-                controller: _tabController,
-                children: [
-                  _buildIdentityTab(),
-                  _buildSecurityTab(),
-                  _buildHistoryTab(),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

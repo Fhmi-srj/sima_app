@@ -312,6 +312,62 @@ class AttendanceData {
     _initializeData();
     return Map.from(_attendanceRecords);
   }
+
+  // Approve izin for a student
+  static bool approveIzin({
+    required String studentId,
+    required String courseCode,
+    required String date,
+  }) {
+    _initializeData();
+    final key = '${studentId}_${courseCode}_$date';
+    final record = _attendanceRecords[key];
+    if (record == null || record.type != 'izin') return false;
+
+    _attendanceRecords[key] = AttendanceRecord(
+      studentId: record.studentId,
+      courseCode: record.courseCode,
+      courseName: record.courseName,
+      date: record.date,
+      type: record.type,
+      reason: record.reason,
+      timestamp: record.timestamp,
+      izinApproved: true,
+    );
+    return true;
+  }
+
+  // Check if izin is approved
+  static bool isIzinApproved({
+    required String studentId,
+    required String courseCode,
+    required String date,
+  }) {
+    _initializeData();
+    final key = '${studentId}_${courseCode}_$date';
+    final record = _attendanceRecords[key];
+    return record?.izinApproved ?? false;
+  }
+
+  // Get student status for display (Hadir/Izin/Alpha)
+  static String getStudentStatus({
+    required String studentId,
+    required String courseCode,
+    required String date,
+  }) {
+    _initializeData();
+    final key = '${studentId}_${courseCode}_$date';
+    final record = _attendanceRecords[key];
+
+    if (record == null) return 'A'; // Alpha - no record
+    if (record.type == 'hadir') return 'H'; // Hadir
+    if (record.type == 'izin') {
+      return record.izinApproved
+          ? 'H'
+          : 'I'; // Approved = Hadir, Pending = Izin
+    }
+    return 'A';
+  }
 }
 
 // Enhanced attendance record model with student ID
@@ -323,6 +379,7 @@ class AttendanceRecord {
   final String type; // 'hadir' or 'izin'
   final String? reason;
   final String timestamp;
+  final bool izinApproved; // For izin: approved by lecturer
 
   const AttendanceRecord({
     required this.studentId,
@@ -332,6 +389,7 @@ class AttendanceRecord {
     required this.type,
     this.reason,
     required this.timestamp,
+    this.izinApproved = false,
   });
 
   AppUser? get student => UserData.getUserById(studentId);

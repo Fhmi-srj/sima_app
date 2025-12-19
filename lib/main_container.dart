@@ -157,6 +157,7 @@ class _MainContainerState extends State<MainContainer> {
             userAngkatan: _userAngkatan,
             userInstitusi: _userInstitusi,
             userSemester: _userSemester,
+            studentId: _userNim, // Pass studentId for KRS-filtered schedule
           );
         }
         break;
@@ -187,6 +188,7 @@ class _MainContainerState extends State<MainContainer> {
           currentPage = SchedulePageContent(
             onNavigateToProfile: _onNavigateToProfile,
             onNavigateToSettings: _onNavigateToSettings,
+            studentId: _userNim, // Pass studentId for KRS-based schedule
           );
         }
         break;
@@ -202,6 +204,7 @@ class _MainContainerState extends State<MainContainer> {
           currentPage = FinancePageContent(
             onNavigateToProfile: _onNavigateToProfile,
             onNavigateToSettings: _onNavigateToSettings,
+            studentId: _userNim,
           );
         }
         break;

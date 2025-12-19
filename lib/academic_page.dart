@@ -669,11 +669,38 @@ class _AcademicPageContentState extends State<AcademicPageContent>
     required String status,
     List<Map<String, dynamic>>? timeline,
   }) {
-    // Default timeline for approved
+    // Helper to format date
+    String formatDate(DateTime dt) {
+      final months = [
+        'Januari',
+        'Februari',
+        'Maret',
+        'April',
+        'Mei',
+        'Juni',
+        'Juli',
+        'Agustus',
+        'September',
+        'Oktober',
+        'November',
+        'Desember',
+      ];
+      return '${dt.day.toString().padLeft(2, '0')} ${months[dt.month - 1]} ${dt.year}';
+    }
+
+    String formatTime(DateTime dt) {
+      return '${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')} WIB';
+    }
+
+    // Calculate realtime dates (today and yesterday)
+    final now = DateTime.now();
+    final yesterday = now.subtract(const Duration(days: 1));
+
+    // Default timeline for approved (using realtime dates)
     final defaultApprovedTimeline = [
       {
         'title': 'KRS Diajukan',
-        'date': '08 Desember 2024',
+        'date': formatDate(yesterday),
         'time': '14:30 WIB',
         'by': 'Ahmad Rizky (102260011)',
         'type': 'submitted',
@@ -682,8 +709,8 @@ class _AcademicPageContentState extends State<AcademicPageContent>
       },
       {
         'title': 'Ditinjau Dosen Wali',
-        'date': '09 Desember 2024',
-        'time': '09:15 WIB',
+        'date': formatDate(now),
+        'time': formatTime(now.subtract(const Duration(minutes: 5))),
         'by': 'Dr. Ahmad Hidayat, M.Kom',
         'type': 'reviewed',
         'status': 'Selesai',
@@ -691,8 +718,8 @@ class _AcademicPageContentState extends State<AcademicPageContent>
       },
       {
         'title': 'KRS Disetujui',
-        'date': '09 Desember 2024',
-        'time': '09:20 WIB',
+        'date': formatDate(now),
+        'time': formatTime(now),
         'by': 'Dr. Ahmad Hidayat, M.Kom',
         'type': 'approved',
         'status': 'Selesai',

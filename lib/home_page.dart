@@ -19,6 +19,7 @@ class HomeContent extends StatefulWidget {
   final String userAngkatan;
   final String userInstitusi;
   final String userSemester;
+  final String? studentId; // For KRS-filtered schedule
 
   const HomeContent({
     super.key,
@@ -33,6 +34,7 @@ class HomeContent extends StatefulWidget {
     required this.userAngkatan,
     this.userInstitusi = 'Institut Teknologi dan Sains Pekalongan',
     this.userSemester = '5',
+    this.studentId,
   });
 
   @override
@@ -40,8 +42,24 @@ class HomeContent extends StatefulWidget {
 }
 
 class _HomeContentState extends State<HomeContent> {
+  // Get today's schedule filtered by approved KRS
+  List<Map<String, String>> _getTodaySchedule() {
+    if (widget.studentId != null) {
+      return ScheduleData.getTodayScheduleByKrs(studentId: widget.studentId!);
+    }
+    // Fallback for backward compatibility
+    return ScheduleData.getTodaySchedule();
+  }
+
+  // Check if student has approved KRS
+  bool _hasApprovedKrs() {
+    if (widget.studentId == null) return true; // Legacy mode
+    return ScheduleData.hasApprovedKrs(widget.studentId!);
+  }
+
   @override
   Widget build(BuildContext context) {
+    final todaySchedule = _getTodaySchedule();
     return Scaffold(
       backgroundColor: Colors.grey[50],
       body: Column(
@@ -189,7 +207,9 @@ class _HomeContentState extends State<HomeContent> {
                   // Schedule Cards - Horizontal Carousel
                   SizedBox(
                     height: 155,
-                    child: ScheduleData.getTodaySchedule().isEmpty
+                    child: !_hasApprovedKrs()
+                        ? _buildNoApprovedKrsState()
+                        : todaySchedule.isEmpty
                         ? Center(
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
@@ -215,12 +235,11 @@ class _HomeContentState extends State<HomeContent> {
                             scrollDirection: Axis.horizontal,
                             physics: const BouncingScrollPhysics(),
                             padding: const EdgeInsets.symmetric(horizontal: 16),
-                            itemCount: ScheduleData.getTodaySchedule().length,
+                            itemCount: todaySchedule.length,
                             separatorBuilder: (context, index) =>
                                 const SizedBox(width: 12),
                             itemBuilder: (context, index) {
-                              final schedule =
-                                  ScheduleData.getTodaySchedule()[index];
+                              final schedule = todaySchedule[index];
                               return _buildScheduleCard(schedule);
                             },
                           ),
@@ -525,6 +544,51 @@ class _HomeContentState extends State<HomeContent> {
         );
       }
     }
+  }
+
+  // Build empty state for when KRS is not approved
+  Widget _buildNoApprovedKrsState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.orange.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.orange.withOpacity(0.3)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.assignment_late, color: Colors.orange, size: 24),
+              const SizedBox(width: 12),
+              Flexible(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'KRS Belum Disetujui',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Submit KRS di menu Akademik',
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget _buildInfoItem(IconData icon, String text) {

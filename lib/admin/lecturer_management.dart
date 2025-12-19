@@ -251,30 +251,32 @@ class _LecturerManagementState extends State<LecturerManagement> {
   }
 
   void _showAddLecturerModal() {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _LecturerFormModal(
-        title: 'Tambah Dosen',
-        onSave: (data) {
-          CustomToast.success(context, 'Dosen berhasil ditambahkan');
-        },
+      barrierDismissible: true,
+      builder: (context) => Center(
+        child: _LecturerFormModal(
+          title: 'Tambah Dosen',
+          onSave: (data) {
+            CustomToast.success(context, 'Dosen berhasil ditambahkan');
+          },
+        ),
       ),
     );
   }
 
   void _showEditLecturerModal(AppUser lecturer) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _LecturerFormModal(
-        title: 'Edit Dosen',
-        lecturer: lecturer,
-        onSave: (data) {
-          CustomToast.success(context, 'Data dosen berhasil diupdate');
-        },
+      barrierDismissible: true,
+      builder: (context) => Center(
+        child: _LecturerFormModal(
+          title: 'Edit Dosen',
+          lecturer: lecturer,
+          onSave: (data) {
+            CustomToast.success(context, 'Data dosen berhasil diupdate');
+          },
+        ),
       ),
     );
   }
@@ -363,96 +365,151 @@ class _LecturerFormModalState extends State<_LecturerFormModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.7,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
         ),
-      ),
-      child: Column(
-        children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          ),
-
-          // Form
-          Expanded(
-            child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Container(
               padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.green, Color(0xFF66BB6A)],
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              child: Row(
                 children: [
-                  _buildTextField('NIP', _nipController, Icons.badge),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    'Nama Lengkap',
-                    _nameController,
-                    Icons.person,
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(
+                      widget.lecturer == null ? Icons.person_add : Icons.edit,
+                      color: Colors.white,
+                      size: 24,
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  _buildTextField(
-                    'Bidang Keahlian',
-                    _prodiController,
-                    Icons.work,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          widget.lecturer == null
+                              ? 'Isi data dosen baru'
+                              : 'Perbarui data dosen',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
-          ),
 
-          // Footer
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.grey[200]!)),
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onSave({
-                    'nip': _nipController.text,
-                    'name': _nameController.text,
-                    'prodi': _prodiController.text,
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: primaryGreen,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+            // Form
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTextField('NIP', _nipController, Icons.badge),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      'Nama Lengkap',
+                      _nameController,
+                      Icons.person,
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTextField(
+                      'Bidang Keahlian',
+                      _prodiController,
+                      Icons.work,
+                    ),
+                  ],
                 ),
-                child: const Text('Simpan', style: TextStyle(fontSize: 16)),
               ),
             ),
-          ),
-        ],
+
+            // Footer
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: Colors.grey[200]!)),
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    widget.onSave({
+                      'nip': _nipController.text,
+                      'name': _nameController.text,
+                      'prodi': _prodiController.text,
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryGreen,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Simpan', style: TextStyle(fontSize: 16)),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

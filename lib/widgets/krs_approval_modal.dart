@@ -604,6 +604,11 @@ class KrsApprovedDetailModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final wajibCount = mataKuliahList.where((m) => m['type'] == 'Wajib').length;
+    final pilihanCount = mataKuliahList
+        .where((m) => m['type'] == 'Pilihan')
+        .length;
+
     return Center(
       child: Container(
         margin: const EdgeInsets.all(20),
@@ -622,326 +627,380 @@ class KrsApprovedDetailModal extends StatelessWidget {
             ),
           ],
         ),
-        child: Material(
-          color: Colors.transparent,
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Header with green gradient
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFF4CAF50), Color(0xFF66BB6A)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(24),
-                    topRight: Radius.circular(24),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.verified,
-                          color: Colors.white,
-                          size: 28,
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'KRS Disetujui',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(
-                                semesterInfo,
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white.withOpacity(0.9),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () => Navigator.pop(context),
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Icon(
-                              Icons.close,
-                              color: Colors.white,
-                              size: 20,
-                            ),
-                          ),
-                        ),
-                      ],
+          child: Material(
+            color: Colors.transparent,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Header with green gradient
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Color(0xFF4CAF50), Color(0xFF66BB6A)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    const SizedBox(height: 16),
-                    // Student info
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
                         children: [
-                          CircleAvatar(
-                            radius: 24,
-                            backgroundColor: Colors.white.withOpacity(0.3),
-                            child: Text(
-                              student.name[0],
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                              ),
-                            ),
+                          const Icon(
+                            Icons.verified,
+                            color: Colors.white,
+                            size: 28,
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  student.name,
-                                  style: const TextStyle(
-                                    color: Colors.white,
+                                const Text(
+                                  'KRS Disetujui',
+                                  style: TextStyle(
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
-                                    fontSize: 16,
+                                    color: Colors.white,
                                   ),
                                 ),
-                                const SizedBox(height: 2),
+                                const SizedBox(height: 4),
                                 Text(
-                                  'NIM: ${student.id}',
+                                  semesterInfo,
                                   style: TextStyle(
+                                    fontSize: 14,
                                     color: Colors.white.withOpacity(0.9),
-                                    fontSize: 13,
-                                  ),
-                                ),
-                                Text(
-                                  'Kelas: ${student.kelas ?? "-"}',
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9),
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Text(
-                              '$totalSks SKS',
-                              style: const TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.2),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 20,
                               ),
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
 
-              // Approval info
-              Container(
-                margin: const EdgeInsets.all(16),
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.green.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.green.withOpacity(0.3)),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.check_circle,
-                      color: Colors.green,
-                      size: 20,
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Disetujui pada: ',
-                      style: TextStyle(fontSize: 13, color: Colors.green),
-                    ),
-                    Text(
-                      approvedDate,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-              // Mata Kuliah List
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Row(
-                  children: [
-                    const Text(
-                      'Mata Kuliah Diambil',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15,
-                      ),
-                    ),
-                    const Spacer(),
-                    Text(
-                      '${mataKuliahList.length} MK',
-                      style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              // Mata Kuliah Table
-              Flexible(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.grey[200]!),
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columnSpacing: 16,
-                        headingRowColor: WidgetStateProperty.all(
-                          Colors.green.withOpacity(0.1),
-                        ),
-                        headingTextStyle: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12,
-                          color: Colors.green,
-                        ),
-                        dataTextStyle: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[800],
-                        ),
-                        columns: const [
-                          DataColumn(label: Text('Kode')),
-                          DataColumn(label: Text('Mata Kuliah')),
-                          DataColumn(label: Text('Hari')),
-                          DataColumn(label: Text('Jam')),
-                          DataColumn(label: Text('Dosen')),
-                          DataColumn(label: Text('SKS'), numeric: true),
-                        ],
-                        rows: mataKuliahList
-                            .map(
-                              (mk) => DataRow(
-                                cells: [
-                                  DataCell(
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 6,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: Colors.green.withOpacity(0.1),
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                      child: Text(
-                                        mk['code'] ?? '',
-                                        style: const TextStyle(
-                                          fontSize: 11,
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                // Scrollable content
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Student info card
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: primaryGreen.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: primaryGreen.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 24,
+                                backgroundColor: primaryGreen,
+                                child: Text(
+                                  student.name[0],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      student.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
                                       ),
                                     ),
-                                  ),
-                                  DataCell(
+                                    const SizedBox(height: 2),
                                     Text(
-                                      mk['name'] ?? '',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w500,
+                                      'NIM: ${student.id}',
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 13,
                                       ),
                                     ),
-                                  ),
-                                  DataCell(Text(mk['day'] ?? '-')),
-                                  DataCell(Text(mk['time'] ?? '-')),
-                                  DataCell(Text(mk['lecturer'] ?? '-')),
-                                  DataCell(
                                     Text(
-                                      '${mk['sks']}',
-                                      style: const TextStyle(
+                                      'Kelas: ${student.kelas ?? "-"}',
+                                      style: TextStyle(
+                                        color: primaryGreen,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    Text(
+                                      student.prodi,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
 
-              // Footer
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  border: Border(top: BorderSide(color: Colors.grey[200]!)),
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(24),
-                    bottomRight: Radius.circular(24),
+                        // Approval info
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.green.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.green.withOpacity(0.3),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.check_circle,
+                                color: Colors.green,
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Disetujui pada: ',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: Colors.green,
+                                ),
+                              ),
+                              Text(
+                                approvedDate,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Summary cards
+                        Row(
+                          children: [
+                            _buildSummaryItem(
+                              'Total SKS',
+                              '$totalSks',
+                              primaryGreen,
+                            ),
+                            const SizedBox(width: 8),
+                            _buildSummaryItem(
+                              'MK Wajib',
+                              '$wajibCount',
+                              primaryBlue,
+                            ),
+                            const SizedBox(width: 8),
+                            _buildSummaryItem(
+                              'MK Pilihan',
+                              '$pilihanCount',
+                              Colors.orange,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Mata Kuliah Header
+                        Row(
+                          children: [
+                            const Text(
+                              'Mata Kuliah Diambil',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              '${mataKuliahList.length} MK',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Mata Kuliah Table
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey[200]!),
+                          ),
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columnSpacing: 16,
+                              headingRowColor: WidgetStateProperty.all(
+                                Colors.green.withOpacity(0.1),
+                              ),
+                              headingTextStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                color: Colors.green,
+                              ),
+                              dataTextStyle: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[800],
+                              ),
+                              columns: const [
+                                DataColumn(label: Text('Kode')),
+                                DataColumn(label: Text('Mata Kuliah')),
+                                DataColumn(label: Text('Hari')),
+                                DataColumn(label: Text('Jam')),
+                                DataColumn(label: Text('Dosen')),
+                                DataColumn(label: Text('SKS'), numeric: true),
+                              ],
+                              rows: mataKuliahList
+                                  .map(
+                                    (mk) => DataRow(
+                                      cells: [
+                                        DataCell(
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  (mk['type'] == 'Wajib'
+                                                          ? Colors.green
+                                                          : Colors.orange)
+                                                      .withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              mk['code'] ?? '',
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: mk['type'] == 'Wajib'
+                                                    ? Colors.green
+                                                    : Colors.orange,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        DataCell(
+                                          Text(
+                                            mk['name'] ?? '',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        DataCell(Text(mk['day'] ?? '-')),
+                                        DataCell(Text(mk['time'] ?? '-')),
+                                        DataCell(Text(mk['lecturer'] ?? '-')),
+                                        DataCell(
+                                          Text(
+                                            '${mk['sks']}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton.icon(
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close),
-                    label: const Text('Tutup'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+
+                // Footer
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[50],
+                    border: Border(top: BorderSide(color: Colors.grey[200]!)),
+                  ),
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: () => Navigator.pop(context),
+                      icon: const Icon(Icons.close),
+                      label: const Text('Tutup'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryItem(String label, String value, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(label, style: TextStyle(fontSize: 11, color: color)),
+          ],
         ),
       ),
     );
@@ -1024,6 +1083,11 @@ class KrsRejectedDetailModal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final wajibCount = mataKuliahList.where((m) => m['type'] == 'Wajib').length;
+    final pilihanCount = mataKuliahList
+        .where((m) => m['type'] == 'Pilihan')
+        .length;
+
     return Center(
       child: Container(
         margin: const EdgeInsets.all(24),
@@ -1046,7 +1110,6 @@ class KrsRejectedDetailModal extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           child: Material(
             color: Colors.transparent,
-            borderRadius: BorderRadius.circular(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -1058,10 +1121,6 @@ class KrsRejectedDetailModal extends StatelessWidget {
                       colors: [Color(0xFFE74C3C), Color(0xFFE57373)],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24),
-                      topRight: Radius.circular(24),
                     ),
                   ),
                   child: Column(
@@ -1116,232 +1175,266 @@ class KrsRejectedDetailModal extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
-                      // Student info
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 24,
-                              backgroundColor: Colors.white.withOpacity(0.3),
-                              child: Text(
-                                student.name[0],
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                    ],
+                  ),
+                ),
+
+                // Scrollable content
+                Flexible(
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Student info card
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          decoration: BoxDecoration(
+                            color: primaryRed.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: primaryRed.withOpacity(0.2),
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 24,
+                                backgroundColor: primaryRed,
+                                child: Text(
+                                  student.name[0],
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      student.name,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      'NIM: ${student.id}',
+                                      style: TextStyle(
+                                        color: Colors.grey[600],
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    Text(
+                                      'Kelas: ${student.kelas ?? "-"}',
+                                      style: TextStyle(
+                                        color: primaryRed,
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                    Text(
+                                      student.prodi,
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Rejection info
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: Colors.red.withOpacity(0.3),
                             ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
+                                  const Icon(
+                                    Icons.info,
+                                    color: Colors.red,
+                                    size: 20,
+                                  ),
+                                  const SizedBox(width: 8),
                                   Text(
-                                    student.name,
+                                    'Ditolak pada: ${rejectedDate ?? "-"}',
                                     style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    'NIM: ${student.id}',
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.9),
                                       fontSize: 13,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Kelas: ${student.kelas ?? "-"}',
-                                    style: TextStyle(
-                                      color: Colors.white.withOpacity(0.9),
-                                      fontSize: 13,
+                                      color: Colors.red,
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Text(
-                                '$totalSks SKS',
-                                style: const TextStyle(
-                                  color: primaryRed,
-                                  fontWeight: FontWeight.bold,
+                              if (rejectedReason != null &&
+                                  rejectedReason!.isNotEmpty) ...[
+                                const SizedBox(height: 8),
+                                Text(
+                                  'Alasan: $rejectedReason',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[700],
+                                  ),
                                 ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        // Summary cards
+                        Row(
+                          children: [
+                            _buildSummaryItem(
+                              'Total SKS',
+                              '$totalSks',
+                              primaryRed,
+                            ),
+                            const SizedBox(width: 8),
+                            _buildSummaryItem(
+                              'MK Wajib',
+                              '$wajibCount',
+                              primaryBlue,
+                            ),
+                            const SizedBox(width: 8),
+                            _buildSummaryItem(
+                              'MK Pilihan',
+                              '$pilihanCount',
+                              Colors.orange,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Mata Kuliah Header
+                        Row(
+                          children: [
+                            const Text(
+                              'Mata Kuliah Diambil',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 15,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(
+                              '${mataKuliahList.length} MK',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 13,
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                        const SizedBox(height: 12),
 
-                // Rejection info
-                Container(
-                  margin: const EdgeInsets.all(16),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.red.withOpacity(0.3)),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.info, color: Colors.red, size: 20),
-                          const SizedBox(width: 8),
-                          Text(
-                            'Ditolak pada: ${rejectedDate ?? "-"}',
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.red,
-                              fontWeight: FontWeight.w600,
-                            ),
+                        // Mata Kuliah Table
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(color: Colors.grey[200]!),
                           ),
-                        ],
-                      ),
-                      if (rejectedReason != null &&
-                          rejectedReason!.isNotEmpty) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          'Alasan: $rejectedReason',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[700],
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columnSpacing: 16,
+                              headingRowColor: WidgetStateProperty.all(
+                                Colors.red.withOpacity(0.1),
+                              ),
+                              headingTextStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                color: primaryRed,
+                              ),
+                              dataTextStyle: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[800],
+                              ),
+                              columns: const [
+                                DataColumn(label: Text('Kode')),
+                                DataColumn(label: Text('Mata Kuliah')),
+                                DataColumn(label: Text('Hari')),
+                                DataColumn(label: Text('Jam')),
+                                DataColumn(label: Text('Dosen')),
+                                DataColumn(label: Text('SKS'), numeric: true),
+                              ],
+                              rows: mataKuliahList
+                                  .map(
+                                    (mk) => DataRow(
+                                      cells: [
+                                        DataCell(
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 6,
+                                              vertical: 2,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  (mk['type'] == 'Wajib'
+                                                          ? Colors.green
+                                                          : Colors.orange)
+                                                      .withOpacity(0.1),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                            ),
+                                            child: Text(
+                                              mk['code'] ?? '',
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                                color: mk['type'] == 'Wajib'
+                                                    ? Colors.green
+                                                    : Colors.orange,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        DataCell(
+                                          Text(
+                                            mk['name'] ?? '',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                        ),
+                                        DataCell(Text(mk['day'] ?? '-')),
+                                        DataCell(Text(mk['time'] ?? '-')),
+                                        DataCell(Text(mk['lecturer'] ?? '-')),
+                                        DataCell(
+                                          Text(
+                                            '${mk['sks']}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         ),
                       ],
-                    ],
-                  ),
-                ),
-
-                // Mata Kuliah Header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-                      const Text(
-                        'Mata Kuliah Diambil',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                        ),
-                      ),
-                      const Spacer(),
-                      Text(
-                        '${mataKuliahList.length} MK',
-                        style: TextStyle(color: Colors.grey[600], fontSize: 13),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 8),
-
-                // Mata Kuliah Table
-                Flexible(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey[200]!),
-                      ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: DataTable(
-                          columnSpacing: 16,
-                          headingRowColor: WidgetStateProperty.all(
-                            Colors.red.withOpacity(0.1),
-                          ),
-                          headingTextStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color: primaryRed,
-                          ),
-                          dataTextStyle: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[800],
-                          ),
-                          columns: const [
-                            DataColumn(label: Text('Kode')),
-                            DataColumn(label: Text('Mata Kuliah')),
-                            DataColumn(label: Text('Hari')),
-                            DataColumn(label: Text('Jam')),
-                            DataColumn(label: Text('Dosen')),
-                            DataColumn(label: Text('SKS'), numeric: true),
-                          ],
-                          rows: mataKuliahList
-                              .map(
-                                (mk) => DataRow(
-                                  cells: [
-                                    DataCell(
-                                      Container(
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
-                                          vertical: 2,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.red.withOpacity(0.1),
-                                          borderRadius: BorderRadius.circular(
-                                            4,
-                                          ),
-                                        ),
-                                        child: Text(
-                                          mk['code'] ?? '',
-                                          style: const TextStyle(
-                                            fontSize: 11,
-                                            color: primaryRed,
-                                            fontWeight: FontWeight.w600,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        mk['name'] ?? '',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                    DataCell(Text(mk['day'] ?? '-')),
-                                    DataCell(Text(mk['time'] ?? '-')),
-                                    DataCell(Text(mk['lecturer'] ?? '-')),
-                                    DataCell(
-                                      Text(
-                                        '${mk['sks']}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                              .toList(),
-                        ),
-                      ),
                     ),
                   ),
                 ),
@@ -1352,10 +1445,6 @@ class KrsRejectedDetailModal extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Colors.grey[50],
                     border: Border(top: BorderSide(color: Colors.grey[200]!)),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(24),
-                      bottomRight: Radius.circular(24),
-                    ),
                   ),
                   child: Row(
                     children: [
@@ -1396,6 +1485,31 @@ class KrsRejectedDetailModal extends StatelessWidget {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSummaryItem(String label, String value, Color color) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Column(
+          children: [
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            Text(label, style: TextStyle(fontSize: 11, color: color)),
+          ],
         ),
       ),
     );

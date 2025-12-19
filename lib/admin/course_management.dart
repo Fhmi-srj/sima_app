@@ -335,30 +335,32 @@ class _CourseManagementState extends State<CourseManagement> {
   }
 
   void _showAddCourseModal() {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _CourseFormModal(
-        title: 'Tambah Mata Kuliah',
-        onSave: (data) {
-          CustomToast.success(context, 'Mata kuliah berhasil ditambahkan');
-        },
+      barrierDismissible: true,
+      builder: (context) => Center(
+        child: _CourseFormModal(
+          title: 'Tambah Mata Kuliah',
+          onSave: (data) {
+            CustomToast.success(context, 'Mata kuliah berhasil ditambahkan');
+          },
+        ),
       ),
     );
   }
 
   void _showEditCourseModal(Map<String, dynamic> course) {
-    showModalBottomSheet(
+    showDialog(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _CourseFormModal(
-        title: 'Edit Mata Kuliah',
-        course: course,
-        onSave: (data) {
-          CustomToast.success(context, 'Mata kuliah berhasil diupdate');
-        },
+      barrierDismissible: true,
+      builder: (context) => Center(
+        child: _CourseFormModal(
+          title: 'Edit Mata Kuliah',
+          course: course,
+          onSave: (data) {
+            CustomToast.success(context, 'Mata kuliah berhasil diupdate');
+          },
+        ),
       ),
     );
   }
@@ -443,205 +445,269 @@ class _CourseFormModalState extends State<_CourseFormModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.75,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        constraints: const BoxConstraints(maxWidth: 420, maxHeight: 550),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 20,
+              offset: const Offset(0, 10),
+            ),
+          ],
         ),
-      ),
-      child: Column(
-        children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border(bottom: BorderSide(color: Colors.grey[200]!)),
-            ),
-            child: Row(
-              children: [
-                Text(
-                  widget.title,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const Spacer(),
-                IconButton(
-                  icon: const Icon(Icons.close),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          ),
-
-          // Form
-          Expanded(
-            child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Header
+            Container(
               padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.orange, Color(0xFFFFA726)],
+                ),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+              ),
+              child: Row(
                 children: [
-                  _buildTextField('Kode Mata Kuliah', _codeController),
-                  const SizedBox(height: 16),
-                  _buildTextField('Nama Mata Kuliah', _nameController),
-                  const SizedBox(height: 16),
-
-                  // SKS
-                  const Text(
-                    'SKS',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [1, 2, 3, 4]
-                        .map(
-                          (sks) => GestureDetector(
-                            onTap: () => setState(() => _sks = sks),
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 8),
-                              width: 50,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                color: _sks == sks
-                                    ? Colors.orange
-                                    : Colors.grey[100],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '$sks',
-                                  style: TextStyle(
-                                    color: _sks == sks
-                                        ? Colors.white
-                                        : Colors.grey[700],
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Type
-                  const Text(
-                    'Tipe',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: ['Wajib', 'Pilihan']
-                        .map(
-                          (type) => Expanded(
-                            child: GestureDetector(
-                              onTap: () => setState(() => _type = type),
-                              child: Container(
-                                margin: EdgeInsets.only(
-                                  right: type == 'Wajib' ? 8 : 0,
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: _type == type
-                                      ? (type == 'Wajib'
-                                            ? Colors.orange
-                                            : Colors.purple)
-                                      : Colors.grey[100],
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    type,
-                                    style: TextStyle(
-                                      color: _type == type
-                                          ? Colors.white
-                                          : Colors.grey[700],
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        )
-                        .toList(),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Semester
-                  const Text(
-                    'Semester',
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
-                  ),
-                  const SizedBox(height: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.grey[100],
+                      color: Colors.white.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: DropdownButtonHideUnderline(
-                      child: DropdownButton<int>(
-                        isExpanded: true,
-                        value: _semester,
-                        items: [1, 2, 3, 4, 5, 6, 7, 8]
-                            .map(
-                              (s) => DropdownMenuItem(
-                                value: s,
-                                child: Text('Semester $s'),
-                              ),
-                            )
-                            .toList(),
-                        onChanged: (value) =>
-                            setState(() => _semester = value!),
+                    child: Icon(
+                      widget.course == null ? Icons.add : Icons.edit,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Text(
+                          widget.course == null
+                              ? 'Isi data mata kuliah baru'
+                              : 'Perbarui data mata kuliah',
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.white.withOpacity(0.9),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.white,
+                        size: 20,
                       ),
                     ),
                   ),
                 ],
               ),
             ),
-          ),
 
-          // Footer
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(color: Colors.grey[200]!)),
-            ),
-            child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  widget.onSave({
-                    'code': _codeController.text,
-                    'name': _nameController.text,
-                    'sks': _sks,
-                    'type': _type,
-                    'semester': _semester,
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.orange,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+            // Form
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildTextField('Kode Mata Kuliah', _codeController),
+                    const SizedBox(height: 16),
+                    _buildTextField('Nama Mata Kuliah', _nameController),
+                    const SizedBox(height: 16),
+
+                    // SKS
+                    const Text(
+                      'SKS',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [1, 2, 3, 4]
+                          .map(
+                            (sks) => GestureDetector(
+                              onTap: () => setState(() => _sks = sks),
+                              child: Container(
+                                margin: const EdgeInsets.only(right: 8),
+                                width: 50,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  color: _sks == sks
+                                      ? Colors.orange
+                                      : Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '$sks',
+                                    style: TextStyle(
+                                      color: _sks == sks
+                                          ? Colors.white
+                                          : Colors.grey[700],
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Type
+                    const Text(
+                      'Tipe',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: ['Wajib', 'Pilihan']
+                          .map(
+                            (type) => Expanded(
+                              child: GestureDetector(
+                                onTap: () => setState(() => _type = type),
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                    right: type == 'Wajib' ? 8 : 0,
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _type == type
+                                        ? (type == 'Wajib'
+                                              ? Colors.orange
+                                              : Colors.purple)
+                                        : Colors.grey[100],
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Center(
+                                    child: Text(
+                                      type,
+                                      style: TextStyle(
+                                        color: _type == type
+                                            ? Colors.white
+                                            : Colors.grey[700],
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Semester
+                    const Text(
+                      'Semester',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<int>(
+                          isExpanded: true,
+                          value: _semester,
+                          items: [1, 2, 3, 4, 5, 6, 7, 8]
+                              .map(
+                                (s) => DropdownMenuItem(
+                                  value: s,
+                                  child: Text('Semester $s'),
+                                ),
+                              )
+                              .toList(),
+                          onChanged: (value) =>
+                              setState(() => _semester = value!),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                child: const Text('Simpan', style: TextStyle(fontSize: 16)),
               ),
             ),
-          ),
-        ],
+
+            // Footer
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                border: Border(top: BorderSide(color: Colors.grey[200]!)),
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    widget.onSave({
+                      'code': _codeController.text,
+                      'name': _nameController.text,
+                      'sks': _sks,
+                      'type': _type,
+                      'semester': _semester,
+                    });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: const Text('Simpan', style: TextStyle(fontSize: 16)),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

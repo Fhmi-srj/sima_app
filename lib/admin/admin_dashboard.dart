@@ -3,7 +3,9 @@ import '../data/user_data.dart';
 import '../data/class_data.dart';
 
 class AdminDashboard extends StatelessWidget {
-  const AdminDashboard({super.key});
+  final Function(int) onNavigateToPage;
+
+  const AdminDashboard({super.key, required this.onNavigateToPage});
 
   static const Color primaryBlue = Color(0xFF4A90E2);
 
@@ -115,28 +117,28 @@ class AdminDashboard extends StatelessWidget {
             title: 'Tambah Mahasiswa',
             subtitle: 'Daftarkan mahasiswa baru ke sistem',
             color: Colors.blue,
-            onTap: () {},
+            onTap: () => onNavigateToPage(1), // Student Management
           ),
           _buildQuickActionCard(
             icon: Icons.person_add_alt_1,
             title: 'Tambah Dosen',
             subtitle: 'Daftarkan dosen baru ke sistem',
             color: Colors.green,
-            onTap: () {},
+            onTap: () => onNavigateToPage(2), // Lecturer Management
           ),
           _buildQuickActionCard(
             icon: Icons.library_books,
             title: 'Kelola Paket Mata Kuliah',
             subtitle: 'Atur mata kuliah per kelas per semester',
             color: Colors.orange,
-            onTap: () {},
+            onTap: () => onNavigateToPage(3), // Course Management
           ),
           _buildQuickActionCard(
             icon: Icons.calculate,
             title: 'Hitung Nilai Akhir',
             subtitle: 'Generate nilai akhir dari komponen',
             color: Colors.purple,
-            onTap: () {},
+            onTap: () => onNavigateToPage(6), // Grade Calculation
           ),
           const SizedBox(height: 24),
 
@@ -262,66 +264,71 @@ class AdminDashboard extends StatelessWidget {
     final studentCount = UserData.getStudentCountByKelas(kelas);
     final isPagi = UserData.isKelasPagi(kelas);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: primaryBlue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
+    return GestureDetector(
+      onTap: () => onNavigateToPage(1), // Navigate to Student Management
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
-            child: const Icon(Icons.class_, color: primaryBlue, size: 24),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  kelas,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
+          ],
+        ),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: primaryBlue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Icon(Icons.class_, color: primaryBlue, size: 24),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    kelas,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Informatika 2023 • ${isPagi ? "Pagi" : "Malam"}',
-                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
-                ),
-              ],
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: primaryBlue.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Text(
-              '$studentCount Mahasiswa',
-              style: const TextStyle(
-                fontSize: 12,
-                color: primaryBlue,
-                fontWeight: FontWeight.w600,
+                  const SizedBox(height: 4),
+                  Text(
+                    'Informatika 2023 • ${isPagi ? "Pagi" : "Malam"}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  ),
+                ],
               ),
             ),
-          ),
-        ],
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: primaryBlue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '$studentCount Mahasiswa',
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: primaryBlue,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(width: 8),
+            const Icon(Icons.chevron_right, color: Colors.grey),
+          ],
+        ),
       ),
     );
   }

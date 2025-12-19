@@ -72,7 +72,9 @@ class _AdminContainerState extends State<AdminContainer> {
   Widget _buildPage() {
     switch (_selectedIndex) {
       case 0:
-        return const AdminDashboard();
+        return AdminDashboard(
+          onNavigateToPage: (index) => setState(() => _selectedIndex = index),
+        );
       case 1:
         return const StudentManagement();
       case 2:

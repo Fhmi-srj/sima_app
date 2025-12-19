@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'custom_toast.dart';
+import '../data/payment_data.dart';
 
 class PaymentDetailModal extends StatefulWidget {
   final String title;
@@ -10,6 +11,10 @@ class PaymentDetailModal extends StatefulWidget {
   final String dueDate;
   final String totalAmount;
   final String vaNumber;
+  final PaymentStatus? status;
+  final String? rejectionReason;
+  final String? billId;
+  final VoidCallback? onPaymentSubmitted;
 
   const PaymentDetailModal({
     super.key,
@@ -20,6 +25,10 @@ class PaymentDetailModal extends StatefulWidget {
     required this.dueDate,
     required this.totalAmount,
     required this.vaNumber,
+    this.status,
+    this.rejectionReason,
+    this.billId,
+    this.onPaymentSubmitted,
   });
 
   @override
@@ -34,6 +43,10 @@ class PaymentDetailModal extends StatefulWidget {
     required String dueDate,
     required String totalAmount,
     required String vaNumber,
+    PaymentStatus? status,
+    String? rejectionReason,
+    String? billId,
+    VoidCallback? onPaymentSubmitted,
   }) {
     return showDialog(
       context: context,
@@ -49,6 +62,10 @@ class PaymentDetailModal extends StatefulWidget {
           dueDate: dueDate,
           totalAmount: totalAmount,
           vaNumber: vaNumber,
+          status: status,
+          rejectionReason: rejectionReason,
+          billId: billId,
+          onPaymentSubmitted: onPaymentSubmitted,
         ),
       ),
     );
@@ -237,7 +254,11 @@ class _PaymentDetailModalState extends State<PaymentDetailModal> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: _buildInfoBox('Status', 'Belum Bayar', isWarning: true),
+                child: _buildInfoBox(
+                  'Status',
+                  _getStatusText(),
+                  isWarning: _isWarningStatus(),
+                ),
               ),
             ],
           ),
@@ -914,15 +935,70 @@ class _PaymentDetailModalState extends State<PaymentDetailModal> {
     CustomToast.success(context, 'Nomor Virtual Account berhasil disalin!');
   }
 
+  String _getStatusText() {
+    switch (widget.status) {
+      case PaymentStatus.pending:
+        return 'Menunggu Verifikasi';
+      case PaymentStatus.rejected:
+        return 'Ditolak';
+      case PaymentStatus.verified:
+        return 'Terverifikasi';
+      case PaymentStatus.unpaid:
+      default:
+        return 'Belum Bayar';
+    }
+  }
+
+  bool _isWarningStatus() {
+    return widget.status == PaymentStatus.unpaid ||
+        widget.status == PaymentStatus.rejected ||
+        widget.status == null;
+  }
+
   void _submitPayment() {
+    if (widget.billId == null) {
+      CustomToast.error(context, 'ID tagihan tidak ditemukan');
+      return;
+    }
+
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(seconds: 1), () {
+
+    Future.delayed(const Duration(milliseconds: 500), () {
+      final paymentMethod = _selectedMethod == 'va'
+          ? 'Virtual Account'
+          : 'Tunai / Cash';
+      final proofFileName =
+          'Bukti_Pembayaran_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+      bool success;
+      if (widget.status == PaymentStatus.rejected) {
+        // Resubmit rejected payment
+        success = PaymentData.resubmitPayment(
+          billId: widget.billId!,
+          paymentMethod: paymentMethod,
+          proofFileName: proofFileName,
+        );
+      } else {
+        // Submit new payment
+        success = PaymentData.submitPayment(
+          billId: widget.billId!,
+          paymentMethod: paymentMethod,
+          proofFileName: proofFileName,
+        );
+      }
+
       setState(() => _isLoading = false);
       Navigator.of(context).pop();
-      CustomToast.success(
-        context,
-        'Pembayaran via ${_selectedMethod == 'va' ? 'Virtual Account' : 'Tunai'} akan diverifikasi dalam 1x24 jam',
-      );
+
+      if (success) {
+        CustomToast.success(
+          context,
+          'Bukti pembayaran berhasil diupload! Menunggu verifikasi admin.',
+        );
+        widget.onPaymentSubmitted?.call();
+      } else {
+        CustomToast.error(context, 'Gagal mengirim bukti pembayaran');
+      }
     });
   }
 }

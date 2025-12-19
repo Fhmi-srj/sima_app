@@ -106,6 +106,23 @@ class KrsData {
     return UserData.getUserById(dosenPaId);
   }
 
+  // Get approved KRS for a student (returns null if no approved KRS)
+  static KrsEntry? getApprovedKrsForStudent(String studentId) {
+    try {
+      return _krsRecords.firstWhere(
+        (krs) => krs.studentId == studentId && krs.status == KrsStatus.approved,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Get course codes from approved KRS for a student
+  static List<String> getApprovedCourseCodesForStudent(String studentId) {
+    final approvedKrs = getApprovedKrsForStudent(studentId);
+    return approvedKrs?.courseCodes ?? [];
+  }
+
   // MUTABLE KRS records - changes persist in memory
   static final List<KrsEntry> _krsRecords = [
     // ===== DRAFT KRS - Published by admin, waiting for student to submit =====

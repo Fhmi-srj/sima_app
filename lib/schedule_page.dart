@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'data/schedule_data.dart';
 import 'data/attendance_data.dart';
+import 'data/krs_data.dart';
 import 'widgets/custom_top_bar.dart';
 import 'widgets/attendance_modal.dart';
 
@@ -8,11 +9,13 @@ import 'widgets/attendance_modal.dart';
 class SchedulePageContent extends StatefulWidget {
   final VoidCallback? onNavigateToProfile;
   final VoidCallback? onNavigateToSettings;
+  final String? studentId; // Student ID for KRS-based schedule
 
   const SchedulePageContent({
     super.key,
     this.onNavigateToProfile,
     this.onNavigateToSettings,
+    this.studentId,
   });
 
   @override
@@ -97,11 +100,11 @@ class _SchedulePageContentState extends State<SchedulePageContent>
             child: TabBarView(
               controller: _tabController,
               children: [
-                _buildScheduleList(ScheduleData.getScheduleForDay('Senin')),
-                _buildScheduleList(ScheduleData.getScheduleForDay('Selasa')),
-                _buildScheduleList(ScheduleData.getScheduleForDay('Rabu')),
-                _buildScheduleList(ScheduleData.getScheduleForDay('Kamis')),
-                _buildScheduleList(ScheduleData.getScheduleForDay('Jum\'at')),
+                _buildScheduleList(_getScheduleForDay('Senin')),
+                _buildScheduleList(_getScheduleForDay('Selasa')),
+                _buildScheduleList(_getScheduleForDay('Rabu')),
+                _buildScheduleList(_getScheduleForDay('Kamis')),
+                _buildScheduleList(_getScheduleForDay('Jum\'at')),
               ],
             ),
           ),
@@ -144,7 +147,49 @@ class _SchedulePageContentState extends State<SchedulePageContent>
     );
   }
 
+  // Helper method to get schedule based on KRS status
+  List<Map<String, String>> _getScheduleForDay(String day) {
+    // If studentId provided, use KRS-filtered schedule
+    if (widget.studentId != null) {
+      return ScheduleData.getScheduleForDayByKrs(
+        day,
+        studentId: widget.studentId!,
+      );
+    }
+    // Fallback to original method (for backward compatibility)
+    return ScheduleData.getScheduleForDay(day);
+  }
+
+  // Check if student has approved KRS
+  bool _hasApprovedKrs() {
+    if (widget.studentId == null) return true; // Legacy mode - show all
+    final approvedKrs = KrsData.getApprovedKrsForStudent(widget.studentId!);
+    return approvedKrs != null;
+  }
+
   Widget _buildScheduleList(List<Map<String, String>> schedules) {
+    // Check if no approved KRS - show empty state
+    if (widget.studentId != null && !_hasApprovedKrs()) {
+      return _buildNoApprovedKrsState();
+    }
+
+    // If no schedules for this day but has approved KRS
+    if (schedules.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.event_available, size: 64, color: Colors.grey[300]),
+            const SizedBox(height: 16),
+            Text(
+              'Tidak ada jadwal hari ini',
+              style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+            ),
+          ],
+        ),
+      );
+    }
+
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: schedules.length,
@@ -161,6 +206,74 @@ class _SchedulePageContentState extends State<SchedulePageContent>
           ),
         );
       },
+    );
+  }
+
+  Widget _buildNoApprovedKrsState() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                Icons.assignment_late,
+                size: 50,
+                color: Colors.orange,
+              ),
+            ),
+            const SizedBox(height: 24),
+            const Text(
+              'Jadwal Belum Tersedia',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'KRS Anda belum diajukan atau disetujui\noleh Dosen Pembimbing Akademik.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                color: Colors.grey[600],
+                height: 1.5,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.blue.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: const [
+                  Icon(Icons.info_outline, size: 20, color: Color(0xFF4A90E2)),
+                  SizedBox(width: 8),
+                  Text(
+                    'Submit KRS di menu Akademik',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF4A90E2),
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
