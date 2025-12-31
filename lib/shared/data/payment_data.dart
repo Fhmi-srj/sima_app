@@ -78,209 +78,131 @@ class BillEntry {
 }
 
 class PaymentData {
-  // MUTABLE billing records
-  static final List<BillEntry> _bills = [
-    // ===== AHMAD RIZKY (102230039) =====
-    // Current semester - unpaid
-    BillEntry(
-      id: 'BILL-2024-039-001',
-      studentId: '102230039',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 7500000,
-      dueDate: DateTime(2024, 12, 20),
-      status: PaymentStatus.unpaid,
-      vaNumber: '8888 0123 2023010239',
-    ),
-    // Previous - verified
-    BillEntry(
-      id: 'BILL-2024-039-002',
-      studentId: '102230039',
-      title: 'UKT Semester Genap 2023/2024',
-      type: 'UKT',
-      semester: 4,
-      academicYear: '2023/2024',
-      amount: 7500000,
-      dueDate: DateTime(2024, 6, 15),
-      status: PaymentStatus.verified,
-      vaNumber: '8888 0123 2023010239',
-      paidAt: DateTime(2024, 6, 2, 14, 28),
-      paymentMethod: 'Virtual Account BCA',
-      proofFileName: 'Bukti_Transfer_UKT_039.jpg',
-      verifiedBy: 'admin@sima.ac.id',
-      verifiedAt: DateTime(2024, 6, 3, 9, 0),
-    ),
-    // Previous - verified
-    BillEntry(
-      id: 'BILL-2023-039-003',
-      studentId: '102230039',
-      title: 'SPP Semester Ganjil 2023/2024',
-      type: 'SPP',
-      semester: 3,
-      academicYear: '2023/2024',
-      amount: 7000000,
-      dueDate: DateTime(2023, 12, 15),
-      status: PaymentStatus.verified,
-      paidAt: DateTime(2023, 12, 10, 10, 30),
-      paymentMethod: 'Transfer Bank Mandiri',
-      proofFileName: 'Bukti_SPP_Sem3_039.jpg',
-      verifiedBy: 'admin@sima.ac.id',
-      verifiedAt: DateTime(2023, 12, 11, 8, 45),
-    ),
+  // Billing records - initialized lazily
+  static List<BillEntry>? _billsCache;
 
-    // ===== SITI NURHALIZA (102230040) =====
-    BillEntry(
-      id: 'BILL-2024-040-001',
-      studentId: '102230040',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 7500000,
-      dueDate: DateTime(2024, 12, 20),
-      status: PaymentStatus.pending,
-      vaNumber: '8888 0123 2023010240',
-      paidAt: DateTime(2024, 12, 10, 16, 45),
-      paymentMethod: 'Virtual Account BCA',
-      proofFileName: 'Bukti_SPP_040.jpg',
-    ),
-    BillEntry(
-      id: 'BILL-2024-040-002',
-      studentId: '102230040',
-      title: 'UKT Semester Genap 2023/2024',
-      type: 'UKT',
-      semester: 4,
-      academicYear: '2023/2024',
-      amount: 7500000,
-      dueDate: DateTime(2024, 6, 15),
-      status: PaymentStatus.verified,
-      paidAt: DateTime(2024, 6, 5, 11, 30),
-      paymentMethod: 'Virtual Account BNI',
-      proofFileName: 'Bukti_UKT_040.jpg',
-      verifiedBy: 'admin@sima.ac.id',
-      verifiedAt: DateTime(2024, 6, 6, 9, 15),
-    ),
+  static List<BillEntry> get _bills {
+    _billsCache ??= _generateAllBills();
+    return _billsCache!;
+  }
 
-    // ===== BUDI SANTOSO (102230041) =====
-    BillEntry(
-      id: 'BILL-2024-041-001',
-      studentId: '102230041',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 7500000,
-      dueDate: DateTime(2024, 12, 20),
-      status: PaymentStatus.pending,
-      vaNumber: '8888 0123 2023010241',
-      paidAt: DateTime(2024, 12, 14, 9, 20),
-      paymentMethod: 'Transfer Bank BRI',
-      proofFileName: 'Bukti_SPP_041.jpg',
-    ),
+  // Payment amounts per semester type
+  static const _sppAmountPagi = 7500000;
+  static const _sppAmountMalam = 6500000;
 
-    // ===== DEWI LESTARI (102230042) =====
-    BillEntry(
-      id: 'BILL-2024-042-001',
-      studentId: '102230042',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 7500000,
-      dueDate: DateTime(2024, 12, 20),
-      status: PaymentStatus.unpaid,
-      vaNumber: '8888 0123 2023010242',
-    ),
+  // Generate all billing records for all students
+  static List<BillEntry> _generateAllBills() {
+    final bills = <BillEntry>[];
+    final allStudents = UserData.getAllStudents();
 
-    // ===== ANDI PRATAMA (102230043) - rejected =====
-    BillEntry(
-      id: 'BILL-2024-043-001',
-      studentId: '102230043',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 7500000,
-      dueDate: DateTime(2024, 12, 20),
-      status: PaymentStatus.rejected,
-      vaNumber: '8888 0123 2023010243',
-      paidAt: DateTime(2024, 12, 8, 14, 10),
-      paymentMethod: 'Transfer Bank Mandiri',
-      proofFileName: 'Bukti_SPP_043_blur.jpg',
-      verifiedBy: 'admin@sima.ac.id',
-      verifiedAt: DateTime(2024, 12, 9, 10, 0),
-      rejectionReason: 'Bukti transfer tidak jelas/blur. Silakan upload ulang.',
-    ),
+    for (final student in allStudents) {
+      final studentIndex = int.tryParse(student.id.substring(6)) ?? 0;
+      final isMalam = student.kelas == 'IM23D';
+      final sppAmount = isMalam ? _sppAmountMalam : _sppAmountPagi;
+      final vaNumber = '8888 0123 ${student.id}';
 
-    // ===== EKO PRASETYO (102230001) - IM23A =====
-    BillEntry(
-      id: 'BILL-2024-001-001',
-      studentId: '102230001',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 7500000,
-      dueDate: DateTime(2024, 12, 20),
-      status: PaymentStatus.verified,
-      paidAt: DateTime(2024, 11, 28, 10, 15),
-      paymentMethod: 'Virtual Account BCA',
-      proofFileName: 'Bukti_SPP_001.jpg',
-      verifiedBy: 'admin@sima.ac.id',
-      verifiedAt: DateTime(2024, 11, 29, 8, 30),
-    ),
+      // Generate verified SPP for Semester 1-4 (history)
+      for (int sem = 1; sem <= 4; sem++) {
+        final year = sem <= 2 ? '2022/2023' : '2023/2024';
+        final period = sem.isOdd ? 'Ganjil' : 'Genap';
+        final paidMonth = sem.isOdd ? 12 : 6;
+        final paidYear = sem <= 2
+            ? (sem == 1 ? 2022 : 2023)
+            : (sem == 3 ? 2023 : 2024);
 
-    // ===== DEDI SUPRIADI (102230076) - IM23D Malam =====
-    BillEntry(
-      id: 'BILL-2024-076-001',
-      studentId: '102230076',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 6500000, // Kelas malam lebih murah
-      dueDate: DateTime(2024, 12, 25),
-      status: PaymentStatus.pending,
-      vaNumber: '8888 0123 2023010276',
-      paidAt: DateTime(2024, 12, 15, 20, 30),
-      paymentMethod: 'Virtual Account Mandiri',
-      proofFileName: 'Bukti_SPP_076.jpg',
-    ),
+        bills.add(
+          BillEntry(
+            id: 'BILL-${year.substring(0, 4)}-${student.id}-$sem',
+            studentId: student.id,
+            title: 'SPP Semester $period $year',
+            type: 'SPP',
+            semester: sem,
+            academicYear: year,
+            amount:
+                sppAmount -
+                (sem <= 2 ? 500000 : 0), // Earlier semesters cheaper
+            dueDate: DateTime(paidYear, paidMonth, 20),
+            status: PaymentStatus.verified,
+            vaNumber: vaNumber,
+            paidAt: DateTime(
+              paidYear,
+              paidMonth,
+              5 + (studentIndex % 10),
+              10,
+              0,
+            ),
+            paymentMethod: 'Virtual Account BCA',
+            proofFileName: 'Bukti_SPP_${student.id}_Sem$sem.jpg',
+            verifiedBy: 'admin@sima.ac.id',
+            verifiedAt: DateTime(
+              paidYear,
+              paidMonth,
+              6 + (studentIndex % 10),
+              9,
+              0,
+            ),
+          ),
+        );
+      }
 
-    // ===== Additional pending payments for admin =====
-    BillEntry(
-      id: 'BILL-2024-053-001',
-      studentId: '102230053',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 7500000,
-      dueDate: DateTime(2024, 12, 20),
-      status: PaymentStatus.pending,
-      vaNumber: '8888 0123 2023010253',
-      paidAt: DateTime(2024, 12, 12, 13, 45),
-      paymentMethod: 'Transfer Bank BNI',
-      proofFileName: 'Bukti_SPP_053.jpg',
-    ),
-    BillEntry(
-      id: 'BILL-2024-054-001',
-      studentId: '102230054',
-      title: 'SPP Semester Ganjil 2024/2025',
-      type: 'SPP',
-      semester: 5,
-      academicYear: '2024/2025',
-      amount: 7500000,
-      dueDate: DateTime(2024, 12, 20),
-      status: PaymentStatus.pending,
-      vaNumber: '8888 0123 2023010254',
-      paidAt: DateTime(2024, 12, 13, 10, 20),
-      paymentMethod: 'Virtual Account BCA',
-      proofFileName: 'Bukti_SPP_054.jpg',
-    ),
-  ];
+      // Generate Semester 5 SPP with varied statuses
+      PaymentStatus sem5Status;
+      DateTime? paidAt;
+      String? paymentMethod;
+      String? proofFileName;
+      String? verifiedBy;
+      DateTime? verifiedAt;
+      String? rejectionReason;
+
+      // Distribute statuses: 40% unpaid, 30% pending, 20% verified, 10% rejected
+      if (studentIndex % 10 < 4) {
+        sem5Status = PaymentStatus.unpaid;
+      } else if (studentIndex % 10 < 7) {
+        sem5Status = PaymentStatus.pending;
+        paidAt = DateTime(2024, 12, 10 + (studentIndex % 10), 10, 0);
+        paymentMethod = 'Virtual Account BCA';
+        proofFileName = 'Bukti_SPP_${student.id}_Sem5.jpg';
+      } else if (studentIndex % 10 < 9) {
+        sem5Status = PaymentStatus.verified;
+        paidAt = DateTime(2024, 11, 25 + (studentIndex % 5), 10, 0);
+        paymentMethod = 'Transfer Bank Mandiri';
+        proofFileName = 'Bukti_SPP_${student.id}_Sem5.jpg';
+        verifiedBy = 'admin@sima.ac.id';
+        verifiedAt = DateTime(2024, 11, 26 + (studentIndex % 5), 9, 0);
+      } else {
+        sem5Status = PaymentStatus.rejected;
+        paidAt = DateTime(2024, 12, 8, 14, 0);
+        paymentMethod = 'Transfer Bank BNI';
+        proofFileName = 'Bukti_SPP_${student.id}_Sem5_blur.jpg';
+        verifiedBy = 'admin@sima.ac.id';
+        verifiedAt = DateTime(2024, 12, 9, 10, 0);
+        rejectionReason = 'Bukti transfer tidak jelas. Silakan upload ulang.';
+      }
+
+      bills.add(
+        BillEntry(
+          id: 'BILL-2024-${student.id}-5',
+          studentId: student.id,
+          title: 'SPP Semester Ganjil 2024/2025',
+          type: 'SPP',
+          semester: 5,
+          academicYear: '2024/2025',
+          amount: sppAmount,
+          dueDate: DateTime(2024, 12, 20),
+          status: sem5Status,
+          vaNumber: vaNumber,
+          paidAt: paidAt,
+          paymentMethod: paymentMethod,
+          proofFileName: proofFileName,
+          verifiedBy: verifiedBy,
+          verifiedAt: verifiedAt,
+          rejectionReason: rejectionReason,
+        ),
+      );
+    }
+
+    return bills;
+  }
 
   // ============ QUERY METHODS ============
 
@@ -542,4 +464,3 @@ class PaymentData {
     return true;
   }
 }
-

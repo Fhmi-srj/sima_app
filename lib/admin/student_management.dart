@@ -149,134 +149,109 @@ class _StudentManagementState extends State<StudentManagement> {
   }
 
   Widget _buildStudentCard(AppUser student) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 24,
-            backgroundColor: primaryBlue.withOpacity(0.1),
-            child: Text(
-              student.name[0],
-              style: const TextStyle(
-                color: primaryBlue,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
+    return GestureDetector(
+      onTap: () => _showStudentCrudModal(student),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: primaryBlue.withOpacity(0.1),
+              child: Text(
+                student.name[0],
+                style: const TextStyle(
+                  color: primaryBlue,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  student.name,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    student.name,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'NIM: ${student.id}',
-                  style: TextStyle(fontSize: 13, color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
-                      ),
-                      decoration: BoxDecoration(
-                        color: primaryBlue.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(6),
-                      ),
-                      child: Text(
-                        student.kelas ?? '-',
-                        style: const TextStyle(
-                          fontSize: 11,
-                          color: primaryBlue,
-                          fontWeight: FontWeight.w600,
+                  const SizedBox(height: 4),
+                  Text(
+                    'NIM: ${student.id}',
+                    style: TextStyle(fontSize: 13, color: Colors.grey[600]),
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
+                        decoration: BoxDecoration(
+                          color: primaryBlue.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        child: Text(
+                          student.kelas ?? '-',
+                          style: const TextStyle(
+                            fontSize: 11,
+                            color: primaryBlue,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      student.prodi,
-                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
-                    ),
-                  ],
-                ),
-              ],
+                      const SizedBox(width: 8),
+                      Text(
+                        student.prodi,
+                        style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-          PopupMenuButton<String>(
-            icon: Icon(Icons.more_vert, color: Colors.grey[400]),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
-            onSelected: (value) {
-              switch (value) {
-                case 'view':
-                  _showStudentDetail(student);
-                  break;
-                case 'edit':
-                  _showEditStudentModal(student);
-                  break;
-                case 'delete':
-                  _confirmDelete(student);
-                  break;
-              }
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'view',
-                child: Row(
-                  children: [
-                    Icon(Icons.visibility, size: 18),
-                    SizedBox(width: 8),
-                    Text('Lihat Detail'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'edit',
-                child: Row(
-                  children: [
-                    Icon(Icons.edit, size: 18),
-                    SizedBox(width: 8),
-                    Text('Edit'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'delete',
-                child: Row(
-                  children: [
-                    Icon(Icons.delete, size: 18, color: Colors.red),
-                    SizedBox(width: 8),
-                    Text('Hapus', style: TextStyle(color: Colors.red)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+            Icon(Icons.chevron_right, color: Colors.grey[400]),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showStudentCrudModal(AppUser student) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (context) => Center(
+        child: _StudentFormModal(
+          title: 'Detail Mahasiswa',
+          student: student,
+          isEdit: true,
+          onSave: (data) {
+            setState(() {});
+            CustomToast.success(context, 'Data mahasiswa berhasil diupdate');
+          },
+          onDelete: () {
+            setState(() {});
+            CustomToast.success(context, 'Mahasiswa berhasil dihapus');
+          },
+        ),
       ),
     );
   }
@@ -288,78 +263,31 @@ class _StudentManagementState extends State<StudentManagement> {
       builder: (context) => Center(
         child: _StudentFormModal(
           title: 'Tambah Mahasiswa',
+          isEdit: false,
           onSave: (data) {
+            setState(() {});
             CustomToast.success(context, 'Mahasiswa berhasil ditambahkan');
           },
         ),
       ),
     );
   }
-
-  void _showEditStudentModal(AppUser student) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => Center(
-        child: _StudentFormModal(
-          title: 'Edit Mahasiswa',
-          student: student,
-          onSave: (data) {
-            CustomToast.success(context, 'Data mahasiswa berhasil diupdate');
-          },
-        ),
-      ),
-    );
-  }
-
-  void _showStudentDetail(AppUser student) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => _StudentDetailModal(student: student),
-    );
-  }
-
-  void _confirmDelete(AppUser student) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: const Text('Hapus Mahasiswa?'),
-        content: Text('Anda yakin ingin menghapus ${student.name}?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.pop(context);
-              CustomToast.success(context, 'Mahasiswa berhasil dihapus');
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text('Hapus'),
-          ),
-        ],
-      ),
-    );
-  }
 }
 
-// Student Form Modal
+// Student Form Modal - for both add and edit
 class _StudentFormModal extends StatefulWidget {
   final String title;
   final AppUser? student;
+  final bool isEdit;
   final Function(Map<String, String>) onSave;
+  final VoidCallback? onDelete;
 
   const _StudentFormModal({
     required this.title,
     this.student,
+    required this.isEdit,
     required this.onSave,
+    this.onDelete,
   });
 
   @override
@@ -368,15 +296,46 @@ class _StudentFormModal extends StatefulWidget {
 
 class _StudentFormModalState extends State<_StudentFormModal> {
   static const Color primaryBlue = Color(0xFF4A90E2);
+
   late TextEditingController _nimController;
   late TextEditingController _nameController;
+  late TextEditingController _emailController;
+  late TextEditingController _teleponController;
+  late TextEditingController _prodiController;
+  late TextEditingController _fakultasController;
+  late TextEditingController _institusiController;
+  late TextEditingController _angkatanController;
+  late TextEditingController _alamatController;
+  late TextEditingController _passwordController;
   String _selectedKelas = 'IM23A';
+  String _selectedGender = 'Laki-laki';
+  bool _showPassword = false;
 
   @override
   void initState() {
     super.initState();
     _nimController = TextEditingController(text: widget.student?.id ?? '');
     _nameController = TextEditingController(text: widget.student?.name ?? '');
+    _emailController = TextEditingController(text: widget.student?.email ?? '');
+    _teleponController = TextEditingController(text: '081234567890');
+    _prodiController = TextEditingController(
+      text: widget.student?.prodi ?? 'Informatika',
+    );
+    _fakultasController = TextEditingController(
+      text: widget.student?.faculty ?? 'Fakultas Teknik',
+    );
+    _institusiController = TextEditingController(
+      text: widget.student?.institusi ?? 'Institut Teknologi Pekalongan',
+    );
+    _angkatanController = TextEditingController(
+      text: widget.student?.year ?? '2023',
+    );
+    _alamatController = TextEditingController(
+      text: 'Jl. Patriot No. 123, Pekalongan',
+    );
+    _passwordController = TextEditingController(
+      text: widget.isEdit ? '' : 'sima123',
+    );
     _selectedKelas = widget.student?.kelas ?? 'IM23A';
   }
 
@@ -384,6 +343,14 @@ class _StudentFormModalState extends State<_StudentFormModal> {
   void dispose() {
     _nimController.dispose();
     _nameController.dispose();
+    _emailController.dispose();
+    _teleponController.dispose();
+    _prodiController.dispose();
+    _fakultasController.dispose();
+    _institusiController.dispose();
+    _angkatanController.dispose();
+    _alamatController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -392,8 +359,11 @@ class _StudentFormModalState extends State<_StudentFormModal> {
     return Material(
       color: Colors.transparent,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.9,
-        constraints: const BoxConstraints(maxWidth: 400, maxHeight: 500),
+        width: MediaQuery.of(context).size.width * 0.92,
+        constraints: BoxConstraints(
+          maxWidth: 450,
+          maxHeight: MediaQuery.of(context).size.height * 0.85,
+        ),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
@@ -429,7 +399,7 @@ class _StudentFormModalState extends State<_StudentFormModal> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Icon(
-                      widget.student == null ? Icons.person_add : Icons.edit,
+                      widget.isEdit ? Icons.edit : Icons.person_add,
                       color: Colors.white,
                       size: 24,
                     ),
@@ -448,9 +418,9 @@ class _StudentFormModalState extends State<_StudentFormModal> {
                           ),
                         ),
                         Text(
-                          widget.student == null
-                              ? 'Isi data mahasiswa baru'
-                              : 'Perbarui data mahasiswa',
+                          widget.isEdit
+                              ? 'Edit semua data mahasiswa'
+                              : 'Isi semua data mahasiswa baru',
                           style: TextStyle(
                             fontSize: 13,
                             color: Colors.white.withOpacity(0.9),
@@ -485,74 +455,160 @@ class _StudentFormModalState extends State<_StudentFormModal> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // Informasi Pribadi
+                    _buildSectionHeader('Informasi Pribadi', Icons.person),
+                    const SizedBox(height: 12),
                     _buildTextField('NIM', _nimController, Icons.badge),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 12),
                     _buildTextField(
                       'Nama Lengkap',
                       _nameController,
-                      Icons.person,
+                      Icons.person_outline,
                     ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'Kelas',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      'Email',
+                      _emailController,
+                      Icons.email_outlined,
                     ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[100],
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey[300]!),
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          isExpanded: true,
-                          value: _selectedKelas,
-                          items: UserData.getAllKelas().map((k) {
-                            return DropdownMenuItem(value: k, child: Text(k));
-                          }).toList(),
-                          onChanged: (value) {
-                            setState(() => _selectedKelas = value!);
-                          },
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      'Nomor Telepon',
+                      _teleponController,
+                      Icons.phone_outlined,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildGenderSelector(),
+                    const SizedBox(height: 20),
+
+                    // Informasi Akademik
+                    _buildSectionHeader('Informasi Akademik', Icons.school),
+                    const SizedBox(height: 12),
+                    _buildDropdownField('Kelas'),
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      'Program Studi',
+                      _prodiController,
+                      Icons.school_outlined,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      'Fakultas',
+                      _fakultasController,
+                      Icons.domain_outlined,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      'Institusi',
+                      _institusiController,
+                      Icons.business_outlined,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      'Angkatan',
+                      _angkatanController,
+                      Icons.calendar_today_outlined,
+                    ),
+                    const SizedBox(height: 12),
+                    _buildTextField(
+                      'Alamat',
+                      _alamatController,
+                      Icons.location_on_outlined,
+                      maxLines: 2,
+                    ),
+                    const SizedBox(height: 20),
+
+                    // Keamanan
+                    _buildSectionHeader('Keamanan', Icons.lock_outline),
+                    const SizedBox(height: 12),
+                    _buildPasswordField(),
+                    if (widget.isEdit)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 8),
+                        child: Text(
+                          'Kosongkan jika tidak ingin mengubah password',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey[600],
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),
             ),
 
-            // Footer
+            // Footer with buttons
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
+                color: Colors.white,
                 border: Border(top: BorderSide(color: Colors.grey[200]!)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 10,
+                    offset: const Offset(0, -4),
+                  ),
+                ],
               ),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    widget.onSave({
-                      'nim': _nimController.text,
-                      'name': _nameController.text,
-                      'kelas': _selectedKelas,
-                    });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: primaryBlue,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+              child: Row(
+                children: [
+                  if (widget.isEdit && widget.onDelete != null)
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () => _confirmDelete(),
+                        icon: const Icon(
+                          Icons.delete_outline,
+                          color: Colors.red,
+                          size: 18,
+                        ),
+                        label: const Text('Hapus'),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.red,
+                          side: const BorderSide(color: Colors.red),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                  if (widget.isEdit && widget.onDelete != null)
+                    const SizedBox(width: 12),
+                  Expanded(
+                    flex: widget.isEdit ? 2 : 1,
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        widget.onSave({
+                          'nim': _nimController.text,
+                          'name': _nameController.text,
+                          'email': _emailController.text,
+                          'telepon': _teleponController.text,
+                          'gender': _selectedGender,
+                          'kelas': _selectedKelas,
+                          'prodi': _prodiController.text,
+                          'fakultas': _fakultasController.text,
+                          'institusi': _institusiController.text,
+                          'angkatan': _angkatanController.text,
+                          'alamat': _alamatController.text,
+                          'password': _passwordController.text,
+                        });
+                      },
+                      icon: const Icon(Icons.save, size: 18),
+                      label: const Text('Simpan'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: primaryBlue,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
                   ),
-                  child: const Text('Simpan', style: TextStyle(fontSize: 16)),
-                ),
+                ],
               ),
             ),
           ],
@@ -561,166 +617,246 @@ class _StudentFormModalState extends State<_StudentFormModal> {
     );
   }
 
+  Widget _buildSectionHeader(String title, IconData icon) {
+    return Row(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(6),
+          decoration: BoxDecoration(
+            color: primaryBlue.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Icon(icon, color: primaryBlue, size: 16),
+        ),
+        const SizedBox(width: 8),
+        Text(
+          title,
+          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
+  }
+
   Widget _buildTextField(
     String label,
     TextEditingController controller,
-    IconData icon,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+    IconData icon, {
+    int maxLines = 1,
+  }) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      style: const TextStyle(fontSize: 14),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(fontSize: 13, color: Colors.grey[600]),
+        prefixIcon: Icon(icon, color: Colors.grey[400], size: 20),
+        filled: true,
+        fillColor: Colors.grey[50],
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
         ),
-        const SizedBox(height: 8),
-        TextField(
-          controller: controller,
-          decoration: InputDecoration(
-            prefixIcon: Icon(icon, color: Colors.grey[400]),
-            filled: true,
-            fillColor: Colors.grey[100],
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: primaryBlue, width: 2),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDropdownField(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.grey[50],
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.grey[300]!),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<String>(
+          isExpanded: true,
+          value: _selectedKelas,
+          icon: Icon(Icons.keyboard_arrow_down, color: Colors.grey[400]),
+          style: const TextStyle(fontSize: 14, color: Colors.black87),
+          items: UserData.getAllKelas().map((k) {
+            return DropdownMenuItem(value: k, child: Text(k));
+          }).toList(),
+          onChanged: (value) {
+            setState(() => _selectedKelas = value!);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGenderSelector() {
+    return Row(
+      children: [
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => _selectedGender = 'Laki-laki'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: _selectedGender == 'Laki-laki'
+                    ? primaryBlue
+                    : Colors.grey[100],
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: _selectedGender == 'Laki-laki'
+                      ? primaryBlue
+                      : Colors.grey[300]!,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.male,
+                    color: _selectedGender == 'Laki-laki'
+                        ? Colors.white
+                        : Colors.grey[600],
+                    size: 20,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Laki-laki',
+                    style: TextStyle(
+                      color: _selectedGender == 'Laki-laki'
+                          ? Colors.white
+                          : Colors.grey[600],
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(color: Colors.grey[300]!),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: primaryBlue, width: 2),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: GestureDetector(
+            onTap: () => setState(() => _selectedGender = 'Perempuan'),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: _selectedGender == 'Perempuan'
+                    ? primaryBlue
+                    : Colors.grey[100],
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: _selectedGender == 'Perempuan'
+                      ? primaryBlue
+                      : Colors.grey[300]!,
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.female,
+                    color: _selectedGender == 'Perempuan'
+                        ? Colors.white
+                        : Colors.grey[600],
+                    size: 20,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    'Perempuan',
+                    style: TextStyle(
+                      color: _selectedGender == 'Perempuan'
+                          ? Colors.white
+                          : Colors.grey[600],
+                      fontSize: 13,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ],
     );
   }
-}
 
-// Student Detail Modal
-class _StudentDetailModal extends StatelessWidget {
-  final AppUser student;
-  static const Color primaryBlue = Color(0xFF4A90E2);
-
-  const _StudentDetailModal({required this.student});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.6,
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(24),
-          topRight: Radius.circular(24),
+  Widget _buildPasswordField() {
+    return TextField(
+      controller: _passwordController,
+      obscureText: !_showPassword,
+      style: const TextStyle(fontSize: 14),
+      decoration: InputDecoration(
+        labelText: widget.isEdit ? 'Password Baru' : 'Password',
+        labelStyle: TextStyle(fontSize: 13, color: Colors.grey[600]),
+        prefixIcon: Icon(Icons.lock_outline, color: Colors.grey[400], size: 20),
+        suffixIcon: IconButton(
+          icon: Icon(
+            _showPassword ? Icons.visibility_off : Icons.visibility,
+            color: Colors.grey[400],
+            size: 20,
+          ),
+          onPressed: () => setState(() => _showPassword = !_showPassword),
+        ),
+        filled: true,
+        fillColor: Colors.grey[50],
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: BorderSide(color: Colors.grey[300]!),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(color: primaryBlue, width: 2),
         ),
       ),
-      child: Column(
-        children: [
-          // Header
-          Container(
-            padding: const EdgeInsets.all(20),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF4A90E2), Color(0xFF5BA3F5)],
-              ),
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
-              ),
-            ),
-            child: Row(
-              children: [
-                CircleAvatar(
-                  radius: 30,
-                  backgroundColor: Colors.white.withOpacity(0.2),
-                  child: Text(
-                    student.name[0],
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        student.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'NIM: ${student.id}',
-                        style: TextStyle(
-                          color: Colors.white.withOpacity(0.9),
-                          fontSize: 14,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, color: Colors.white),
-                  onPressed: () => Navigator.pop(context),
-                ),
-              ],
-            ),
-          ),
-
-          // Details
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                children: [
-                  _buildDetailRow('Kelas', student.kelas ?? '-'),
-                  _buildDetailRow('Program Studi', student.prodi),
-                  _buildDetailRow('Angkatan', student.year ?? '-'),
-                  _buildDetailRow('Fakultas', student.faculty ?? '-'),
-                  _buildDetailRow('Email', student.email),
-                  _buildDetailRow('Institusi', student.institusi),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              label,
-              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-            ),
+  void _confirmDelete() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text('Hapus Mahasiswa?'),
+        content: Text(
+          'Anda yakin ingin menghapus ${widget.student?.name}?\n\nTindakan ini tidak dapat dibatalkan.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
           ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.pop(context); // Close dialog
+              Navigator.pop(context); // Close modal
+              widget.onDelete?.call();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+              foregroundColor: Colors.white,
             ),
+            child: const Text('Hapus'),
           ),
         ],
       ),
     );
   }
 }
-
-

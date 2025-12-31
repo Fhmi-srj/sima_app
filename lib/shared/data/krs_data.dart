@@ -62,6 +62,10 @@ class KrsEntry {
   String get statusText {
     switch (status) {
       case KrsStatus.draft:
+        // Check if this is a previously rejected KRS (has rejection reason)
+        if (rejectionReason != null && rejectionReason!.isNotEmpty) {
+          return 'Draft (Perlu Revisi)';
+        }
         return 'Draft';
       case KrsStatus.pending:
         return 'Menunggu Persetujuan';
@@ -71,6 +75,12 @@ class KrsEntry {
         return 'Ditolak';
     }
   }
+
+  // Check if this KRS was previously rejected and needs revision
+  bool get wasRejected =>
+      status == KrsStatus.draft &&
+      rejectionReason != null &&
+      rejectionReason!.isNotEmpty;
 
   // Check if deadline has passed
   bool get isDeadlinePassed =>
@@ -106,11 +116,16 @@ class KrsData {
     return UserData.getUserById(dosenPaId);
   }
 
-  // Get approved KRS for a student (returns null if no approved KRS)
+  // Get approved KRS for a student for current semester (returns null if no approved KRS)
+  // Important: Only looks for current semester (5) to get the active schedule
   static KrsEntry? getApprovedKrsForStudent(String studentId) {
+    const currentSemester = 5; // Current active semester
     try {
       return _krsRecords.firstWhere(
-        (krs) => krs.studentId == studentId && krs.status == KrsStatus.approved,
+        (krs) =>
+            krs.studentId == studentId &&
+            krs.semester == currentSemester &&
+            krs.status == KrsStatus.approved,
       );
     } catch (e) {
       return null;
@@ -123,222 +138,138 @@ class KrsData {
     return approvedKrs?.courseCodes ?? [];
   }
 
-  // MUTABLE KRS records - changes persist in memory
-  static final List<KrsEntry> _krsRecords = [
-    // ===== DRAFT KRS - Published by admin, waiting for student to submit =====
-    // Ahmad Rizky (logged in user) - draft (admin published)
-    KrsEntry(
-      id: 'KRS-2024-039-5',
-      studentId: '102230039',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: [
-        'IF501',
-        'IF502',
-        'IF503',
-        'IF504',
-        'IF505',
-        'IF506',
-        'IF507',
-        'IF508',
-      ],
-      dosenPaId: '198712202015042001',
-      status: KrsStatus.draft, // Changed to draft
-      totalSks: 23,
-      publishedBy: 'admin@sima.ac.id', // Published by admin
-      publishedAt: DateTime(2024, 12, 10, 8, 0),
-      deadline: DateTime(2025, 1, 5, 23, 59), // Deadline Jan 5, 2025
-    ),
-    KrsEntry(
-      id: 'KRS-2024-040-5',
-      studentId: '102230040',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: [
-        'IF501',
-        'IF502',
-        'IF503',
-        'IF504',
-        'IF505',
-        'IF506',
-        'IF507',
-        'IF508',
-      ],
-      dosenPaId: '198712202015042001',
-      status: KrsStatus.approved,
-      submittedAt: DateTime(2024, 8, 14, 11, 0),
-      approvedAt: DateTime(2024, 8, 15, 8, 30),
-      totalSks: 23,
-    ),
-    KrsEntry(
-      id: 'KRS-2024-041-5',
-      studentId: '102230041',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: [
-        'IF501',
-        'IF502',
-        'IF503',
-        'IF504',
-        'IF505',
-        'IF506',
-        'IF507',
-        'IF508',
-      ],
-      dosenPaId: '198712202015042001',
-      status: KrsStatus.approved,
-      submittedAt: DateTime(2024, 8, 14, 14, 20),
-      approvedAt: DateTime(2024, 8, 15, 9, 0),
-      totalSks: 23,
-    ),
+  // KRS records - initialized lazily
+  static List<KrsEntry>? _krsRecordsCache;
 
-    // ===== PENDING KRS - waiting for approval =====
-    KrsEntry(
-      id: 'KRS-2024-042-5',
-      studentId: '102230042',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: [
-        'IF501',
-        'IF502',
-        'IF503',
-        'IF504',
-        'IF505',
-        'IF506',
-        'IF507',
-        'IF508',
-      ],
-      dosenPaId: '198712202015042001',
-      status: KrsStatus.pending,
-      submittedAt: DateTime(2024, 12, 15, 10, 30),
-      totalSks: 23,
-    ),
-    KrsEntry(
-      id: 'KRS-2024-043-5',
-      studentId: '102230043',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: [
-        'IF501',
-        'IF502',
-        'IF503',
-        'IF504',
-        'IF505',
-        'IF506',
-        'IF507',
-      ],
-      dosenPaId: '198712202015042001',
-      status: KrsStatus.pending,
-      submittedAt: DateTime(2024, 12, 16, 8, 15),
-      totalSks: 20,
-    ),
-    KrsEntry(
-      id: 'KRS-2024-053-5',
-      studentId: '102230053',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: [
-        'IF501',
-        'IF502',
-        'IF503',
-        'IF504',
-        'IF505',
-        'IF506',
-        'IF507',
-        'IF508',
-      ],
-      dosenPaId: '198712202015042001',
-      status: KrsStatus.pending,
-      submittedAt: DateTime(2024, 12, 16, 14, 45),
-      totalSks: 23,
-    ),
+  static List<KrsEntry> get _krsRecords {
+    _krsRecordsCache ??= _generateAllKrsRecords();
+    return _krsRecordsCache!;
+  }
 
-    // ===== REJECTED KRS =====
-    KrsEntry(
-      id: 'KRS-2024-054-5',
-      studentId: '102230054',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: [
-        'IF501',
-        'IF502',
-        'IF503',
-        'IF504',
-        'IF505',
-        'IF506',
-        'IF507',
-        'IF508',
-        'IF510',
-      ],
-      dosenPaId: '198712202015042001',
-      status: KrsStatus.rejected,
-      submittedAt: DateTime(2024, 8, 13, 9, 0),
-      rejectionReason:
-          'SKS melebihi batas maksimal. Silakan kurangi 1 mata kuliah.',
-      totalSks: 24,
-    ),
+  // Course codes per semester (history)
+  static const _semesterCourses = {
+    1: ['IF101', 'IF102', 'IF103', 'IF104', 'IF105', 'IF106'],
+    2: ['IF201', 'IF202', 'IF203', 'IF204', 'IF205', 'IF206'],
+    3: ['IF301', 'IF302', 'IF303', 'IF304', 'IF305', 'IF306', 'IF307', 'IF308'],
+    4: ['IF401', 'IF402', 'IF403', 'IF404', 'IF405', 'IF406', 'IF407', 'IF408'],
+    5: ['IF501', 'IF502', 'IF503', 'IF504', 'IF505', 'IF506', 'IF507', 'IF508'],
+  };
 
-    // ===== KELAS IM23A =====
-    KrsEntry(
-      id: 'KRS-2024-001-5',
-      studentId: '102230001',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: ['IF501', 'IF502', 'IF503'],
-      dosenPaId: '198506152010121001',
-      status: KrsStatus.approved,
-      submittedAt: DateTime(2024, 8, 12, 10, 0),
-      approvedAt: DateTime(2024, 8, 13, 9, 0),
-      totalSks: 8,
-    ),
-    KrsEntry(
-      id: 'KRS-2024-002-5',
-      studentId: '102230002',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: ['IF501', 'IF502', 'IF503'],
-      dosenPaId: '198506152010121001',
-      status: KrsStatus.pending,
-      submittedAt: DateTime(2024, 12, 16, 11, 30),
-      totalSks: 8,
-    ),
+  static const _semesterSks = {1: 18, 2: 18, 3: 22, 4: 22, 5: 23};
 
-    // ===== KELAS IM23D (Malam) =====
-    KrsEntry(
-      id: 'KRS-2024-076-5',
-      studentId: '102230076',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: ['IF501', 'IF503', 'IF510'],
-      dosenPaId: '199003152018031001',
-      status: KrsStatus.approved,
-      submittedAt: DateTime(2024, 8, 14, 18, 0),
-      approvedAt: DateTime(2024, 8, 15, 10, 0),
-      totalSks: 7,
-    ),
-    KrsEntry(
-      id: 'KRS-2024-077-5',
-      studentId: '102230077',
-      semester: 5,
-      academicYear: '2024/2025',
-      period: 'Ganjil',
-      courseCodes: ['IF501', 'IF503', 'IF510'],
-      dosenPaId: '199003152018031001',
-      status: KrsStatus.pending,
-      submittedAt: DateTime(2024, 12, 15, 19, 30),
-      totalSks: 7,
-    ),
-  ];
+  static const _academicYears = {
+    1: '2022/2023',
+    2: '2022/2023',
+    3: '2023/2024',
+    4: '2023/2024',
+    5: '2024/2025',
+  };
+
+  static const _periods = {
+    1: 'Ganjil',
+    2: 'Genap',
+    3: 'Ganjil',
+    4: 'Genap',
+    5: 'Ganjil',
+  };
+
+  // Generate all KRS records for all students
+  static List<KrsEntry> _generateAllKrsRecords() {
+    final records = <KrsEntry>[];
+    final allStudents = UserData.getAllStudents();
+
+    for (final student in allStudents) {
+      final dosenPaId =
+          _dosenPaAssignments[student.kelas] ?? '198712202015042001';
+
+      // Generate approved KRS for semester 1-4 (history)
+      for (int sem = 1; sem <= 4; sem++) {
+        records.add(
+          KrsEntry(
+            id: 'KRS-${_academicYears[sem]!.substring(0, 4)}-${student.id}-$sem',
+            studentId: student.id,
+            semester: sem,
+            academicYear: _academicYears[sem]!,
+            period: _periods[sem]!,
+            courseCodes: _semesterCourses[sem]!,
+            dosenPaId: dosenPaId,
+            status: KrsStatus.approved,
+            submittedAt: DateTime(
+              2022 + (sem ~/ 2),
+              sem.isOdd ? 8 : 2,
+              10 + (student.id.hashCode % 10),
+            ),
+            approvedAt: DateTime(
+              2022 + (sem ~/ 2),
+              sem.isOdd ? 8 : 2,
+              12 + (student.id.hashCode % 10),
+            ),
+            totalSks: _semesterSks[sem]!,
+          ),
+        );
+      }
+
+      // Generate semester 5 KRS with varied statuses for demo
+      final studentIndex = int.tryParse(student.id.substring(6)) ?? 0;
+      KrsStatus sem5Status;
+      DateTime? submittedAt;
+      DateTime? approvedAt;
+      String? rejectionReason;
+
+      // Distribute statuses: 50% draft, 25% pending, 15% approved, 10% previously rejected (now draft with notes)
+      if (studentIndex % 20 < 10) {
+        // Regular draft - never submitted
+        sem5Status = KrsStatus.draft;
+      } else if (studentIndex % 20 < 15) {
+        // Pending - waiting for approval
+        sem5Status = KrsStatus.pending;
+        submittedAt = DateTime(
+          2024,
+          12,
+          15 + (studentIndex % 7),
+          8 + (studentIndex % 10),
+          0,
+        );
+      } else if (studentIndex % 20 < 18) {
+        // Approved
+        sem5Status = KrsStatus.approved;
+        submittedAt = DateTime(2024, 12, 10 + (studentIndex % 5), 9, 0);
+        approvedAt = DateTime(2024, 12, 11 + (studentIndex % 5), 10, 0);
+      } else {
+        // Previously rejected - now back to draft with rejection notes
+        sem5Status = KrsStatus.draft;
+        // Rejection reasons from dosen wali
+        final rejectionReasons = [
+          'Beban SKS melebihi batas maksimal (24 SKS). Silakan kurangi mata kuliah pilihan.',
+          'Terdapat mata kuliah prasyarat yang belum lulus. Harap periksa kembali.',
+          'Jadwal bentrok antara IF503 dan IF506. Pilih salah satu.',
+        ];
+        rejectionReason = rejectionReasons[studentIndex % 3];
+      }
+
+      records.add(
+        KrsEntry(
+          id: 'KRS-2024-${student.id}-5',
+          studentId: student.id,
+          semester: 5,
+          academicYear: '2024/2025',
+          period: 'Ganjil',
+          courseCodes: _semesterCourses[5]!,
+          dosenPaId: dosenPaId,
+          status: sem5Status,
+          submittedAt: submittedAt,
+          approvedAt: approvedAt,
+          rejectionReason: rejectionReason,
+          totalSks: _semesterSks[5]!,
+          publishedBy: 'admin@sima.ac.id',
+          publishedAt: DateTime(2024, 12, 10, 8, 0),
+          deadline: DateTime(2025, 1, 5, 23, 59),
+        ),
+      );
+    }
+
+    return records;
+  }
 
   // ============ QUERY METHODS ============
 
@@ -364,27 +295,45 @@ class KrsData {
     return list.isNotEmpty ? list.first : null;
   }
 
-  // Get pending KRS for a dosen PA
+  // Get pending KRS for a dosen PA (current semester only)
   static List<KrsEntry> getPendingKrsForDosenPa(String dosenPaId) {
-    return _krsRecords
-        .where((k) => k.dosenPaId == dosenPaId && k.status == KrsStatus.pending)
-        .toList();
-  }
-
-  // Get approved KRS for a dosen PA
-  static List<KrsEntry> getApprovedKrsForDosenPa(String dosenPaId) {
+    const currentSemester = 5; // Current active semester
     return _krsRecords
         .where(
-          (k) => k.dosenPaId == dosenPaId && k.status == KrsStatus.approved,
+          (k) =>
+              k.dosenPaId == dosenPaId &&
+              k.semester == currentSemester &&
+              k.status == KrsStatus.pending,
         )
         .toList();
   }
 
-  // Get rejected KRS for a dosen PA
-  static List<KrsEntry> getRejectedKrsForDosenPa(String dosenPaId) {
+  // Get approved KRS for a dosen PA (current semester only)
+  static List<KrsEntry> getApprovedKrsForDosenPa(String dosenPaId) {
+    const currentSemester = 5; // Current active semester
     return _krsRecords
         .where(
-          (k) => k.dosenPaId == dosenPaId && k.status == KrsStatus.rejected,
+          (k) =>
+              k.dosenPaId == dosenPaId &&
+              k.semester == currentSemester &&
+              k.status == KrsStatus.approved,
+        )
+        .toList();
+  }
+
+  // Get rejected KRS for a dosen PA (current semester only)
+  // Note: Rejected KRS returns to draft status with rejectionReason set
+  // So we look for draft KRS that has a rejection reason (was previously rejected)
+  static List<KrsEntry> getRejectedKrsForDosenPa(String dosenPaId) {
+    const currentSemester = 5; // Current active semester
+    return _krsRecords
+        .where(
+          (k) =>
+              k.dosenPaId == dosenPaId &&
+              k.semester == currentSemester &&
+              k.status == KrsStatus.draft &&
+              k.rejectionReason != null &&
+              k.rejectionReason!.isNotEmpty,
         )
         .toList();
   }
@@ -533,11 +482,20 @@ class KrsData {
   }
 
   // Dosen: Approve KRS
+  // Can approve pending KRS or draft KRS with rejection reason (previously rejected)
   static bool approveKrs(String krsId, String dosenPaId) {
     final krs = getKrsById(krsId);
     if (krs == null) return false;
     if (krs.dosenPaId != dosenPaId) return false;
-    if (krs.status != KrsStatus.pending) return false;
+
+    // Allow approval of pending KRS OR draft KRS that was previously rejected
+    final isPending = krs.status == KrsStatus.pending;
+    final isRejectedDraft =
+        krs.status == KrsStatus.draft &&
+        krs.rejectionReason != null &&
+        krs.rejectionReason!.isNotEmpty;
+
+    if (!isPending && !isRejectedDraft) return false;
 
     krs.status = KrsStatus.approved;
     krs.approvedAt = DateTime.now();
@@ -566,16 +524,18 @@ class KrsData {
     return true;
   }
 
-  // Dosen: Reject KRS
+  // Dosen: Reject KRS (status returns to draft with rejection notes)
   static bool rejectKrs(String krsId, String dosenPaId, String reason) {
     final krs = getKrsById(krsId);
     if (krs == null) return false;
     if (krs.dosenPaId != dosenPaId) return false;
     if (krs.status != KrsStatus.pending) return false;
 
-    krs.status = KrsStatus.rejected;
+    // Return to draft status with rejection notes so student can revise
+    krs.status = KrsStatus.draft;
     krs.rejectionReason = reason;
     krs.approvedAt = null;
+    krs.submittedAt = null; // Reset submitted time
 
     // Log activity for dosen
     ActivityLogData.addLog(
@@ -590,8 +550,9 @@ class KrsData {
     ActivityLogData.addLog(
       userId: krs.studentId,
       type: ActivityType.krsReject,
-      title: 'KRS Ditolak',
-      description: 'KRS Semester ${krs.semester} ditolak. Alasan: $reason',
+      title: 'KRS Ditolak - Perlu Revisi',
+      description:
+          'KRS Semester ${krs.semester} ditolak oleh Dosen PA. Alasan: $reason. Silakan revisi dan ajukan kembali.',
       metadata: {'semester': krs.semester, 'reason': reason},
     );
 
@@ -863,4 +824,3 @@ class KrsData {
     return true;
   }
 }
-

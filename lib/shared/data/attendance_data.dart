@@ -1,6 +1,7 @@
 ﻿// Centralized attendance data for the app
 import 'package:sima_app/shared/data/user_data.dart';
 import 'class_data.dart';
+import 'krs_data.dart';
 
 class AttendanceData {
   // Store attendance records (in-memory, simulating database)
@@ -14,7 +15,7 @@ class AttendanceData {
     if (_initialized) return;
     _initialized = true;
 
-    // Sample attendance for Ahmad Rizky (102230039) - IM23C
+    final allStudents = UserData.getAllStudents();
     final courses = [
       'IF501',
       'IF502',
@@ -36,45 +37,37 @@ class AttendanceData {
       'Kecerdasan Buatan',
     ];
 
-    // Generate attendance for past 2 weeks for demo student
-    for (int week = 0; week < 14; week++) {
-      for (int i = 0; i < courses.length; i++) {
-        final date = DateTime.now().subtract(Duration(days: week * 7 + i));
-        final dateStr = _formatDate(date);
+    // Generate attendance for all students for past 14 weeks
+    for (final student in allStudents) {
+      final studentSeed = student.id.hashCode;
 
-        // 85% attendance rate simulation
-        final isPresent = (week * 8 + i) % 7 != 0;
-
-        _attendanceRecords['102230039_${courses[i]}_$dateStr'] =
-            AttendanceRecord(
-              studentId: '102230039',
-              courseCode: courses[i],
-              courseName: courseNames[i],
-              date: dateStr,
-              type: isPresent ? 'hadir' : 'izin',
-              reason: isPresent ? null : 'Sakit',
-              timestamp: date.toString(),
-            );
-      }
-    }
-
-    // Add attendance for other students in IM23C
-    final otherStudents = ['102230040', '102230041', '102230042', '102230043'];
-    for (final studentId in otherStudents) {
-      for (int week = 0; week < 10; week++) {
+      for (int week = 0; week < 14; week++) {
         for (int i = 0; i < courses.length; i++) {
           final date = DateTime.now().subtract(Duration(days: week * 7 + i));
           final dateStr = _formatDate(date);
-          final isPresent = (week * 8 + i + studentId.hashCode) % 8 != 0;
 
-          _attendanceRecords['${studentId}_${courses[i]}_$dateStr'] =
+          // ~88% attendance, ~8% izin, ~4% alpha
+          final attendanceVal = (studentSeed + week + i) % 25;
+          String type;
+          String? reason;
+
+          if (attendanceVal < 22) {
+            type = 'hadir';
+          } else if (attendanceVal < 24) {
+            type = 'izin';
+            reason = attendanceVal == 22 ? 'Sakit' : 'Keperluan keluarga';
+          } else {
+            continue; // Alpha - no record
+          }
+
+          _attendanceRecords['${student.id}_${courses[i]}_$dateStr'] =
               AttendanceRecord(
-                studentId: studentId,
+                studentId: student.id,
                 courseCode: courses[i],
                 courseName: courseNames[i],
                 date: dateStr,
-                type: isPresent ? 'hadir' : 'izin',
-                reason: isPresent ? null : 'Keperluan keluarga',
+                type: type,
+                reason: reason,
                 timestamp: date.toString(),
               );
         }
@@ -268,13 +261,15 @@ class AttendanceData {
   }
 
   // Get attendance for a class on a date (for lecturer)
+  // Only shows students with approved KRS for current semester
   static List<Map<String, dynamic>> getClassAttendanceList(
     String courseCode,
     String kelasCode,
     String date,
   ) {
     _initializeData();
-    final students = ClassData.getStudentsInKelas(kelasCode);
+    // Only get students with approved KRS for current semester (5)
+    final students = KrsData.getApprovedStudentsForClass(kelasCode, 5);
     final result = <Map<String, dynamic>>[];
 
     for (final student in students) {
@@ -337,6 +332,22 @@ class AttendanceData {
     return true;
   }
 
+  // Reject izin for a student - removes record so status becomes Alpha
+  static bool rejectIzin({
+    required String studentId,
+    required String courseCode,
+    required String date,
+  }) {
+    _initializeData();
+    final key = '${studentId}_${courseCode}_$date';
+    final record = _attendanceRecords[key];
+    if (record == null || record.type != 'izin') return false;
+
+    // Remove the record - no record means Alpha
+    _attendanceRecords.remove(key);
+    return true;
+  }
+
   // Check if izin is approved
   static bool isIzinApproved({
     required String studentId,
@@ -394,4 +405,3 @@ class AttendanceRecord {
 
   AppUser? get student => UserData.getUserById(studentId);
 }
-

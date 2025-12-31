@@ -365,6 +365,36 @@ class _ProfilePageContentState extends State<ProfilePageContent>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Notice about data can only be edited by admin
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.amber.shade50,
+              borderRadius: BorderRadius.circular(10),
+              border: Border.all(color: Colors.amber.shade200),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  color: Colors.amber.shade700,
+                  size: 20,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Data profil hanya dapat diubah oleh Admin',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.amber.shade800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+
           // Sertifikat Button - Only for students
           if (!widget.isLecturer) ...[
             SizedBox(
@@ -393,56 +423,31 @@ class _ProfilePageContentState extends State<ProfilePageContent>
           _buildSectionHeader('Informasi Pribadi', Icons.person),
           const SizedBox(height: 16),
 
-          _buildTextField(
-            label: 'Nama Lengkap',
-            controller: _namaController,
-            icon: Icons.person_outline,
-            required: true,
-          ),
-          const SizedBox(height: 16),
-
-          _buildTextField(
-            label: widget.isLecturer ? 'NIP' : 'NIM',
-            controller: _nimController,
-            icon: widget.isLecturer ? Icons.work_outline : Icons.badge_outlined,
-            required: true,
-          ),
-          const SizedBox(height: 16),
-
-          _buildTextField(
-            label: 'Email',
-            controller: _emailController,
-            icon: Icons.email_outlined,
-            required: true,
-            keyboardType: TextInputType.emailAddress,
-          ),
-          const SizedBox(height: 16),
-
-          _buildTextField(
-            label: 'Nomor Telepon',
-            controller: _teleponController,
-            icon: Icons.phone_outlined,
-            keyboardType: TextInputType.phone,
-          ),
-          const SizedBox(height: 16),
-
-          // Jenis Kelamin
-          const Text(
-            'Jenis Kelamin',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: Colors.black87,
+          _buildInfoCard([
+            _buildInfoRow(
+              'Nama Lengkap',
+              _namaController.text,
+              Icons.person_outline,
             ),
-          ),
-          const SizedBox(height: 8),
-          Row(
-            children: [
-              Expanded(child: _buildGenderOption('Laki-laki', Icons.male)),
-              const SizedBox(width: 12),
-              Expanded(child: _buildGenderOption('Perempuan', Icons.female)),
-            ],
-          ),
+            _buildInfoRow(
+              widget.isLecturer ? 'NIP' : 'NIM',
+              _nimController.text,
+              widget.isLecturer ? Icons.work_outline : Icons.badge_outlined,
+            ),
+            _buildInfoRow('Email', _emailController.text, Icons.email_outlined),
+            _buildInfoRow(
+              'Nomor Telepon',
+              _teleponController.text.isNotEmpty
+                  ? _teleponController.text
+                  : '-',
+              Icons.phone_outlined,
+            ),
+            _buildInfoRow(
+              'Jenis Kelamin',
+              _selectedGender,
+              _selectedGender == 'Laki-laki' ? Icons.male : Icons.female,
+            ),
+          ]),
           const SizedBox(height: 24),
 
           // Informasi Akademik Section
@@ -452,79 +457,87 @@ class _ProfilePageContentState extends State<ProfilePageContent>
           ),
           const SizedBox(height: 16),
 
-          _buildTextField(
-            label: widget.isLecturer ? 'Jabatan Fungsional' : 'Program Studi',
-            controller: _prodiController,
-            icon: widget.isLecturer
-                ? Icons.military_tech
-                : Icons.school_outlined,
-            required: true,
-          ),
-          const SizedBox(height: 16),
+          _buildInfoCard([
+            _buildInfoRow(
+              widget.isLecturer ? 'Jabatan Fungsional' : 'Program Studi',
+              _prodiController.text,
+              widget.isLecturer ? Icons.military_tech : Icons.school_outlined,
+            ),
+            _buildInfoRow(
+              'Fakultas',
+              _fakultasController.text,
+              Icons.domain_outlined,
+            ),
+            _buildInfoRow(
+              'Institusi',
+              _institusiController.text,
+              Icons.business_outlined,
+            ),
+            _buildInfoRow(
+              widget.isLecturer ? 'Bidang Keahlian' : 'Angkatan',
+              _angkatanController.text.isNotEmpty
+                  ? _angkatanController.text
+                  : '-',
+              widget.isLecturer
+                  ? Icons.psychology
+                  : Icons.calendar_today_outlined,
+            ),
+            _buildInfoRow(
+              'Alamat',
+              _alamatController.text.isNotEmpty ? _alamatController.text : '-',
+              Icons.location_on_outlined,
+            ),
+          ]),
+        ],
+      ),
+    );
+  }
 
-          // Fakultas field - shown for students, different label for lecturers
-          _buildTextField(
-            label: 'Fakultas',
-            controller: _fakultasController,
-            icon: Icons.domain_outlined,
-            required: true,
+  Widget _buildInfoCard(List<Widget> children) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 2),
           ),
-          const SizedBox(height: 16),
+        ],
+      ),
+      child: Column(children: children),
+    );
+  }
 
-          _buildTextField(
-            label: widget.isLecturer ? 'Fakultas' : 'Institusi',
-            controller: _institusiController,
-            icon: Icons.business_outlined,
-            required: true,
-          ),
-          const SizedBox(height: 16),
-
-          _buildTextField(
-            label: widget.isLecturer ? 'Bidang Keahlian' : 'Angkatan',
-            controller: _angkatanController,
-            icon: widget.isLecturer
-                ? Icons.psychology
-                : Icons.calendar_today_outlined,
-          ),
-          const SizedBox(height: 16),
-
-          _buildTextField(
-            label: 'Alamat',
-            controller: _alamatController,
-            icon: Icons.location_on_outlined,
-            maxLines: 2,
-          ),
-          const SizedBox(height: 24),
-
-          // Simpan Button
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton.icon(
-              onPressed: () {
-                widget.onUpdateProfile?.call(
-                  nama: _namaController.text,
-                  nim: _nimController.text,
-                  prodi: _prodiController.text,
-                  institusi: _institusiController.text,
-                  angkatan: _angkatanController.text,
-                  fakultas: _fakultasController.text,
-                );
-                CustomToast.success(context, 'Data profil berhasil disimpan');
-                setState(() {});
-              },
-              icon: const Icon(Icons.save, size: 18),
-              label: const Text(
-                'Simpan Perubahan',
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: primaryBlue,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
+  Widget _buildInfoRow(String label, String value, IconData icon) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: Colors.grey.shade100)),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, color: primaryBlue, size: 20),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(fontSize: 11, color: Colors.grey[600]),
                 ),
-              ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black87,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -783,72 +796,6 @@ class _ProfilePageContentState extends State<ProfilePageContent>
     );
   }
 
-  Widget _buildTextField({
-    required String label,
-    required TextEditingController controller,
-    required IconData icon,
-    bool required = false,
-    TextInputType keyboardType = TextInputType.text,
-    int maxLines = 1,
-  }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
-                color: Colors.black87,
-              ),
-            ),
-            if (required)
-              const Text(
-                ' *',
-                style: TextStyle(color: Colors.red, fontSize: 13),
-              ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Colors.grey[300]!, width: 1),
-          ),
-          child: Row(
-            crossAxisAlignment: maxLines > 1
-                ? CrossAxisAlignment.start
-                : CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: maxLines > 1 ? 14 : 0),
-                child: Icon(icon, color: primaryBlue, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  controller: controller,
-                  keyboardType: keyboardType,
-                  maxLines: maxLines,
-                  style: const TextStyle(fontSize: 14, color: Colors.black87),
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(vertical: 14),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
   Widget _buildPasswordField({
     required String label,
     required TextEditingController controller,
@@ -903,49 +850,6 @@ class _ProfilePageContentState extends State<ProfilePageContent>
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildGenderOption(String label, IconData icon) {
-    final isSelected = _selectedGender == label;
-    return GestureDetector(
-      onTap: () => setState(() => _selectedGender = label),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        decoration: BoxDecoration(
-          color: isSelected ? primaryBlue.withOpacity(0.1) : Colors.white,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            color: isSelected ? primaryBlue : Colors.grey[300]!,
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              isSelected ? Icons.radio_button_checked : Icons.radio_button_off,
-              color: isSelected ? primaryBlue : Colors.grey[400],
-              size: 20,
-            ),
-            const SizedBox(width: 8),
-            Icon(
-              icon,
-              color: isSelected ? primaryBlue : Colors.grey[600],
-              size: 20,
-            ),
-            const SizedBox(width: 6),
-            Text(
-              label,
-              style: TextStyle(
-                color: isSelected ? primaryBlue : Colors.grey[700],
-                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-                fontSize: 13,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -1055,7 +959,3 @@ class _ProfilePageContentState extends State<ProfilePageContent>
     );
   }
 }
-
-
-
-

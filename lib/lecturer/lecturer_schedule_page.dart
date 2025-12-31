@@ -61,36 +61,32 @@ class _LecturerSchedulePageContentState
             onProfileTap: widget.onNavigateToProfile,
             onSettingsTap: widget.onNavigateToSettings,
           ),
-          // Day Tabs with white background and shadow
+          // Day Tabs with white background - pill style like finance tabs
           Container(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
               color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
-                  blurRadius: 12,
-                  offset: const Offset(0, 4),
-                  spreadRadius: 1,
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
                 ),
               ],
             ),
-            padding: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              bottom: 16,
-              top: 16,
-            ),
             child: Row(
               children: [
-                _buildDayTab('Senin', 0),
-                const SizedBox(width: 12),
-                _buildDayTab('Selasa', 1),
-                const SizedBox(width: 12),
-                _buildDayTab('Rabu', 2),
-                const SizedBox(width: 12),
-                _buildDayTab('Kamis', 3),
-                const SizedBox(width: 12),
-                _buildDayTab('Jum\'at', 4),
+                _buildDayTab('Sen', 0),
+                const SizedBox(width: 4),
+                _buildDayTab('Sel', 1),
+                const SizedBox(width: 4),
+                _buildDayTab('Rab', 2),
+                const SizedBox(width: 4),
+                _buildDayTab('Kam', 3),
+                const SizedBox(width: 4),
+                _buildDayTab('Jum', 4),
               ],
             ),
           ),
@@ -112,31 +108,36 @@ class _LecturerSchedulePageContentState
   Widget _buildDayTab(String day, int index) {
     final isSelected = _tabController.index == index;
 
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _tabController.animateTo(index);
-        });
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? primaryBlue : Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.12),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          setState(() {
+            _tabController.animateTo(index);
+          });
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? primaryBlue : Colors.transparent,
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: primaryBlue.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Text(
+            day,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: isSelected ? Colors.white : primaryBlue,
             ),
-          ],
-        ),
-        child: Text(
-          day,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.w600,
-            color: isSelected ? Colors.white : primaryBlue,
           ),
         ),
       ),
@@ -1238,6 +1239,3 @@ class _SimpleAttendanceModalState extends State<_SimpleAttendanceModal> {
     );
   }
 }
-
-
-

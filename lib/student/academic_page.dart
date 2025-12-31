@@ -394,6 +394,116 @@ class _AcademicPageContentState extends State<AcademicPageContent>
 
           return Column(
             children: [
+              // Show rejection warning if KRS was previously rejected
+              if (krs.wasRejected) ...[
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.red.shade50, Colors.orange.shade50],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.red.shade300, width: 1.5),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade100,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              Icons.warning_amber_rounded,
+                              color: Colors.red.shade700,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Expanded(
+                            child: Text(
+                              'KRS Ditolak - Perlu Revisi',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.red.shade200),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.message,
+                                  size: 16,
+                                  color: Colors.red.shade400,
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  'Catatan dari Dosen Wali:',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.red.shade700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              krs.rejectionReason ?? 'Tidak ada catatan',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade800,
+                                height: 1.4,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.info_outline,
+                            size: 16,
+                            color: Colors.orange.shade700,
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              'Silakan revisi KRS Anda dan ajukan kembali.',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.orange.shade800,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+              ],
               // Use same card style as approved
               _buildSemesterCard(
                 semester: 'Semester ${krs.semester}',
@@ -401,8 +511,8 @@ class _AcademicPageContentState extends State<AcademicPageContent>
                 mataKuliah: '${krs.courseCodes.length} Mata Kuliah',
                 kelas: widget.userKelas,
                 sks: krs.totalSks.toString(),
-                status: 'Draft',
-                statusColor: Colors.grey,
+                status: krs.wasRejected ? 'Perlu Revisi' : 'Draft',
+                statusColor: krs.wasRejected ? Colors.red : Colors.grey,
                 onTap: () => _showSubmitKrsModal(krs, deadlineText),
               ),
               const SizedBox(height: 12),
@@ -759,10 +869,11 @@ class _AcademicPageContentState extends State<AcademicPageContent>
   }
 
   Widget _buildApprovedContent() {
-    // Get dynamic approved KRS for current student
-    final approvedKrsList = KrsData.getKrsByStudent(
-      widget.userNim,
-    ).where((krs) => krs.status == KrsStatus.approved).toList();
+    // Get ONLY current semester (5) approved KRS for current student
+    // History semesters (1-4) should be shown in History tab, not here
+    final approvedKrsList = KrsData.getKrsByStudent(widget.userNim)
+        .where((krs) => krs.status == KrsStatus.approved && krs.semester >= 5)
+        .toList();
 
     if (approvedKrsList.isEmpty) {
       return Center(
@@ -772,8 +883,13 @@ class _AcademicPageContentState extends State<AcademicPageContent>
             Icon(Icons.check_circle_outline, size: 64, color: Colors.grey[300]),
             const SizedBox(height: 16),
             Text(
-              'Belum ada KRS yang disetujui',
+              'Belum ada KRS semester ini yang disetujui',
               style: TextStyle(color: Colors.grey[500]),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Cek tab History untuk riwayat KRS semester sebelumnya',
+              style: TextStyle(color: Colors.grey[400], fontSize: 12),
             ),
           ],
         ),
@@ -812,92 +928,38 @@ class _AcademicPageContentState extends State<AcademicPageContent>
   }
 
   Widget _buildHistoryContent() {
-    // Get newly approved KRS from dynamic data (semester 5+)
-    final newApprovedKrs = KrsData.getKrsByStudent(
-      widget.userNim,
-    ).where((krs) => krs.status == KrsStatus.approved).toList();
+    // Get all approved KRS from history (semester 1-4 only)
+    // Semester 5+ goes to Approved tab
+    final historyKrs = KrsData.getKrsByStudent(widget.userNim)
+        .where((krs) => krs.status == KrsStatus.approved && krs.semester < 5)
+        .toList();
+
+    // Sort by semester descending (newest first)
+    historyKrs.sort((a, b) => b.semester.compareTo(a.semester));
+
+    if (historyKrs.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.history, size: 64, color: Colors.grey[300]),
+            const SizedBox(height: 16),
+            Text(
+              'Belum ada riwayat KRS',
+              style: TextStyle(color: Colors.grey[500]),
+            ),
+          ],
+        ),
+      );
+    }
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          // Static history - semesters 1-4 (always shown)
-          _buildSemesterCard(
-            semester: 'Semester 1',
-            tahun: 'Tahun 2023',
-            mataKuliah: '5 Mata Kuliah',
-            kelas: 'IM23C',
-            sks: '20',
-            status: 'Approved',
-            statusColor: Colors.green,
-            onTap: () => _showKrsDetailModal(
-              semester: 'Semester 1',
-              tahunAjaran: 'Semester Ganjil 2023/2024',
-              kelas: 'IM23C',
-              sks: '20',
-              mataKuliahCount: '5',
-              status: 'approved',
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildSemesterCard(
-            semester: 'Semester 2',
-            tahun: 'Tahun 2023',
-            mataKuliah: '7 Mata Kuliah',
-            kelas: 'IM23C',
-            sks: '17',
-            status: 'Approved',
-            statusColor: Colors.green,
-            onTap: () => _showKrsDetailModal(
-              semester: 'Semester 2',
-              tahunAjaran: 'Semester Genap 2023/2024',
-              kelas: 'IM23C',
-              sks: '17',
-              mataKuliahCount: '7',
-              status: 'approved',
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildSemesterCard(
-            semester: 'Semester 3',
-            tahun: 'Tahun 2024',
-            mataKuliah: '6 Mata Kuliah',
-            kelas: 'IM23C',
-            sks: '15',
-            status: 'Approved',
-            statusColor: Colors.green,
-            onTap: () => _showKrsDetailModal(
-              semester: 'Semester 3',
-              tahunAjaran: 'Semester Ganjil 2024/2025',
-              kelas: 'IM23C',
-              sks: '15',
-              mataKuliahCount: '6',
-              status: 'approved',
-            ),
-          ),
-          const SizedBox(height: 12),
-          _buildSemesterCard(
-            semester: 'Semester 4',
-            tahun: 'Tahun 2024',
-            mataKuliah: '6 Mata Kuliah',
-            kelas: 'IM23C',
-            sks: '19',
-            status: 'Approved',
-            statusColor: Colors.green,
-            onTap: () => _showKrsDetailModal(
-              semester: 'Semester 4',
-              tahunAjaran: 'Semester Genap 2024/2025',
-              kelas: 'IM23C',
-              sks: '19',
-              mataKuliahCount: '6',
-              status: 'approved',
-            ),
-          ),
-          // Add newly approved KRS from dynamic data
-          ...newApprovedKrs.map((krs) {
+          ...historyKrs.map((krs) {
             return Column(
               children: [
-                const SizedBox(height: 12),
                 _buildSemesterCard(
                   semester: 'Semester ${krs.semester}',
                   tahun: 'Tahun ${krs.academicYear}',
@@ -915,6 +977,7 @@ class _AcademicPageContentState extends State<AcademicPageContent>
                     status: 'approved',
                   ),
                 ),
+                const SizedBox(height: 12),
               ],
             );
           }),
@@ -1720,7 +1783,3 @@ class AcademicPage extends StatelessWidget {
     );
   }
 }
-
-
-
-

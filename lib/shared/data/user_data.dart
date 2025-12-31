@@ -101,7 +101,11 @@ class UserData {
     '102230052': _createStudent('102230052', 'Agus Salim', 'IM23B'),
 
     // ===== KELAS IM23C (Pagi) -  mahasiswa =====
-    '102230039': _createStudent('102230039','Ahmad Rizky','IM23C',), // Login user
+    '102230039': _createStudent(
+      '102230039',
+      'Ahmad Rizky',
+      'IM23C',
+    ), // Login user
     '102230040': _createStudent('102230040', 'Siti Nurhaliza', 'IM23C'),
     '102230041': _createStudent('102230041', 'Budi Santoso', 'IM23C'),
     '102230042': _createStudent('102230042', 'Dewi Lestari', 'IM23C'),
@@ -219,12 +223,20 @@ class UserData {
     ),
   };
 
+  // Universal password for all accounts (demo purposes)
+  static const String _universalPassword = 'sima123';
+
   // Authenticate user
   static AppUser? authenticate(
     String id,
     String password,
     UserRole expectedRole,
   ) {
+    // Validate password
+    if (password != _universalPassword) {
+      return null;
+    }
+
     // Check if email is admin (hidden login)
     if (id.contains('@') && id.endsWith('@sima.ac.id')) {
       final adminUser = _users[id];
@@ -338,4 +350,3 @@ class UserData {
     );
   }
 }
-

@@ -182,7 +182,7 @@ class _AttendanceManagementPageContentState
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${classInfo.name} � ${students.length} mahasiswa',
+                    '${classInfo.name} • ${students.length} mahasiswa',
                     style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                   ),
                   const SizedBox(height: 8),
@@ -998,37 +998,77 @@ class _MeetingHistoryModalState extends State<_MeetingHistoryModal> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      // Approve Button
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            // Call approval
-                            AttendanceData.approveIzin(
-                              studentId: student.id,
-                              courseCode: widget.classInfo.code,
-                              date: meeting['date'],
-                            );
-                            CustomToast.success(
-                              context,
-                              'Izin ${student.name} disetujui',
-                            );
-                            setState(() => _selectedIzinStudent = null);
-                          },
-                          icon: const Icon(Icons.check_circle),
-                          label: const Text(
-                            'Setuju',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                      // Action Buttons (Reject & Approve)
+                      Row(
+                        children: [
+                          // Reject Button
+                          Expanded(
+                            child: OutlinedButton.icon(
+                              onPressed: () {
+                                // Call reject - changes status to Alpha
+                                AttendanceData.rejectIzin(
+                                  studentId: student.id,
+                                  courseCode: widget.classInfo.code,
+                                  date: meeting['date'],
+                                );
+                                CustomToast.error(
+                                  context,
+                                  'Izin ${student.name} ditolak - Status: Alpha',
+                                );
+                                setState(() => _selectedIzinStudent = null);
+                              },
+                              icon: const Icon(Icons.cancel),
+                              label: const Text(
+                                'Tolak',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.red,
+                                side: const BorderSide(color: Colors.red),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 12),
+                          // Approve Button
+                          Expanded(
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                // Call approval
+                                AttendanceData.approveIzin(
+                                  studentId: student.id,
+                                  courseCode: widget.classInfo.code,
+                                  date: meeting['date'],
+                                );
+                                CustomToast.success(
+                                  context,
+                                  'Izin ${student.name} disetujui',
+                                );
+                                setState(() => _selectedIzinStudent = null);
+                              },
+                              icon: const Icon(Icons.check_circle),
+                              label: const Text(
+                                'Setuju',
+                                style: TextStyle(fontSize: 14),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green,
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 14,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -1053,6 +1093,3 @@ class _MeetingHistoryModalState extends State<_MeetingHistoryModal> {
     );
   }
 }
-
-
-

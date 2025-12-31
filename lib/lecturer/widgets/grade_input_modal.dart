@@ -1,6 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import '../../shared/data/user_data.dart';
 import '../../shared/data/class_data.dart';
+import '../../shared/data/attendance_data.dart';
 import '../../shared/widgets/custom_toast.dart';
 
 class GradeInputModal extends StatefulWidget {
@@ -64,13 +65,51 @@ class _GradeInputModalState extends State<GradeInputModal>
       vsync: this,
     );
 
-    // Initialize controllers for each component
+    // Initialize controllers for each component (except Kehadiran which is auto-calculated)
     for (int i = 0; i < _gradeComponents.length; i++) {
       _controllers[i] = {};
       for (var student in widget.students) {
         _controllers[i]![student.id] = TextEditingController();
+        // Pre-fill Kehadiran with auto-calculated value
+        if (_gradeComponents[i]['name'] == 'Kehadiran') {
+          final score = _calculateAttendanceScore(student.id);
+          _controllers[i]![student.id]!.text = score.toString();
+        }
       }
     }
+  }
+
+  // Calculate attendance score based on attendance records
+  // Score = (hadir count / total meetings) * 100
+  int _calculateAttendanceScore(String studentId) {
+    const totalMeetings = 14; // Total pertemuan dalam satu semester
+    final records = AttendanceData.getAttendanceByStudent(studentId);
+
+    // Extract course code from classInfo.code (format: 'IF501-IM23C')
+    final courseCode = widget.classInfo.code.split('-').first;
+
+    // Filter records for this specific course
+    final courseRecords = records
+        .where(
+          (r) =>
+              r.courseCode == courseCode ||
+              r.courseName == widget.classInfo.subject,
+        )
+        .toList();
+
+    // Count hadir (including approved izin)
+    int hadirCount = 0;
+    for (final record in courseRecords) {
+      if (record.type == 'hadir') {
+        hadirCount++;
+      } else if (record.type == 'izin' && record.izinApproved) {
+        hadirCount++; // Approved izin counts as hadir
+      }
+    }
+
+    // Calculate percentage and convert to score (0-100)
+    final score = (hadirCount / totalMeetings * 100).round();
+    return score.clamp(0, 100);
   }
 
   @override
@@ -266,13 +305,19 @@ class _GradeInputModalState extends State<GradeInputModal>
 
   Widget _buildStudentGradeRow(AppUser student, int componentIndex) {
     final component = _gradeComponents[componentIndex];
+    final isKehadiran = component['name'] == 'Kehadiran';
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isKehadiran ? Colors.green.withOpacity(0.05) : Colors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey[200]!),
+        border: Border.all(
+          color: isKehadiran
+              ? Colors.green.withOpacity(0.3)
+              : Colors.grey[200]!,
+        ),
       ),
       child: Row(
         children: [
@@ -307,21 +352,57 @@ class _GradeInputModalState extends State<GradeInputModal>
               ],
             ),
           ),
+          if (isKehadiran) ...[
+            // Auto-calculated indicator
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.green.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.auto_awesome, size: 12, color: Colors.green),
+                  const SizedBox(width: 4),
+                  Text(
+                    'Auto',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.green[700],
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+          ],
           Container(
             width: 80,
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.grey[50],
+              color: isKehadiran
+                  ? Colors.green.withOpacity(0.1)
+                  : Colors.grey[50],
               borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: Colors.grey[300]!),
+              border: Border.all(
+                color: isKehadiran ? Colors.green : Colors.grey[300]!,
+              ),
             ),
             child: TextField(
               controller: _controllers[componentIndex]![student.id],
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+              readOnly: isKehadiran, // Make Kehadiran read-only
+              enabled: !isKehadiran,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: isKehadiran ? Colors.green[700] : Colors.black87,
+              ),
               decoration: InputDecoration(
-                hintText: '0-100',
+                hintText: isKehadiran ? '' : '0-100',
                 hintStyle: TextStyle(fontSize: 11, color: Colors.grey[400]),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 8,
@@ -381,7 +462,3 @@ class _GradeInputModalState extends State<GradeInputModal>
     );
   }
 }
-
-
-
-

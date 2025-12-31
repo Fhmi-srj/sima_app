@@ -97,6 +97,9 @@ class _LecturerAcademicPageContentState
     );
   }
 
+  // Track selected class filter for Nilai tab
+  String? _selectedKelasFilter;
+
   Widget _buildNilaiTab() {
     final classes = ClassData.getClassesByLecturer(widget.userNip);
 
@@ -104,13 +107,82 @@ class _LecturerAcademicPageContentState
       return const Center(child: Text('Tidak ada mata kuliah'));
     }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: classes.length,
-      itemBuilder: (context, index) {
-        final classInfo = classes[index];
-        return _buildNilaiCard(classInfo);
-      },
+    // Get unique kelas codes from the classes
+    final kelasSet = <String>{};
+    for (final c in classes) {
+      // Extract kelas code from code (format: 'IF501-IM23C')
+      final parts = c.code.split('-');
+      if (parts.length > 1) {
+        kelasSet.add(parts[1]);
+      }
+    }
+    final kelasList = kelasSet.toList()..sort();
+
+    // Filter classes based on selected kelas
+    final filteredClasses = _selectedKelasFilter == null
+        ? classes
+        : classes.where((c) => c.code.endsWith(_selectedKelasFilter!)).toList();
+
+    // Add "Semua" to the beginning of kelas list
+    final allKelasList = ['Semua', ...kelasList];
+
+    return Column(
+      children: [
+        // Pill-style class filter (like schedule tabs)
+        Container(
+          margin: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: Colors.grey[100],
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Row(
+            children: allKelasList.map((kelas) {
+              final isSelected =
+                  (kelas == 'Semua' && _selectedKelasFilter == null) ||
+                  kelas == _selectedKelasFilter;
+              return Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedKelasFilter = kelas == 'Semua' ? null : kelas;
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 200),
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: isSelected ? primaryBlue : Colors.transparent,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Center(
+                      child: Text(
+                        kelas,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: isSelected ? Colors.white : primaryBlue,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        ),
+        // Course list
+        Expanded(
+          child: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: filteredClasses.length,
+            itemBuilder: (context, index) {
+              final classInfo = filteredClasses[index];
+              return _buildNilaiCard(classInfo);
+            },
+          ),
+        ),
+      ],
     );
   }
 
@@ -537,5 +609,3 @@ class _LecturerAcademicPageContentState
     );
   }
 }
-
-

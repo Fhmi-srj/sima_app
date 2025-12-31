@@ -82,462 +82,269 @@ class KhsData {
     return totalSks > 0 ? totalPoints / totalSks : 0.0;
   }
 
-  // KHS records for students
-  static final List<KhsEntry> _khsRecords = [
-    // ===== AHMAD RIZKY (102230039) - IM23C =====
-    // Semester 4
-    KhsEntry(
-      studentId: '102230039',
-      semester: 4,
-      academicYear: '2023/2024',
-      period: 'Genap',
-      grades: [
-        const GradeEntry(
-          courseCode: 'IF401',
-          courseName: 'Struktur Data',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF402',
-          courseName: 'Algoritma',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF403',
-          courseName: 'Basis Data',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '199105202019032001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF404',
-          courseName: 'Pemrograman OOP',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '199003152018031001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF405',
-          courseName: 'Sistem Operasi',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF406',
-          courseName: 'Statistika',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF407',
-          courseName: 'Bahasa Inggris',
-          sks: 2,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198805102012121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF408',
-          courseName: 'Kewirausahaan',
-          sks: 2,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '199105202019032001',
-        ),
-      ],
-      ips: 3.80,
-      totalSks: 22,
-    ),
-    // Semester 3
-    KhsEntry(
-      studentId: '102230039',
-      semester: 3,
-      academicYear: '2023/2024',
-      period: 'Ganjil',
-      grades: [
-        const GradeEntry(
-          courseCode: 'IF301',
-          courseName: 'Pemrograman Dasar',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '199003152018031001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF302',
-          courseName: 'Logika Informatika',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF303',
-          courseName: 'Matematika Dasar',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF304',
-          courseName: 'Pengantar TI',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF305',
-          courseName: 'Fisika Dasar',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '199105202019032001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF306',
-          courseName: 'Bahasa Indonesia',
-          sks: 2,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198805102012121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF307',
-          courseName: 'Agama',
-          sks: 2,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '199105202019032001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF308',
-          courseName: 'Pancasila',
-          sks: 2,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '198805102012121001',
-        ),
-      ],
-      ips: 3.65,
-      totalSks: 21,
-    ),
-    // Semester 2
-    KhsEntry(
-      studentId: '102230039',
-      semester: 2,
-      academicYear: '2022/2023',
-      period: 'Genap',
-      grades: [
-        const GradeEntry(
-          courseCode: 'IF201',
-          courseName: 'Kalkulus II',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF202',
-          courseName: 'Pemrograman Prosedural',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '199003152018031001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF203',
-          courseName: 'Matematika Diskrit',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF204',
-          courseName: 'Sistem Digital',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF205',
-          courseName: 'Komunikasi Data',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF206',
-          courseName: 'Etika Profesi',
-          sks: 2,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198805102012121001',
-        ),
-      ],
-      ips: 3.78,
-      totalSks: 17,
-    ),
-    // Semester 1
-    KhsEntry(
-      studentId: '102230039',
-      semester: 1,
-      academicYear: '2022/2023',
-      period: 'Ganjil',
-      grades: [
-        const GradeEntry(
-          courseCode: 'IF101',
-          courseName: 'Kalkulus I',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF102',
-          courseName: 'Pengantar Komputer',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '199003152018031001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF103',
-          courseName: 'Aljabar Linear',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF104',
-          courseName: 'Pengantar Informatika',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF105',
-          courseName: 'Pendidikan Kewarganegaraan',
-          sks: 2,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198805102012121001',
-        ),
-      ],
-      ips: 3.74,
-      totalSks: 14,
-    ),
+  // KHS records - initialized lazily
+  static List<KhsEntry>? _khsRecordsCache;
 
-    // ===== SITI NURHALIZA (102230040) - IM23C =====
-    KhsEntry(
-      studentId: '102230040',
-      semester: 4,
-      academicYear: '2023/2024',
-      period: 'Genap',
-      grades: [
-        const GradeEntry(
-          courseCode: 'IF401',
-          courseName: 'Struktur Data',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF402',
-          courseName: 'Algoritma',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF403',
-          courseName: 'Basis Data',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '199105202019032001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF404',
-          courseName: 'Pemrograman OOP',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '199003152018031001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF405',
-          courseName: 'Sistem Operasi',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF406',
-          courseName: 'Statistika',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198712202015042001',
-        ),
-      ],
-      ips: 3.90,
-      totalSks: 18,
-    ),
+  static List<KhsEntry> get _khsRecords {
+    _khsRecordsCache ??= _generateAllKhsRecords();
+    return _khsRecordsCache!;
+  }
 
-    // ===== BUDI SANTOSO (102230041) - IM23C =====
-    KhsEntry(
-      studentId: '102230041',
-      semester: 4,
-      academicYear: '2023/2024',
-      period: 'Genap',
-      grades: [
-        const GradeEntry(
-          courseCode: 'IF401',
-          courseName: 'Struktur Data',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF402',
-          courseName: 'Algoritma',
-          sks: 3,
-          grade: 'B',
-          score: 3.0,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF403',
-          courseName: 'Basis Data',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '199105202019032001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF404',
-          courseName: 'Pemrograman OOP',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '199003152018031001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF405',
-          courseName: 'Sistem Operasi',
-          sks: 3,
-          grade: 'B',
-          score: 3.0,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF406',
-          courseName: 'Statistika',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '198712202015042001',
-        ),
-      ],
-      ips: 3.27,
-      totalSks: 18,
-    ),
+  // Course definitions per semester
+  static const _semesterCoursesDef = {
+    1: [
+      {
+        'code': 'IF101',
+        'name': 'Kalkulus I',
+        'sks': 3,
+        'lecId': '198712202015042001',
+      },
+      {
+        'code': 'IF102',
+        'name': 'Pengantar Komputer',
+        'sks': 3,
+        'lecId': '199003152018031001',
+      },
+      {
+        'code': 'IF103',
+        'name': 'Aljabar Linear',
+        'sks': 3,
+        'lecId': '198712202015042001',
+      },
+      {
+        'code': 'IF104',
+        'name': 'Pengantar Informatika',
+        'sks': 3,
+        'lecId': '198506152010121001',
+      },
+      {
+        'code': 'IF105',
+        'name': 'Pendidikan Kewarganegaraan',
+        'sks': 2,
+        'lecId': '198805102012121001',
+      },
+      {
+        'code': 'IF106',
+        'name': 'Agama',
+        'sks': 2,
+        'lecId': '199105202019032001',
+      },
+    ],
+    2: [
+      {
+        'code': 'IF201',
+        'name': 'Kalkulus II',
+        'sks': 3,
+        'lecId': '198712202015042001',
+      },
+      {
+        'code': 'IF202',
+        'name': 'Pemrograman Prosedural',
+        'sks': 3,
+        'lecId': '199003152018031001',
+      },
+      {
+        'code': 'IF203',
+        'name': 'Matematika Diskrit',
+        'sks': 3,
+        'lecId': '198712202015042001',
+      },
+      {
+        'code': 'IF204',
+        'name': 'Sistem Digital',
+        'sks': 3,
+        'lecId': '198506152010121001',
+      },
+      {
+        'code': 'IF205',
+        'name': 'Komunikasi Data',
+        'sks': 3,
+        'lecId': '198506152010121001',
+      },
+      {
+        'code': 'IF206',
+        'name': 'Etika Profesi',
+        'sks': 2,
+        'lecId': '198805102012121001',
+      },
+    ],
+    3: [
+      {
+        'code': 'IF301',
+        'name': 'Pemrograman Dasar',
+        'sks': 3,
+        'lecId': '199003152018031001',
+      },
+      {
+        'code': 'IF302',
+        'name': 'Logika Informatika',
+        'sks': 3,
+        'lecId': '198712202015042001',
+      },
+      {
+        'code': 'IF303',
+        'name': 'Matematika Dasar',
+        'sks': 3,
+        'lecId': '198712202015042001',
+      },
+      {
+        'code': 'IF304',
+        'name': 'Pengantar TI',
+        'sks': 3,
+        'lecId': '198506152010121001',
+      },
+      {
+        'code': 'IF305',
+        'name': 'Fisika Dasar',
+        'sks': 3,
+        'lecId': '199105202019032001',
+      },
+      {
+        'code': 'IF306',
+        'name': 'Bahasa Indonesia',
+        'sks': 2,
+        'lecId': '198805102012121001',
+      },
+      {
+        'code': 'IF307',
+        'name': 'Agama',
+        'sks': 2,
+        'lecId': '199105202019032001',
+      },
+      {
+        'code': 'IF308',
+        'name': 'Pancasila',
+        'sks': 2,
+        'lecId': '198805102012121001',
+      },
+    ],
+    4: [
+      {
+        'code': 'IF401',
+        'name': 'Struktur Data',
+        'sks': 3,
+        'lecId': '198506152010121001',
+      },
+      {
+        'code': 'IF402',
+        'name': 'Algoritma',
+        'sks': 3,
+        'lecId': '198712202015042001',
+      },
+      {
+        'code': 'IF403',
+        'name': 'Basis Data',
+        'sks': 3,
+        'lecId': '199105202019032001',
+      },
+      {
+        'code': 'IF404',
+        'name': 'Pemrograman OOP',
+        'sks': 3,
+        'lecId': '199003152018031001',
+      },
+      {
+        'code': 'IF405',
+        'name': 'Sistem Operasi',
+        'sks': 3,
+        'lecId': '198506152010121001',
+      },
+      {
+        'code': 'IF406',
+        'name': 'Statistika',
+        'sks': 3,
+        'lecId': '198712202015042001',
+      },
+      {
+        'code': 'IF407',
+        'name': 'Bahasa Inggris',
+        'sks': 2,
+        'lecId': '198805102012121001',
+      },
+      {
+        'code': 'IF408',
+        'name': 'Kewirausahaan',
+        'sks': 2,
+        'lecId': '199105202019032001',
+      },
+    ],
+  };
 
-    // ===== EKO PRASETYO (102230001) - IM23A =====
-    KhsEntry(
-      studentId: '102230001',
-      semester: 4,
-      academicYear: '2023/2024',
-      period: 'Genap',
-      grades: [
-        const GradeEntry(
-          courseCode: 'IF401',
-          courseName: 'Struktur Data',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF402',
-          courseName: 'Algoritma',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF403',
-          courseName: 'Basis Data',
-          sks: 3,
-          grade: 'A',
-          score: 4.0,
-          lecturerId: '199105202019032001',
-        ),
-      ],
-      ips: 3.90,
-      totalSks: 9,
-    ),
+  static const _khsAcademicYears = {
+    1: '2022/2023',
+    2: '2022/2023',
+    3: '2023/2024',
+    4: '2023/2024',
+  };
+  static const _khsPeriods = {1: 'Ganjil', 2: 'Genap', 3: 'Ganjil', 4: 'Genap'};
+  static const _gradeList = ['A', 'A-', 'B+', 'B', 'B-', 'C+', 'C'];
+  static const _gradeScores = {
+    'A': 4.0,
+    'A-': 3.7,
+    'B+': 3.3,
+    'B': 3.0,
+    'B-': 2.7,
+    'C+': 2.3,
+    'C': 2.0,
+  };
 
-    // ===== DEDI SUPRIADI (102230076) - IM23D =====
-    KhsEntry(
-      studentId: '102230076',
-      semester: 4,
-      academicYear: '2023/2024',
-      period: 'Genap',
-      grades: [
-        const GradeEntry(
-          courseCode: 'IF401',
-          courseName: 'Struktur Data',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '198506152010121001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF402',
-          courseName: 'Algoritma',
-          sks: 3,
-          grade: 'B+',
-          score: 3.3,
-          lecturerId: '198712202015042001',
-        ),
-        const GradeEntry(
-          courseCode: 'IF403',
-          courseName: 'Basis Data',
-          sks: 3,
-          grade: 'A-',
-          score: 3.7,
-          lecturerId: '199105202019032001',
-        ),
-      ],
-      ips: 3.43,
-      totalSks: 9,
-    ),
-  ];
+  // Generate all KHS records for all students
+  static List<KhsEntry> _generateAllKhsRecords() {
+    final records = <KhsEntry>[];
+    final allStudents = UserData.getAllStudents();
+
+    for (final student in allStudents) {
+      final studentSeed = student.id.hashCode;
+
+      // Generate KHS for semester 1-4
+      for (int sem = 1; sem <= 4; sem++) {
+        final courseDefs = _semesterCoursesDef[sem]!;
+        final grades = <GradeEntry>[];
+        int totalSks = 0;
+        double totalPoints = 0;
+
+        for (int i = 0; i < courseDefs.length; i++) {
+          final course = courseDefs[i];
+          // Vary grades based on student ID and course index
+          final gradeIndex = ((studentSeed + i + sem) % 7).abs();
+          final grade =
+              _gradeList[gradeIndex < _gradeList.length ? gradeIndex : 0];
+          final score = _gradeScores[grade]!;
+          final sks = course['sks'] as int;
+
+          grades.add(
+            GradeEntry(
+              courseCode: course['code'] as String,
+              courseName: course['name'] as String,
+              sks: sks,
+              grade: grade,
+              score: score,
+              lecturerId: course['lecId'] as String,
+            ),
+          );
+
+          totalSks += sks;
+          totalPoints += score * sks;
+        }
+
+        final ips = totalSks > 0 ? totalPoints / totalSks : 0.0;
+
+        records.add(
+          KhsEntry(
+            studentId: student.id,
+            semester: sem,
+            academicYear: _khsAcademicYears[sem]!,
+            period: _khsPeriods[sem]!,
+            grades: grades,
+            ips: double.parse(ips.toStringAsFixed(2)),
+            totalSks: totalSks,
+          ),
+        );
+      }
+    }
+
+    return records;
+  }
 
   // Get KHS for a student
   static List<KhsEntry> getKhsByStudent(String studentId) {
@@ -654,4 +461,3 @@ class KhsData {
   // All KHS records (for admin)
   static List<KhsEntry> getAllKhs() => _khsRecords.toList();
 }
-
