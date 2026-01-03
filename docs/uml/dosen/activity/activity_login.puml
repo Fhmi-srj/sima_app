@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Login Dosen
+
+|Dosen|
+start
+:Mengakses Sistem\nInformasi;
+
+|Sistem|
+:Menampilkan\nHalaman Utama;
+
+|Dosen|
+:Masuk ke Menu\nLogin;
+
+|Sistem|
+:Menampilkan Form\nLogin;
+
+|Dosen|
+:Mengisi NIP\ndan Password;
+
+|Sistem|
+if (Akun Valid?) then (Ya)
+  :Menampilkan\nHalaman Dashboard;
+else (Tidak)
+  :Menampilkan\nPesan Error;
+endif
+
+stop
+
+@enduml
+

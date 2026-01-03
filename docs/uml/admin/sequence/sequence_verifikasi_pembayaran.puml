@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Verifikasi Pembayaran
+
+actor Admin
+participant "Sistem" as sistem
+participant "PaymentData" as paymentData
+participant "BillingData" as billingData
+participant "Mahasiswa" as mhs
+
+Admin -> sistem : 1: Tap Menu Pembayaran
+sistem -> paymentData : 2: getPayments()
+paymentData --> sistem : 3: Return Daftar Pembayaran
+sistem --> Admin : 4: Menampilkan Daftar
+Admin -> sistem : 5: Tap Kartu Pending
+sistem --> Admin : 6: Menampilkan Detail + Bukti
+alt Approve
+  Admin -> sistem : 7: Tap Approve
+  sistem -> paymentData : 8: update(Verified)
+  sistem -> billingData : 9: update(Paid)
+  sistem -> mhs : 10: Kirim Notifikasi
+else Reject
+  Admin -> sistem : 7: Tap Reject
+  Admin -> sistem : 8: Input Alasan
+  sistem -> paymentData : 9: update(Rejected)
+  sistem -> mhs : 10: Kirim Notifikasi
+end
+sistem --> Admin : 11: Sukses
+
+@enduml
+

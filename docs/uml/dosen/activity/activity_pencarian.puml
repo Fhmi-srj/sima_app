@@ -1,0 +1,42 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Pencarian Dosen
+
+|Dosen|
+start
+:Tap Menu Pencarian;
+
+|Sistem|
+:Menampilkan\nHalaman Pencarian;
+:Menampilkan Statistik;
+
+|Dosen|
+:Mengetik Kata Kunci;
+
+|Sistem|
+:Mencari Data Terkait;
+
+if (Hasil Ditemukan?) then (Ya)
+  :Menampilkan Hasil;
+  |Dosen|
+  if (Tap Hasil?) then (Ya)
+    |Sistem|
+    :Menampilkan Detail Modal;
+  endif
+else (Tidak)
+  :Menampilkan Pesan Kosong;
+endif
+
+stop
+
+@enduml
+

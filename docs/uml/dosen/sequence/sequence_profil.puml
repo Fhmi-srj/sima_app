@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Profil Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "UserData" as user
+participant "Halaman\nProfil" as profil
+
+Dosen -> sistem : 1: Tap Menu Profil
+sistem -> user : 2: getCurrentUser()
+user --> sistem : 3: Return Data Dosen
+sistem -> profil : 4: Render Halaman Profil
+profil --> Dosen : 5: Menampilkan Profil
+alt Tab Identitas
+  Dosen -> profil : 6: Pilih Tab Identitas
+  profil --> Dosen : 7: Menampilkan Info Dosen
+else Tab Keamanan
+  Dosen -> profil : 6: Pilih Tab Keamanan
+  profil --> Dosen : 7: Menampilkan Opsi Keamanan
+  Dosen -> sistem : 8: Input Password Baru
+  sistem -> user : 9: updatePassword()
+  user --> sistem : 10: Sukses
+else Tab Riwayat
+  Dosen -> profil : 6: Pilih Tab Riwayat
+  profil --> Dosen : 7: Menampilkan Log Aktivitas
+end
+
+@enduml
+

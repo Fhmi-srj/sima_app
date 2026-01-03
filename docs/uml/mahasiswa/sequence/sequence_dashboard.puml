@@ -1,0 +1,26 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Dashboard Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "UserData" as user
+participant "ScheduleData" as schedule
+participant "Dashboard" as dashboard
+
+Mahasiswa -> sistem : 1: Mengakses Dashboard
+sistem -> user : 2: getCurrent User()
+user --> sistem : 3: Return Data User
+sistem -> schedule : 4: getTodaySchedule()
+schedule --> sistem : 5: Return Jadwal Hari Ini
+sistem -> dashboard : 6: Render Dashboard
+dashboard --> Mahasiswa : 7: Menampilkan Dashboard
+
+@enduml
+

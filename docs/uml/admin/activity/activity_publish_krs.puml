@@ -1,0 +1,47 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Publish KRS
+
+|Admin|
+start
+:Tap Menu Publish KRS;
+
+|Sistem|
+:Memuat Data KRS;
+:Menampilkan Form Publish;
+
+|Admin|
+:Pilih Kelas;
+
+|Sistem|
+:Load Preview MK;
+
+|Admin|
+:Pilih Semester;
+:Set Deadline;
+:Tap Publish;
+
+|Sistem|
+:Konfirmasi;
+
+|Admin|
+:Konfirmasi;
+
+|Sistem|
+:Buat Draft KRS untuk Mahasiswa;
+:Kirim Notifikasi;
+:Tampilkan Pesan Sukses;
+
+stop
+
+@enduml
+

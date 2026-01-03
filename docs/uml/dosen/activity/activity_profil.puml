@@ -1,0 +1,48 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Profil Dosen
+
+|Dosen|
+start
+:Tap Menu Profil;
+
+|Sistem|
+:Memuat Data Dosen;
+:Menampilkan Halaman Profil;
+
+|Dosen|
+if (Pilih Tab?) then (Identitas)
+  |Sistem|
+  :Menampilkan Info Dosen;
+  :NIP, Nama, Email, Prodi, Fakultas;
+else if (Pilih Tab?) then (Keamanan)
+  |Sistem|
+  :Menampilkan Opsi Keamanan;
+  |Dosen|
+  if (Aksi?) then (Ubah Password)
+    :Input Password Baru;
+    |Sistem|
+    :Update Password;
+  else (Toggle 2FA)
+    |Sistem|
+    :Update Setting 2FA;
+  endif
+else (Riwayat)
+  |Sistem|
+  :Memuat Log Aktivitas;
+  :Menampilkan Riwayat;
+endif
+
+stop
+
+@enduml
+

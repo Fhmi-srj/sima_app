@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Keuangan Mahasiswa
+
+|Mahasiswa|
+start
+:Tap Menu Keuangan;
+
+|Sistem|
+:Memuat Data Tagihan;
+:Menghitung Ringkasan;
+:Menampilkan Halaman Keuangan;
+
+|Mahasiswa|
+if (Pilih Tab?) then (Tagihan)
+  |Sistem|
+  :Menampilkan Daftar Tagihan;
+  |Mahasiswa|
+  if (Tap Tagihan?) then (Ya)
+    |Sistem|
+    :Menampilkan Detail Tagihan;
+  endif
+else (Riwayat)
+  |Sistem|
+  :Menampilkan Riwayat Pembayaran;
+endif
+
+stop
+
+@enduml
+

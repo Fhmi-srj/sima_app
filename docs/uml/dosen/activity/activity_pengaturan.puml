@@ -1,0 +1,48 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Pengaturan Dosen
+
+|Dosen|
+start
+:Tap Icon Settings;
+
+|Sistem|
+:Memuat Preferensi;
+:Menampilkan Halaman Pengaturan;
+
+|Dosen|
+if (Aksi?) then (Toggle Notifikasi)
+  |Sistem|
+  :Update Preferensi Notifikasi;
+else if (Aksi?) then (Ubah Password)
+  |Sistem|
+  :Menampilkan Dialog Password;
+  |Dosen|
+  :Input Password Baru;
+  |Sistem|
+  :Menyimpan Password;
+else if (Aksi?) then (Kelola Perangkat)
+  |Sistem|
+  :Menampilkan Daftar Perangkat;
+else (Logout)
+  |Dosen|
+  :Tap Keluar;
+  |Sistem|
+  :Konfirmasi;
+  :Menghapus Sesi;
+  :Navigasi ke Login;
+endif
+
+stop
+
+@enduml
+

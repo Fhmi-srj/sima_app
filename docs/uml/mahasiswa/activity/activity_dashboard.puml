@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Dashboard Mahasiswa
+
+|Mahasiswa|
+start
+:Login Berhasil;
+
+|Sistem|
+:Memuat Data User;
+:Memuat Jadwal Hari Ini;
+:Memuat Notifikasi Tagihan;
+:Menampilkan Dashboard;
+
+|Mahasiswa|
+:Melihat Info Profil;
+:Melihat Reminder Cards;
+:Melihat Jadwal Hari Ini;
+
+if (Tap Komponen?) then (Ya)
+  |Sistem|
+  :Navigasi ke\nHalaman Terkait;
+else (Tidak)
+  :Tetap di Dashboard;
+endif
+
+stop
+
+@enduml
+

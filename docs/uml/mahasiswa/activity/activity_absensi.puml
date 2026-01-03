@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Absensi Mahasiswa
+
+|Mahasiswa|
+start
+:Tap Kartu Jadwal;
+
+|Sistem|
+:Cek Waktu Kelas;
+
+if (Status Waktu?) then (Belum Mulai)
+  :Menampilkan Countdown;
+else if (Status Waktu?) then (Berlangsung)
+  :Membuka Modal Presensi;
+  |Mahasiswa|
+  :Pilih Jenis Kehadiran;
+  if (Jenis?) then (Hadir)
+    |Sistem|
+    :Simpan Status Hadir;
+  else (Izin/Sakit)
+    |Mahasiswa|
+    :Input Alasan;
+    |Sistem|
+    :Simpan Status Izin;
+  endif
+  :Menampilkan Notifikasi Sukses;
+else (Selesai)
+  :Menampilkan Rekap Kehadiran;
+endif
+
+stop
+
+@enduml
+

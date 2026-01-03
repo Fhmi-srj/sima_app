@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Manajemen Tagihan
+
+actor Admin
+participant "Sistem" as sistem
+participant "BillingData" as billingData
+participant "Database" as db
+
+Admin -> sistem : 1: Tap Menu Tagihan
+sistem -> billingData : 2: getBills()
+billingData --> sistem : 3: Return Daftar Tagihan
+sistem --> Admin : 4: Menampilkan Daftar
+alt Edit
+  Admin -> sistem : 5: Tap Edit
+  Admin -> sistem : 6: Edit Data
+  sistem -> db : 7: updateBill(data)
+  db --> sistem : 8: Sukses
+else Tap FAB (Add)
+  Admin -> sistem : 5: Tap FAB
+  Admin -> sistem : 6: Cari Mahasiswa
+  Admin -> sistem : 7: Input Tipe, Nominal
+  sistem -> db : 8: addBill(data)
+  db --> sistem : 9: Sukses
+else Delete
+  Admin -> sistem : 5: Tap Hapus
+  sistem -> db : 6: deleteBill(id)
+  db --> sistem : 7: Sukses
+end
+
+@enduml
+

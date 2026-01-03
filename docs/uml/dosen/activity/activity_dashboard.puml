@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Dashboard Dosen
+
+|Dosen|
+start
+:Login Berhasil;
+
+|Sistem|
+:Memuat Data Dosen;
+:Memuat Jadwal Mengajar;
+:Memuat Pending Tasks;
+:Menampilkan Dashboard;
+
+|Dosen|
+:Melihat Profile Card;
+:Melihat Jadwal Hari Ini;
+:Melihat Tugas Pending;
+
+if (Tap Komponen?) then (Ya)
+  |Sistem|
+  :Navigasi ke\nHalaman Terkait;
+endif
+
+stop
+
+@enduml
+

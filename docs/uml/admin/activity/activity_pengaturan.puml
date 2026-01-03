@@ -1,0 +1,55 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Pengaturan Sistem
+
+|Admin|
+start
+:Tap Menu Pengaturan;
+
+|Sistem|
+:Memuat Settings;
+:Menampilkan Section Settings;
+
+|Admin|
+if (Aksi?) then (Toggle Fitur)
+  |Sistem|
+  :Enable/Disable Fitur;
+else if (Aksi?) then (Setting Semester)
+  :Update Semester Aktif;
+  |Sistem|
+  :Simpan;
+else if (Aksi?) then (Backup)
+  |Sistem|
+  :Buat Backup;
+  :Download File;
+else if (Aksi?) then (Restore)
+  :Pilih File;
+  |Sistem|
+  :Restore Database;
+else if (Aksi?) then (Export)
+  :Pilih Format;
+  |Sistem|
+  :Download File Export;
+else if (Aksi?) then (Clear Cache)
+  :Konfirmasi;
+  |Sistem|
+  :Hapus Cache;
+else (Reset Data)
+  :Konfirmasi;
+  |Sistem|
+  :Hapus Semua Data;
+endif
+
+stop
+
+@enduml
+

@@ -1,0 +1,39 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Persetujuan KRS Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "KrsData" as krs
+participant "Database" as db
+participant "Mahasiswa" as mhs
+
+Dosen -> sistem : 1: Tap FAB Akademik
+Dosen -> sistem : 2: Pilih Tab KRS
+sistem -> krs : 3: getPendingKrs(dosenId)
+krs --> sistem : 4: Return Daftar KRS Pending
+sistem --> Dosen : 5: Menampilkan Daftar KRS
+Dosen -> sistem : 6: Tap Kartu KRS
+sistem --> Dosen : 7: Menampilkan Detail KRS
+alt Approve
+  Dosen -> sistem : 8: Tap Approve
+  sistem -> db : 9: updateStatus(Approved)
+  db --> sistem : 10: Sukses
+  sistem -> mhs : 11: Kirim Notifikasi
+else Reject
+  Dosen -> sistem : 8: Tap Reject
+  Dosen -> sistem : 9: Input Alasan
+  sistem -> db : 10: updateStatus(Draft, alasan)
+  db --> sistem : 11: Sukses
+  sistem -> mhs : 12: Kirim Notifikasi
+end
+sistem --> Dosen : 13: Notifikasi Sukses
+
+@enduml
+

@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Absensi Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "AttendanceData" as attendance
+participant "Database" as db
+
+Mahasiswa -> sistem : 1: Tap Kartu Jadwal
+sistem -> sistem : 2: Cek Waktu Kelas
+alt Kelas Berlangsung
+  sistem --> Mahasiswa : 3: Menampilkan Modal Presensi
+  Mahasiswa -> sistem : 4: Pilih Jenis Kehadiran
+  alt Hadir
+    sistem -> db : 5: Simpan Status Hadir
+  else Izin/Sakit
+    Mahasiswa -> sistem : 5: Input Alasan
+    sistem -> db : 6: Simpan Status Izin
+  end
+  db --> sistem : 7: Sukses
+  sistem --> Mahasiswa : 8: Menampilkan Notifikasi Sukses
+else Belum Mulai
+  sistem --> Mahasiswa : 3: Menampilkan Countdown
+else Selesai
+  sistem --> Mahasiswa : 3: Menampilkan Rekap
+end
+
+@enduml
+

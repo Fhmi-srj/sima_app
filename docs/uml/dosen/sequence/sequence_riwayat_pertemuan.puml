@@ -1,0 +1,29 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Riwayat Pertemuan Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "AttendanceData" as attendance
+participant "Modal\nRiwayat" as modal
+
+Dosen -> sistem : 1: Tap Menu Riwayat
+sistem -> attendance : 2: getClasses(dosenId)
+attendance --> sistem : 3: Return Daftar Kelas
+sistem --> Dosen : 4: Menampilkan Daftar Kelas
+Dosen -> sistem : 5: Tap Kartu Kelas
+sistem -> modal : 6: Render Modal Riwayat
+sistem -> attendance : 7: getMeetings(classId)
+attendance --> sistem : 8: Return Daftar Pertemuan
+modal --> Dosen : 9: Menampilkan Daftar Pertemuan
+Dosen -> modal : 10: Tap Pertemuan
+modal --> Dosen : 11: Menampilkan Detail Kehadiran
+
+@enduml
+

@@ -1,0 +1,48 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Publish KHS
+
+|Admin|
+start
+:Tap Menu Kalkulasi Nilai;
+:Pilih Tab Publish;
+
+|Sistem|
+:Memuat Data Kelas;
+:Menampilkan Status per Kelas;
+
+|Admin|
+if (Aksi?) then (Tap Kelas)
+  |Sistem|
+  :Buka Modal Detail;
+  :Tampilkan Daftar Mahasiswa;
+  |Admin|
+  if (Tap Mahasiswa?) then (Ya)
+    |Sistem|
+    :Tampilkan Detail Nilai;
+  endif
+else (Tap Publish)
+  |Sistem|
+  if (Nilai Lengkap?) then (Ya)
+    :Generate KHS;
+    :Kirim Notifikasi;
+    :Tampilkan Sukses;
+  else (Tidak)
+    :Kirim Reminder ke Dosen;
+    :Tampilkan Warning;
+  endif
+endif
+
+stop
+
+@enduml
+

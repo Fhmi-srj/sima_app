@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Login Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "Form Login" as form
+participant "Database" as db
+participant "Halaman\nDashboard" as dashboard
+
+Dosen -> sistem : 1: Mengakses Sistem Informasi
+sistem --> Dosen : 2: Menampilkan Halaman utama
+Dosen -> sistem : 3: Menekan Menu Login
+sistem -> form : 4: Menampilkan Form Login
+Dosen -> form : 5: Mengisi NIP dan Password
+form -> db : 6: Memeriksa NIP\ndan Password
+alt Jika benar
+  db --> dashboard : 7: Masuk ke halaman dashboard
+else Jika salah
+  db --> Dosen : 8: Menampilkan pesan gagal
+end
+
+@enduml
+

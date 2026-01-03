@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Input Nilai Dosen
+
+|Dosen|
+start
+:Tap FAB Akademik;
+:Pilih Tab Nilai;
+
+|Sistem|
+:Memuat Kelas Diampu;
+:Menampilkan Daftar Kelas;
+
+|Dosen|
+:Tap Kartu Kelas;
+
+|Sistem|
+:Membuka Modal Input Nilai;
+:Menampilkan Daftar Mahasiswa;
+:Memuat Nilai Kehadiran Otomatis;
+
+|Dosen|
+:Input Nilai Tugas;
+:Input Nilai UTS;
+:Input Nilai UAS;
+:Tap Simpan;
+
+|Sistem|
+:Menyimpan Data Nilai;
+:Menampilkan Notifikasi Sukses;
+
+stop
+
+@enduml
+

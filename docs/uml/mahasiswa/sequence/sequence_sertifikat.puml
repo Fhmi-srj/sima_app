@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Kelola Sertifikat Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "CertificateData" as cert
+participant "Database" as db
+
+Mahasiswa -> sistem : 1: Tap Menu Sertifikat
+sistem -> cert : 2: getCertificates()
+cert --> sistem : 3: Return Daftar Sertifikat
+sistem --> Mahasiswa : 4: Menampilkan Sertifikat
+alt Tambah
+  Mahasiswa -> sistem : 5: Tap FAB
+  sistem --> Mahasiswa : 6: Menampilkan Form
+  Mahasiswa -> sistem : 7: Input Data Sertifikat
+  sistem -> db : 8: save(cert)
+  db --> sistem : 9: Sukses
+else Lihat Detail
+  Mahasiswa -> sistem : 5: Tap Kartu
+  sistem --> Mahasiswa : 6: Menampilkan Detail
+else Hapus
+  Mahasiswa -> sistem : 5: Tap Hapus
+  sistem -> db : 6: delete(id)
+  db --> sistem : 7: Sukses
+end
+
+@enduml
+

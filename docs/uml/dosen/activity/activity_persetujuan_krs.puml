@@ -1,0 +1,51 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Persetujuan KRS Dosen
+
+|Dosen|
+start
+:Tap FAB Akademik;
+:Pilih Tab KRS;
+
+|Sistem|
+:Memuat KRS Pending;
+:Menampilkan Daftar KRS;
+
+|Dosen|
+:Tap Kartu KRS;
+
+|Sistem|
+:Menampilkan Detail KRS;
+:Menampilkan Info Mahasiswa;
+:Menampilkan Daftar MK & SKS;
+
+|Dosen|
+:Review Mata Kuliah;
+
+if (Keputusan?) then (Approve)
+  :Tap Approve;
+  |Sistem|
+  :Update Status ke Approved;
+  :Kirim Notifikasi ke Mahasiswa;
+else (Reject)
+  :Tap Reject;
+  :Input Alasan Penolakan;
+  |Sistem|
+  :Update Status ke Draft;
+  :Simpan Alasan Penolakan;
+  :Kirim Notifikasi ke Mahasiswa;
+endif
+
+stop
+
+@enduml
+

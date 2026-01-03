@@ -1,0 +1,27 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Melihat KHS Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "GradeData" as grade
+participant "Halaman\nKHS" as khs
+
+Mahasiswa -> sistem : 1: Tap FAB Akademik
+Mahasiswa -> sistem : 2: Pilih Tab KHS
+sistem -> grade : 3: getGrades(studentId)
+grade --> sistem : 4: Return Data Nilai
+sistem -> sistem : 5: Hitung IPK dan IPS
+sistem -> khs : 6: Render Ringkasan Nilai
+khs --> Mahasiswa : 7: Menampilkan KHS
+Mahasiswa -> khs : 8: Tap Semester
+khs --> Mahasiswa : 9: Menampilkan Detail Nilai Per MK
+
+@enduml
+

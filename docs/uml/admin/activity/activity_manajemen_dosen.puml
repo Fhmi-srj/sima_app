@@ -1,0 +1,53 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Manajemen Dosen
+
+|Admin|
+start
+:Tap Menu Dosen;
+
+|Sistem|
+:Memuat Data Dosen;
+:Menampilkan Daftar Dosen;
+
+|Admin|
+if (Aksi?) then (Search)
+  :Ketik Kata Kunci;
+  |Sistem|
+  :Filter Dosen;
+else if (Aksi?) then (Tap Card)
+  |Sistem|
+  :Buka Modal CRUD;
+  |Admin|
+  if (Mode?) then (Edit)
+    :Edit Data;
+    |Sistem|
+    :Simpan Perubahan;
+  else (Delete)
+    :Konfirmasi Hapus;
+    |Sistem|
+    :Hapus Dosen;
+  endif
+else (Tap FAB)
+  |Sistem|
+  :Buka Modal Tambah;
+  |Admin|
+  :Input Data Baru;
+  :Tap Simpan;
+  |Sistem|
+  :Simpan ke Database;
+endif
+
+stop
+
+@enduml
+

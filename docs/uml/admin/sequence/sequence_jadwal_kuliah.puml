@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Jadwal Kuliah
+
+actor Admin
+participant "Sistem" as sistem
+participant "ClassData" as classData
+participant "Database" as db
+
+Admin -> sistem : 1: Tap Menu Jadwal
+sistem -> classData : 2: getSchedules()
+classData --> sistem : 3: Return Daftar Jadwal
+sistem --> Admin : 4: Menampilkan Jadwal
+alt Filter Hari
+  Admin -> sistem : 5: Pilih Hari
+  sistem --> Admin : 6: Jadwal Terfilter
+else Tap Card (Delete)
+  Admin -> sistem : 5: Tap Kartu
+  Admin -> sistem : 6: Tap Hapus
+  sistem -> db : 7: deleteSchedule(id)
+  db --> sistem : 8: Sukses
+else Tap FAB (Add)
+  Admin -> sistem : 5: Tap FAB
+  Admin -> sistem : 6: Input Data Jadwal
+  sistem -> db : 7: addSchedule(data)
+  db --> sistem : 8: Sukses
+end
+
+@enduml
+

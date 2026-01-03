@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Manajemen Dosen
+
+actor Admin
+participant "Sistem" as sistem
+participant "UserData" as userData
+participant "Database" as db
+
+Admin -> sistem : 1: Tap Menu Dosen
+sistem -> userData : 2: getLecturers()
+userData --> sistem : 3: Return Daftar Dosen
+sistem --> Admin : 4: Menampilkan Daftar
+alt Tap Card (Edit)
+  Admin -> sistem : 5: Tap Kartu
+  Admin -> sistem : 6: Edit Data
+  sistem -> db : 7: updateLecturer(data)
+  db --> sistem : 8: Sukses
+else Tap FAB (Add)
+  Admin -> sistem : 5: Tap FAB
+  Admin -> sistem : 6: Input Data
+  sistem -> db : 7: addLecturer(data)
+  db --> sistem : 8: Sukses
+else Delete
+  Admin -> sistem : 5: Tap Hapus
+  sistem -> db : 6: deleteLecturer(id)
+  db --> sistem : 7: Sukses
+end
+
+@enduml
+

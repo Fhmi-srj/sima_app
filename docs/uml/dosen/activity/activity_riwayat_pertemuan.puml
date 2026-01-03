@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Riwayat Pertemuan Dosen
+
+|Dosen|
+start
+:Tap Menu Riwayat Absensi;
+
+|Sistem|
+:Memuat Mata Kuliah Diampu;
+:Menampilkan Daftar Kelas;
+
+|Dosen|
+:Tap Kartu Kelas;
+
+|Sistem|
+:Membuka Modal Riwayat;
+:Menampilkan Daftar Pertemuan;
+
+|Dosen|
+:Melihat Daftar Pertemuan;
+:Tap Pertemuan;
+
+|Sistem|
+:Menampilkan Detail Kehadiran;
+:Menampilkan Daftar Mahasiswa;
+
+|Dosen|
+:Melihat Status Hadir/Izin/Alpha;
+:Tutup Modal;
+
+stop
+
+@enduml
+

@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Login Admin
+
+actor Admin
+participant "Sistem" as sistem
+participant "Form Login" as form
+participant "Database" as db
+participant "Halaman\nAdmin" as dashboard
+
+Admin -> sistem : 1: Mengakses Sistem Informasi
+sistem --> Admin : 2: Menampilkan Halaman utama
+Admin -> sistem : 3: Menekan Menu Login
+sistem -> form : 4: Menampilkan Form Login
+Admin -> form : 5: Mengisi Username dan Password
+form -> db : 6: Memeriksa Username\ndan Password
+alt Jika benar
+  db --> dashboard : 7: Masuk ke halaman admin
+else Jika salah
+  db --> Admin : 8: Menampilkan pesan gagal
+end
+
+@enduml
+

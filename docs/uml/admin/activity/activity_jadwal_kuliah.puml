@@ -1,0 +1,49 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Jadwal Kuliah
+
+|Admin|
+start
+:Tap Menu Jadwal;
+
+|Sistem|
+:Memuat Data Jadwal;
+:Menampilkan Daftar Jadwal;
+
+|Admin|
+if (Aksi?) then (Filter Hari)
+  :Pilih Hari;
+  |Sistem|
+  :Filter Jadwal;
+else if (Aksi?) then (Tap Card)
+  |Sistem|
+  :Buka Modal Detail;
+  |Admin|
+  if (Hapus?) then (Ya)
+    :Konfirmasi;
+    |Sistem|
+    :Hapus Jadwal;
+  endif
+else (Tap FAB)
+  |Sistem|
+  :Buka Modal Tambah;
+  |Admin|
+  :Input Kelas, MK, Dosen;
+  :Input Hari, Waktu, Ruangan;
+  |Sistem|
+  :Simpan Jadwal Baru;
+endif
+
+stop
+
+@enduml
+

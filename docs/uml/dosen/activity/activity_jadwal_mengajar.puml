@@ -1,0 +1,45 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Jadwal Mengajar Dosen
+
+|Dosen|
+start
+:Tap Menu Jadwal;
+
+|Sistem|
+:Memuat Jadwal Dosen;
+:Menampilkan Tab Hari;
+
+|Dosen|
+:Melihat Jadwal;
+
+if (Pilih Tab Lain?) then (Ya)
+  |Sistem|
+  :Update Tampilan Jadwal;
+endif
+
+|Dosen|
+:Tap Kartu Jadwal;
+
+|Sistem|
+if (Status Waktu?) then (Belum Mulai)
+  :Menampilkan Modal Countdown;
+else if (Status Waktu?) then (Berlangsung)
+  :Membuka Modal Presensi;
+else (Selesai)
+  :Menampilkan Modal Rekap;
+endif
+
+stop
+
+@enduml
+

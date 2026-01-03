@@ -1,0 +1,31 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Pencarian Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "SearchData" as search
+participant "Modal\nDetail" as modal
+
+Dosen -> sistem : 1: Tap Menu Pencarian
+sistem --> Dosen : 2: Menampilkan Halaman Pencarian
+sistem --> Dosen : 3: Menampilkan Statistik
+Dosen -> sistem : 4: Mengetik Kata Kunci
+sistem -> search : 5: search(query)
+search --> sistem : 6: Return Hasil
+alt Hasil Ditemukan
+  sistem --> Dosen : 7: Menampilkan Hasil
+  Dosen -> modal : 8: Tap Item
+  modal --> Dosen : 9: Menampilkan Detail
+else Tidak Ditemukan
+  sistem --> Dosen : 7: Menampilkan Pesan Kosong
+end
+
+@enduml
+

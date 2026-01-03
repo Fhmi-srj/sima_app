@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Jadwal Mengajar Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "ScheduleData" as schedule
+participant "Halaman\nJadwal" as jadwal
+
+Dosen -> sistem : 1: Tap Menu Jadwal
+sistem -> schedule : 2: getSchedule(dosenId)
+schedule --> sistem : 3: Return Jadwal Mengajar
+sistem -> jadwal : 4: Render Jadwal
+jadwal --> Dosen : 5: Menampilkan Jadwal
+Dosen -> jadwal : 6: Pilih Tab Hari
+jadwal --> Dosen : 7: Menampilkan Jadwal Hari
+Dosen -> jadwal : 8: Tap Kartu Jadwal
+alt Belum Mulai
+  jadwal --> Dosen : 9: Menampilkan Modal Countdown
+else Berlangsung
+  jadwal --> Dosen : 9: Menampilkan Modal Presensi
+else Selesai
+  jadwal --> Dosen : 9: Menampilkan Modal Rekap
+end
+
+@enduml
+

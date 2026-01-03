@@ -1,0 +1,27 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Dashboard Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "UserData" as user
+participant "ScheduleData" as schedule
+participant "Dashboard" as dashboard
+
+Dosen -> sistem : 1: Mengakses Dashboard
+sistem -> user : 2: getCurrentUser()
+user --> sistem : 3: Return Data Dosen
+sistem -> schedule : 4: getTodaySchedule()
+schedule --> sistem : 5: Return Jadwal Mengajar
+sistem -> sistem : 6: Load Pending Tasks
+sistem -> dashboard : 7: Render Dashboard
+dashboard --> Dosen : 8: Menampilkan Dashboard
+
+@enduml
+

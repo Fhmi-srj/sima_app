@@ -1,0 +1,166 @@
+@startuml class_diagram
+skinparam backgroundColor White
+skinparam ClassBackgroundColor White  
+skinparam ClassBorderColor Black
+skinparam ArrowColor Black
+skinparam ClassFontSize 11
+skinparam defaultFontSize 10
+skinparam linetype ortho
+skinparam nodesep 30
+skinparam ranksep 40
+skinparam packageStyle rectangle
+skinparam packageBorderColor Black
+skinparam packageBackgroundColor #FAFAFA
+skinparam dpi 150
+
+title Class Diagram Sistem Informasi Akademik (SIMA)
+
+' ===== ROW 1: USER =====
+package "User" {
+  enum UserRole {
+    student
+    lecturer
+    admin
+  }
+
+  class AppUser {
+    -id: String
+    -name: String
+    -email: String
+    -role: UserRole
+    -prodi: String
+    -kelas: String
+  }
+
+  class UserData <<Service>> {
+    +authenticate()
+    +getAllStudents()
+    +getAllLecturers()
+  }
+}
+
+' ===== ROW 2: ACADEMIC =====
+package "Academic" {
+  class KelasInfo {
+    -code: String
+    -name: String
+    -prodi: String
+    -dosenPaId: String
+  }
+
+  class CourseAssignment {
+    -courseCode: String
+    -courseName: String
+    -lecturerId: String
+    -kelasCode: String
+    -day: String
+    -time: String
+    -sks: int
+  }
+
+  class ClassData <<Service>> {
+    +getAllKelas()
+    +getCoursesByKelas()
+    +addCourseAssignment()
+  }
+}
+
+' ===== ROW 3: LEFT - KRS =====
+package "KRS" {
+  enum KrsStatus {
+    draft
+    pending
+    approved
+    rejected
+  }
+
+  class KrsEntry {
+    -id: String
+    -studentId: String
+    -semester: int
+    -totalSks: int
+    -status: KrsStatus
+  }
+
+  class KrsData <<Service>> {
+    +getKrsByStudent()
+    +submitKrs()
+    +approveKrs()
+  }
+}
+
+' ===== ROW 3: RIGHT - KHS =====
+package "KHS" {
+  class GradeEntry {
+    -courseCode: String
+    -courseName: String
+    -sks: int
+    -grade: String
+  }
+
+  class KhsEntry {
+    -studentId: String
+    -semester: int
+    -ips: double
+  }
+
+  class KhsData <<Service>> {
+    +getKhsByStudent()
+    +calculateIpk()
+  }
+}
+
+' ===== ROW 4: ATTENDANCE & FINANCE =====
+package "Attendance" {
+  class AttendanceRecord {
+    -studentId: String
+    -courseCode: String
+    -date: String
+    -type: String
+    -isApproved: bool
+  }
+
+  class AttendanceData <<Service>> {
+    +recordAttendance()
+    +approveIzin()
+  }
+}
+
+package "Finance" {
+  class FinanceData <<Service>> {
+    +getSummary()
+    +getBills()
+    +getPaymentHistory()
+  }
+}
+
+package "Schedule" {
+  class ScheduleData <<Service>> {
+    +getScheduleForDay()
+    +getTodaySchedule()
+  }
+}
+
+' ===== RELATIONSHIPS =====
+UserData *-- AppUser
+AppUser -- UserRole
+
+ClassData *-- KelasInfo
+ClassData *-- CourseAssignment
+CourseAssignment --> KelasInfo
+
+KrsData *-- KrsEntry
+KrsEntry -- KrsStatus
+KrsEntry --> AppUser
+
+KhsData *-- KhsEntry
+KhsEntry *-- GradeEntry
+KhsEntry --> AppUser
+
+AttendanceData *-- AttendanceRecord
+AttendanceRecord --> AppUser
+
+ScheduleData ..> ClassData
+ScheduleData ..> KrsData
+
+@enduml

@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Kalkulasi Nilai
+
+actor Admin
+participant "Sistem" as sistem
+participant "GradeConfig" as config
+participant "Database" as db
+
+Admin -> sistem : 1: Tap Menu Kalkulasi Nilai
+Admin -> sistem : 2: Pilih Tab Konfigurasi
+sistem -> config : 3: getWeights()
+config --> sistem : 4: Return Bobot Saat Ini
+sistem --> Admin : 5: Menampilkan Slider
+Admin -> sistem : 6: Geser Slider
+sistem -> sistem : 7: Hitung Total
+alt Total = 100%
+  Admin -> sistem : 8: Tap Simpan
+  sistem -> db : 9: saveWeights(weights)
+  db --> sistem : 10: Sukses
+  sistem --> Admin : 11: Sukses
+else Total != 100%
+  sistem --> Admin : 8: Warning
+end
+
+@enduml
+

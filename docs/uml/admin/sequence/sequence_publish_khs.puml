@@ -1,0 +1,34 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Publish KHS
+
+actor Admin
+participant "Sistem" as sistem
+participant "ClassData" as classData
+participant "Mahasiswa" as mhs
+participant "Dosen" as dosen
+
+Admin -> sistem : 1: Tap Menu Kalkulasi Nilai
+Admin -> sistem : 2: Pilih Tab Publish
+sistem -> classData : 3: getClasses()
+classData --> sistem : 4: Return Daftar Kelas
+sistem --> Admin : 5: Menampilkan Status per Kelas
+Admin -> sistem : 6: Tap Publish
+alt Nilai Lengkap
+  sistem -> classData : 7: generateKhs(kelas)
+  classData --> sistem : 8: Sukses
+  sistem -> mhs : 9: Kirim Notifikasi
+  sistem --> Admin : 10: Sukses
+else Nilai Belum Lengkap
+  sistem -> dosen : 7: Kirim Reminder
+  sistem --> Admin : 8: Warning
+end
+
+@enduml
+

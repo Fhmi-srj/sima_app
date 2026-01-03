@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Modal Absensi Mahasiswa
+
+actor Dosen
+participant "Sistem" as sistem
+participant "AttendanceData" as attendance
+participant "Database" as db
+
+Dosen -> sistem : 1: Tap Jadwal Berlangsung
+sistem -> attendance : 2: getAttendance()
+attendance --> sistem : 3: Return Data Kehadiran
+sistem --> Dosen : 4: Menampilkan Modal Presensi
+sistem --> Dosen : 5: Menampilkan Statistik & Daftar
+opt Ada Izin Pending
+  Dosen -> sistem : 6: Tap Mahasiswa Pending
+  sistem --> Dosen : 7: Menampilkan Detail Izin
+  alt Approve
+    Dosen -> sistem : 8: Tap Approve
+    sistem -> db : 9: updateStatus(Izin)
+  else Reject
+    Dosen -> sistem : 8: Tap Reject
+    sistem -> db : 9: updateStatus(Alpha)
+  end
+  db --> sistem : 10: Sukses
+  sistem --> Dosen : 11: Notifikasi Sukses
+end
+
+@enduml
+

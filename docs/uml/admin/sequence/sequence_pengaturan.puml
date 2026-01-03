@@ -1,0 +1,42 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Pengaturan Sistem
+
+actor Admin
+participant "Sistem" as sistem
+participant "SettingsData" as settings
+participant "Database" as db
+
+Admin -> sistem : 1: Tap Menu Pengaturan
+sistem -> settings : 2: getSettings()
+settings --> sistem : 3: Return Pengaturan
+sistem --> Admin : 4: Menampilkan Settings
+alt Toggle Fitur
+  Admin -> sistem : 5: Toggle
+  sistem -> settings : 6: update(key, value)
+else Backup
+  Admin -> sistem : 5: Tap Backup
+  sistem -> db : 6: createBackup()
+  db --> sistem : 7: File Backup
+else Restore
+  Admin -> sistem : 5: Pilih File
+  sistem -> db : 6: restoreBackup(file)
+  db --> sistem : 7: Sukses
+else Export
+  Admin -> sistem : 5: Pilih Format
+  sistem -> db : 6: exportData(format)
+  db --> sistem : 7: File Export
+else Reset Data
+  Admin -> sistem : 5: Konfirmasi
+  sistem -> db : 6: resetAllData()
+  db --> sistem : 7: Sukses
+end
+
+@enduml
+

@@ -1,0 +1,51 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Kelola Sertifikat Mahasiswa
+
+|Mahasiswa|
+start
+:Tap Menu Sertifikat;
+
+|Sistem|
+:Memuat Data Sertifikat;
+:Menampilkan Daftar Sertifikat;
+
+|Mahasiswa|
+if (Aksi?) then (Tambah)
+  :Tap FAB;
+  |Sistem|
+  :Menampilkan Form Tambah;
+  |Mahasiswa|
+  :Input Data Sertifikat;
+  :Tap Simpan;
+  |Sistem|
+  :Menyimpan Sertifikat Baru;
+else if (Aksi?) then (Lihat Detail)
+  :Tap Kartu Sertifikat;
+  |Sistem|
+  :Menampilkan Detail;
+else if (Aksi?) then (Edit)
+  :Tap Edit;
+  :Edit Data;
+  |Sistem|
+  :Menyimpan Perubahan;
+else (Hapus)
+  :Tap Hapus;
+  |Sistem|
+  :Konfirmasi;
+  :Menghapus Sertifikat;
+endif
+
+stop
+
+@enduml
+

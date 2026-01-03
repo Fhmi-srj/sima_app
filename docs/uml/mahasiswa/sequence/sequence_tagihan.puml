@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Keuangan Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "BillingData" as billing
+participant "Halaman\nKeuangan" as finance
+
+Mahasiswa -> sistem : 1: Tap Menu Keuangan
+sistem -> billing : 2: getBills(studentId)
+billing --> sistem : 3: Return Data Tagihan
+sistem -> sistem : 4: Hitung Ringkasan
+sistem -> finance : 5: Render Halaman
+finance --> Mahasiswa : 6: Menampilkan Keuangan
+alt Tab Tagihan
+  Mahasiswa -> finance : 7: Pilih Tab Tagihan
+  finance --> Mahasiswa : 8: Menampilkan Daftar Tagihan
+  Mahasiswa -> finance : 9: Tap Tagihan
+  finance --> Mahasiswa : 10: Menampilkan Detail
+else Tab Riwayat
+  Mahasiswa -> finance : 7: Pilih Tab Riwayat
+  finance --> Mahasiswa : 8: Menampilkan Riwayat Pembayaran
+end
+
+@enduml
+

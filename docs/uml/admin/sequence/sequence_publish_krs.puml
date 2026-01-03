@@ -1,0 +1,31 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Publish KRS
+
+actor Admin
+participant "Sistem" as sistem
+participant "KrsData" as krsData
+participant "Database" as db
+participant "Mahasiswa" as mhs
+
+Admin -> sistem : 1: Tap Menu Publish KRS
+sistem -> krsData : 2: getKrsStats()
+krsData --> sistem : 3: Return Statistik KRS
+sistem --> Admin : 4: Menampilkan Form
+Admin -> sistem : 5: Pilih Kelas
+Admin -> sistem : 6: Pilih Semester
+Admin -> sistem : 7: Set Deadline
+Admin -> sistem : 8: Tap Publish
+sistem -> db : 9: createDraftKrs(data)
+db --> sistem : 10: Sukses
+sistem -> mhs : 11: Kirim Notifikasi
+sistem --> Admin : 12: Pesan Sukses
+
+@enduml
+

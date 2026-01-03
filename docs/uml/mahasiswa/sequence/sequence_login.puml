@@ -1,0 +1,31 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam SequenceBoxBorderColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Login Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "Form Login" as form
+participant "Database" as db
+participant "Halaman\nDashboard" as dashboard
+
+Mahasiswa -> sistem : 1: Mengakses Sistem Informasi
+sistem --> Mahasiswa : 2: Menampilkan Halaman utama
+Mahasiswa -> sistem : 3: Menekan Menu Login
+sistem -> form : 4: Menampilkan Form Login
+Mahasiswa -> form : 5: Mengisi NIM dan Password
+form -> db : 6: Memeriksa NIM\ndan Password
+alt Jika benar
+  db --> dashboard : 7: Masuk ke halaman dashboard
+else Jika salah
+  db --> Mahasiswa : 8: Menampilkan pesan gagal
+end
+
+@enduml
+

@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Input Nilai Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "ClassData" as classData
+participant "GradeData" as gradeData
+participant "Database" as db
+
+Dosen -> sistem : 1: Tap FAB Akademik
+Dosen -> sistem : 2: Pilih Tab Nilai
+sistem -> classData : 3: getClasses(dosenId)
+classData --> sistem : 4: Return Daftar Kelas
+sistem --> Dosen : 5: Menampilkan Daftar Kelas
+Dosen -> sistem : 6: Tap Kartu Kelas
+sistem --> Dosen : 7: Menampilkan Modal Input Nilai
+sistem -> gradeData : 8: getStudentGrades()
+gradeData --> sistem : 9: Return Data Nilai
+Dosen -> sistem : 10: Input Nilai Tugas, UTS, UAS
+Dosen -> sistem : 11: Tap Simpan
+sistem -> db : 12: saveGrades(data)
+db --> sistem : 13: Sukses
+sistem --> Dosen : 14: Notifikasi Sukses
+
+@enduml
+

@@ -1,0 +1,38 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Manajemen Mata Kuliah
+
+actor Admin
+participant "Sistem" as sistem
+participant "ClassData" as classData
+participant "Database" as db
+
+Admin -> sistem : 1: Tap Menu Mata Kuliah
+sistem -> classData : 2: getCourses()
+classData --> sistem : 3: Return Daftar MK
+sistem --> Admin : 4: Menampilkan Daftar
+alt Edit
+  Admin -> sistem : 5: Tap Edit
+  Admin -> sistem : 6: Edit Data
+  sistem -> db : 7: updateCourse(data)
+  db --> sistem : 8: Sukses
+else Assign
+  Admin -> sistem : 5: Tap Assign
+  Admin -> sistem : 6: Pilih Kelas, Dosen
+  sistem -> db : 7: createAssignment(data)
+  db --> sistem : 8: Sukses
+else Tap FAB (Add)
+  Admin -> sistem : 5: Tap FAB
+  Admin -> sistem : 6: Input Kode, Nama, SKS
+  sistem -> db : 7: addCourse(data)
+  db --> sistem : 8: Sukses
+end
+
+@enduml
+

@@ -1,0 +1,51 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Modal Absensi Mahasiswa
+
+|Dosen|
+start
+:Tap Kartu Jadwal Berlangsung;
+
+|Sistem|
+:Membuka Modal Presensi;
+:Menampilkan Statistik Kehadiran;
+:Menampilkan Daftar Mahasiswa;
+
+|Dosen|
+:Melihat Statistik & Daftar;
+
+if (Ada Izin Pending?) then (Ya)
+  :Tap Mahasiswa Izin Pending;
+  |Sistem|
+  :Menampilkan Detail Izin;
+  |Dosen|
+  if (Keputusan?) then (Approve)
+    :Tap Approve;
+    |Sistem|
+    :Update Status ke Izin;
+  else (Reject)
+    :Tap Reject;
+    |Sistem|
+    :Update Status ke Alpha;
+  endif
+  :Menampilkan Notifikasi Sukses;
+else (Tidak)
+  :Melihat Rekap Kehadiran;
+endif
+
+|Dosen|
+:Tutup Modal;
+
+stop
+
+@enduml
+

@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Login Admin
+
+|Admin|
+start
+:Mengakses Sistem\nInformasi;
+
+|Sistem|
+:Menampilkan\nHalaman Utama;
+
+|Admin|
+:Masuk ke Menu\nLogin;
+
+|Sistem|
+:Menampilkan Form\nLogin;
+
+|Admin|
+:Mengisi Username\ndan Password;
+
+|Sistem|
+if (Akun Valid?) then (Ya)
+  :Menampilkan\nHalaman Admin;
+else (Tidak)
+  :Menampilkan\nPesan Error;
+endif
+
+stop
+
+@enduml
+

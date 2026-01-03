@@ -1,0 +1,40 @@
+@startuml activity_login
+scale 1.5
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Login Mahasiswa
+
+|Mahasiswa|
+start
+:Mengakses Sistem\nInformasi;
+
+|Sistem|
+:Menampilkan\nHalaman Utama;
+
+|Mahasiswa|
+:Masuk ke Menu\nLogin;
+
+|Sistem|
+:Menampilkan Form\nLogin;
+
+|Mahasiswa|
+:Mengisi NIM\ndan Password;
+
+|Sistem|
+if (Akun Valid?) then (Ya)
+  :Menampilkan\nHalaman Dashboard;
+else (Tidak)
+  :Menampilkan\nPesan Error;
+endif
+
+stop
+
+@enduml

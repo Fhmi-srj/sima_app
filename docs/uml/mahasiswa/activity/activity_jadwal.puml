@@ -1,0 +1,40 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Jadwal Kuliah Mahasiswa
+
+|Mahasiswa|
+start
+:Tap Menu Jadwal;
+
+|Sistem|
+:Cek Status KRS;
+
+if (KRS Disetujui?) then (Ya)
+  :Memuat Jadwal Kuliah;
+  :Menampilkan Tab Hari;
+  |Mahasiswa|
+  :Pilih Hari;
+  |Sistem|
+  :Menampilkan\nJadwal Hari Tersebut;
+  |Mahasiswa|
+  if (Tap Jadwal?) then (Ya)
+    |Sistem|
+    :Membuka Modal Presensi;
+  endif
+else (Tidak)
+  :Menampilkan Pesan\nKRS Belum Diajukan;
+endif
+
+stop
+
+@enduml
+

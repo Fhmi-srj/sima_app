@@ -1,0 +1,30 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Pencarian Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "SearchData" as search
+participant "Hasil\nPencarian" as hasil
+
+Mahasiswa -> sistem : 1: Tap Menu Pencarian
+sistem --> Mahasiswa : 2: Menampilkan Halaman Pencarian
+Mahasiswa -> sistem : 3: Mengetik Kata Kunci
+sistem -> search : 4: search(query)
+search --> sistem : 5: Return Hasil
+alt Hasil Ditemukan
+  sistem --> Mahasiswa : 6: Menampilkan Hasil
+  Mahasiswa -> hasil : 7: Tap Item
+  hasil --> Mahasiswa : 8: Menampilkan Detail
+else Tidak Ditemukan
+  sistem --> Mahasiswa : 6: Menampilkan Pesan Kosong
+end
+
+@enduml
+

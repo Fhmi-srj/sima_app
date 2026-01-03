@@ -1,0 +1,32 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Jadwal Kuliah Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "KrsData" as krs
+participant "ScheduleData" as schedule
+participant "Halaman\nJadwal" as jadwal
+
+Mahasiswa -> sistem : 1: Tap Menu Jadwal
+sistem -> krs : 2: checkKrsStatus()
+krs --> sistem : 3: Return Status KRS
+alt KRS Disetujui
+  sistem -> schedule : 4: getSchedule()
+  schedule --> sistem : 5: Return Jadwal
+  sistem -> jadwal : 6: Render Jadwal
+  jadwal --> Mahasiswa : 7: Menampilkan Jadwal
+  Mahasiswa -> jadwal : 8: Pilih Tab Hari
+  jadwal --> Mahasiswa : 9: Menampilkan Jadwal Hari
+else KRS Belum Disetujui
+  sistem --> Mahasiswa : 4: Menampilkan Pesan Pending
+end
+
+@enduml
+

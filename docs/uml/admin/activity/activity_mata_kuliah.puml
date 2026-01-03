@@ -1,0 +1,55 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Manajemen Mata Kuliah
+
+|Admin|
+start
+:Tap Menu Mata Kuliah;
+
+|Sistem|
+:Memuat Data MK;
+:Menampilkan Daftar MK;
+
+|Admin|
+if (Aksi?) then (Tap Card)
+  |Sistem|
+  :Buka Modal Detail;
+  |Admin|
+  if (Sub Aksi?) then (Edit)
+    :Edit Data MK;
+    |Sistem|
+    :Simpan Perubahan;
+  else if (Sub Aksi?) then (Delete)
+    |Sistem|
+    :Hapus MK;
+  else (Assign)
+    |Sistem|
+    :Buka Modal Assign;
+    |Admin|
+    :Pilih Kelas;
+    :Pilih Dosen;
+    |Sistem|
+    :Simpan Assignment;
+  endif
+else (Tap FAB)
+  |Sistem|
+  :Buka Modal Tambah;
+  |Admin|
+  :Input Kode, Nama, SKS;
+  |Sistem|
+  :Simpan MK Baru;
+endif
+
+stop
+
+@enduml
+

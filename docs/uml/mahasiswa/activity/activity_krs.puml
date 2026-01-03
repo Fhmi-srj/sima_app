@@ -1,0 +1,52 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Submit KRS Mahasiswa
+
+|Mahasiswa|
+start
+:Tap FAB Akademik;
+:Pilih Tab KRS;
+
+|Sistem|
+:Memuat Data KRS;
+:Menampilkan Tabs KRS;
+
+|Mahasiswa|
+:Pilih Tab Draft;
+
+|Sistem|
+:Menampilkan KRS Draft;
+
+|Mahasiswa|
+:Tap Kartu KRS;
+
+|Sistem|
+:Menampilkan Detail KRS;
+
+|Mahasiswa|
+:Tap Ajukan KRS;
+
+|Sistem|
+:Menampilkan Konfirmasi;
+
+|Mahasiswa|
+:Tap Konfirmasi;
+
+|Sistem|
+:Update Status ke Pending;
+:Kirim Notifikasi\nke Dosen Wali;
+:Menampilkan Pesan Sukses;
+
+stop
+
+@enduml
+

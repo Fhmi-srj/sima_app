@@ -1,0 +1,28 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Dashboard Admin
+
+actor Admin
+participant "Sistem" as sistem
+participant "UserData" as user
+participant "ClassData" as classData
+participant "Dashboard" as dashboard
+
+Admin -> sistem : 1: Mengakses Dashboard
+sistem -> user : 2: getStudentCount()
+user --> sistem : 3: Return Total Mahasiswa
+sistem -> user : 4: getLecturerCount()
+user --> sistem : 5: Return Total Dosen
+sistem -> classData : 6: getActiveClasses()
+classData --> sistem : 7: Return Kelas Aktif
+sistem -> dashboard : 8: Render Dashboard
+dashboard --> Admin : 9: Menampilkan Dashboard
+
+@enduml
+

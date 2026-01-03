@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Melihat KHS Mahasiswa
+
+|Mahasiswa|
+start
+:Tap FAB Akademik;
+:Pilih Tab KHS;
+
+|Sistem|
+:Memuat Data Nilai;
+:Menghitung IPK dan IPS;
+:Menampilkan Ringkasan Nilai;
+
+|Mahasiswa|
+:Melihat Daftar Semester;
+
+if (Tap Semester?) then (Ya)
+  |Sistem|
+  :Menampilkan Detail Nilai;
+  |Mahasiswa|
+  :Melihat Nilai Per MK;
+endif
+
+stop
+
+@enduml
+

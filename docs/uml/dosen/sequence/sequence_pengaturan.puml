@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Pengaturan Dosen
+
+actor Dosen
+participant "Sistem" as sistem
+participant "UserData" as user
+participant "Halaman\nLogin" as login
+
+Dosen -> sistem : 1: Tap Icon Settings
+sistem --> Dosen : 2: Menampilkan Pengaturan
+alt Toggle Notifikasi
+  Dosen -> sistem : 3: Toggle Notifikasi
+  sistem --> Dosen : 4: Update Preferensi
+else Ubah Password
+  Dosen -> sistem : 3: Tap Ubah Password
+  sistem --> Dosen : 4: Menampilkan Dialog
+  Dosen -> sistem : 5: Input Password Baru
+  sistem -> user : 6: updatePassword()
+  user --> sistem : 7: Sukses
+else Logout
+  Dosen -> sistem : 3: Tap Keluar
+  sistem --> Dosen : 4: Menampilkan Konfirmasi
+  Dosen -> sistem : 5: Konfirmasi
+  sistem -> user : 6: logout()
+  sistem -> login : 7: Navigasi ke Login
+  login --> Dosen : 8: Menampilkan Halaman Login
+end
+
+@enduml
+

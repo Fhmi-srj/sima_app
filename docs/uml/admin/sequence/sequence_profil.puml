@@ -1,0 +1,36 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Profil Admin
+
+actor Admin
+participant "Sistem" as sistem
+participant "UserData" as userData
+participant "Halaman\nProfil" as profil
+
+Admin -> sistem : 1: Tap Menu Profil
+sistem -> userData : 2: getCurrentUser()
+userData --> sistem : 3: Return Data Admin
+sistem -> profil : 4: Render Halaman Profil
+profil --> Admin : 5: Menampilkan Profil
+alt Tab Identitas
+  Admin -> profil : 6: Pilih Tab Identitas
+  profil --> Admin : 7: Menampilkan Info Admin
+else Tab Keamanan
+  Admin -> profil : 6: Pilih Tab Keamanan
+  profil --> Admin : 7: Menampilkan Opsi Keamanan
+  Admin -> sistem : 8: Input Password Baru
+  sistem -> userData : 9: updatePassword()
+  userData --> sistem : 10: Sukses
+else Tab Aktivitas
+  Admin -> profil : 6: Pilih Tab Aktivitas
+  profil --> Admin : 7: Menampilkan Log Aktivitas
+end
+
+@enduml
+

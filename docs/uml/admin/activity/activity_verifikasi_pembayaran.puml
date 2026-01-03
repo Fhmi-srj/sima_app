@@ -1,0 +1,51 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Verifikasi Pembayaran
+
+|Admin|
+start
+:Tap Menu Pembayaran;
+
+|Sistem|
+:Memuat Data Pembayaran;
+:Hitung Summary;
+:Menampilkan Daftar Pembayaran;
+
+|Admin|
+:Filter Pending;
+:Tap Kartu Pembayaran;
+
+|Sistem|
+:Buka Modal Detail;
+:Tampilkan Bukti Transfer;
+
+|Admin|
+:Lihat Bukti Transfer;
+
+if (Verifikasi?) then (Approve)
+  :Tap Approve;
+  |Sistem|
+  :Update Status Verified;
+  :Update Tagihan Mahasiswa;
+  :Kirim Notifikasi;
+else (Reject)
+  :Tap Reject;
+  :Input Alasan Penolakan;
+  |Sistem|
+  :Update Status Rejected;
+  :Kirim Notifikasi;
+endif
+
+stop
+
+@enduml
+

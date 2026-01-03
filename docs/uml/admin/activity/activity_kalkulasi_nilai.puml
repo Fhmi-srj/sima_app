@@ -1,0 +1,43 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Kalkulasi Nilai
+
+|Admin|
+start
+:Tap Menu Kalkulasi Nilai;
+:Pilih Tab Konfigurasi;
+
+|Sistem|
+:Memuat Bobot Saat Ini;
+:Menampilkan Slider Bobot;
+
+|Admin|
+:Geser Slider Bobot;
+
+|Sistem|
+:Hitung Total Bobot;
+
+if (Total = 100%?) then (Ya)
+  |Admin|
+  :Tap Simpan;
+  |Sistem|
+  :Simpan Konfigurasi Bobot;
+  :Tampilkan Sukses;
+else (Tidak)
+  :Tampilkan Warning;
+  :Total Harus 100%;
+endif
+
+stop
+
+@enduml
+

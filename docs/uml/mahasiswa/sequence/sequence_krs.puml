@@ -1,0 +1,33 @@
+@startuml
+skinparam backgroundColor White
+skinparam ParticipantBorderColor Black
+skinparam SequenceLifeLineBorderColor Black
+skinparam ArrowColor Black
+skinparam defaultFontSize 14
+skinparam ParticipantBackgroundColor #F5DEB3
+
+title Sequence Diagram Submit KRS Mahasiswa
+
+actor Mahasiswa
+participant "Sistem" as sistem
+participant "KrsData" as krs
+participant "Database" as db
+participant "Dosen Wali" as dosen
+
+Mahasiswa -> sistem : 1: Tap FAB Akademik
+Mahasiswa -> sistem : 2: Pilih Tab KRS
+sistem -> krs : 3: getDraftKrs()
+krs --> sistem : 4: Return KRS Draft
+sistem --> Mahasiswa : 5: Menampilkan KRS Draft
+Mahasiswa -> sistem : 6: Tap Kartu KRS
+sistem --> Mahasiswa : 7: Menampilkan Detail KRS
+Mahasiswa -> sistem : 8: Tap Ajukan KRS
+sistem --> Mahasiswa : 9: Menampilkan Konfirmasi
+Mahasiswa -> sistem : 10: Konfirmasi Ajukan
+sistem -> db : 11: Update Status Pending
+db --> sistem : 12: Sukses
+sistem -> dosen : 13: Kirim Notifikasi
+sistem --> Mahasiswa : 14: Menampilkan Pesan Sukses
+
+@enduml
+

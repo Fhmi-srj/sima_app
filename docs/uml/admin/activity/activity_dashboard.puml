@@ -1,0 +1,37 @@
+@startuml
+skinparam backgroundColor White
+skinparam ActivityBackgroundColor White
+skinparam ActivityBorderColor Black
+skinparam ActivityDiamondBackgroundColor White
+skinparam ActivityDiamondBorderColor Black
+skinparam ArrowColor Black
+skinparam PartitionBorderColor Black
+skinparam PartitionBackgroundColor White
+skinparam defaultFontSize 14
+
+title Activity Diagram Dashboard Admin
+
+|Admin|
+start
+:Login Berhasil;
+
+|Sistem|
+:Memuat Data Statistik;
+:Menghitung Total Mahasiswa;
+:Menghitung Total Dosen;
+:Menghitung Kelas Aktif;
+:Menampilkan Dashboard;
+
+|Admin|
+:Melihat Stat Cards;
+:Melihat Quick Actions;
+
+if (Tap Komponen?) then (Ya)
+  |Sistem|
+  :Navigasi ke\nHalaman Terkait;
+endif
+
+stop
+
+@enduml
+
